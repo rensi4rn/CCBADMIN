@@ -1,7 +1,13 @@
-CREATE OR REPLACE FUNCTION "ccb"."f_movimiento_det_sel"(	
-				p_administrador integer, p_id_usuario integer, p_tabla character varying, p_transaccion character varying)
-RETURNS character varying AS
-$BODY$
+--------------- SQL ---------------
+
+CREATE OR REPLACE FUNCTION ccb.f_movimiento_det_sel (
+  p_administrador integer,
+  p_id_usuario integer,
+  p_tabla varchar,
+  p_transaccion varchar
+)
+RETURNS varchar AS
+$body$
 /**************************************************************************
  SISTEMA:		ADMCCB
  FUNCION: 		ccb.f_movimiento_det_sel
@@ -40,7 +46,7 @@ BEGIN
      				
     	begin
     		--Sentencia de la consulta
-			v_consulta:='select
+			v_consulta:='(select
 						movd.id_movimiento_det,
 						movd.estado_reg,
 						movd.id_movimiento,
@@ -51,15 +57,46 @@ BEGIN
 						movd.fecha_mod,
 						movd.id_usuario_mod,
 						usu1.cuenta as usr_reg,
-						usu2.cuenta as usr_mod	
+						usu2.cuenta as usr_mod,
+                        tm.nombre as desc_tipo_movimiento	
 						from ccb.tmovimiento_det movd
 						inner join segu.tusuario usu1 on usu1.id_usuario = movd.id_usuario_reg
+                        inner join ccb.ttipo_movimiento tm on tm.id_tipo_movimiento = movd.id_tipo_movimiento 
 						left join segu.tusuario usu2 on usu2.id_usuario = movd.id_usuario_mod
 				        where  ';
 			
 			--Definicion de la respuesta
 			v_consulta:=v_consulta||v_parametros.filtro;
-			v_consulta:=v_consulta||' order by ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
+           
+			
+             v_consulta=v_consulta||')
+                    UNION
+                 ( select
+                            10000::integer,
+                            ''resumen''::varchar,
+                            0::integer,
+                            COALESCE(sum(movd.monto),0)::numeric,
+                            0::integer,
+                            now()::timestamp,
+                            0::integer,
+                            NULL::timestamp,
+                            NULL::integer,
+                            ''-''::varchar,
+                            NULL::varchar,
+                           ''Total''::varchar
+                           from ccb.tmovimiento_det movd
+                          
+						inner join segu.tusuario usu1 on usu1.id_usuario = movd.id_usuario_reg
+                        inner join ccb.ttipo_movimiento tm on tm.id_tipo_movimiento = movd.id_tipo_movimiento 
+						left join segu.tusuario usu2 on usu2.id_usuario = movd.id_usuario_mod
+				        where
+             ';
+              v_consulta:=v_consulta||v_parametros.filtro||')';
+               v_consulta:=v_consulta||' order by ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
+
+              
+              
+              raise notice '%',v_consulta;
 
 			--Devuelve la respuesta
 			return v_consulta;
@@ -77,9 +114,10 @@ BEGIN
 
 		begin
 			--Sentencia de la consulta de conteo de registros
-			v_consulta:='select count(id_movimiento_det)
+			v_consulta:='select count(id_movimiento_det)+1
 					    from ccb.tmovimiento_det movd
 					    inner join segu.tusuario usu1 on usu1.id_usuario = movd.id_usuario_reg
+                        inner join ccb.ttipo_movimiento tm on tm.id_tipo_movimiento = movd.id_tipo_movimiento 
 						left join segu.tusuario usu2 on usu2.id_usuario = movd.id_usuario_mod
 					    where ';
 			
@@ -106,7 +144,9 @@ EXCEPTION
 			v_resp = pxp.f_agrega_clave(v_resp,'procedimientos',v_nombre_funcion);
 			raise exception '%',v_resp;
 END;
-$BODY$
-LANGUAGE 'plpgsql' VOLATILE
+$body$
+LANGUAGE 'plpgsql'
+VOLATILE
+CALLED ON NULL INPUT
+SECURITY INVOKER
 COST 100;
-ALTER FUNCTION "ccb"."f_movimiento_det_sel"(integer, integer, character varying, character varying) OWNER TO postgres;

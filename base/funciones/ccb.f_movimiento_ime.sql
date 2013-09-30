@@ -1,8 +1,13 @@
-CREATE OR REPLACE FUNCTION "ccb"."f_movimiento_ime" (	
-				p_administrador integer, p_id_usuario integer, p_tabla character varying, p_transaccion character varying)
-RETURNS character varying AS
-$BODY$
+--------------- SQL ---------------
 
+CREATE OR REPLACE FUNCTION ccb.f_movimiento_ime (
+  p_administrador integer,
+  p_id_usuario integer,
+  p_tabla varchar,
+  p_transaccion varchar
+)
+RETURNS varchar AS
+$body$
 /**************************************************************************
  SISTEMA:		ADMCCB
  FUNCION: 		ccb.f_movimiento_ime
@@ -27,6 +32,8 @@ DECLARE
 	v_nombre_funcion        text;
 	v_mensaje_error         text;
 	v_id_movimiento	integer;
+    
+    v_registros record;
 			    
 BEGIN
 
@@ -70,6 +77,44 @@ BEGIN
 			null
 							
 			)RETURNING id_movimiento into v_id_movimiento;
+            
+            
+            IF v_parametros.concepto='colecta_adultos' or v_parametros.concepto='colecta_jovenes'THEN
+            --introducir el detalle de movimiento con todos los tipo de movimiento con valor 0
+            
+            
+                FOR v_registros in (
+                             select
+                              tm.id_tipo_movimiento
+                             from ccb.ttipo_movimiento tm where tm.estado_reg='activo' ) LOOP
+             
+                
+                              INSERT INTO 
+                                ccb.tmovimiento_det
+                              (
+                                id_usuario_reg,
+                                fecha_reg,
+                                estado_reg,
+                              
+                                id_tipo_movimiento,
+                                id_movimiento,
+                                monto
+                              ) 
+                              VALUES (
+                                p_id_usuario,
+                                now(),
+                                'activo',
+                                v_registros.id_tipo_movimiento,
+                                v_id_movimiento,
+                                0
+                				);
+                
+                
+                END LOOP;
+            
+            
+            END IF;
+            
 			
 			--Definicion de la respuesta
 			v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Movimientos almacenado(a) con exito (id_movimiento'||v_id_movimiento||')'); 
@@ -150,7 +195,9 @@ EXCEPTION
 		raise exception '%',v_resp;
 				        
 END;
-$BODY$
-LANGUAGE 'plpgsql' VOLATILE
+$body$
+LANGUAGE 'plpgsql'
+VOLATILE
+CALLED ON NULL INPUT
+SECURITY INVOKER
 COST 100;
-ALTER FUNCTION "ccb"."f_movimiento_ime"(integer, integer, character varying, character varying) OWNER TO postgres;

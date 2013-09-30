@@ -1,7 +1,13 @@
-CREATE OR REPLACE FUNCTION "ccb"."f_region_evento_sel"(	
-				p_administrador integer, p_id_usuario integer, p_tabla character varying, p_transaccion character varying)
-RETURNS character varying AS
-$BODY$
+--------------- SQL ---------------
+
+CREATE OR REPLACE FUNCTION ccb.f_region_evento_sel (
+  p_administrador integer,
+  p_id_usuario integer,
+  p_tabla varchar,
+  p_transaccion varchar
+)
+RETURNS varchar AS
+$body$
 /**************************************************************************
  SISTEMA:		ADMCCB
  FUNCION: 		ccb.f_region_evento_sel
@@ -53,8 +59,14 @@ BEGIN
 						rege.fecha_mod,
 						rege.id_usuario_mod,
 						usu1.cuenta as usr_reg,
-						usu2.cuenta as usr_mod	
+						usu2.cuenta as usr_mod,
+                        ges.gestion as desc_gestion,
+                        eve.nombre as desc_evento,
+                        reg.nombre as desc_region	
 						from ccb.tregion_evento rege
+                        inner join ccb.tgestion ges on ges.id_gestion = rege.id_gestion
+                        inner join ccb.tregion reg on reg.id_region = rege.id_region
+                        inner join ccb.tevento eve on eve.id_evento = rege.id_evento 
 						inner join segu.tusuario usu1 on usu1.id_usuario = rege.id_usuario_reg
 						left join segu.tusuario usu2 on usu2.id_usuario = rege.id_usuario_mod
 				        where  ';
@@ -81,6 +93,9 @@ BEGIN
 			--Sentencia de la consulta de conteo de registros
 			v_consulta:='select count(id_region_evento)
 					    from ccb.tregion_evento rege
+                        inner join ccb.tgestion ges on ges.id_gestion = rege.id_gestion
+                        inner join ccb.tregion reg on reg.id_region = rege.id_region
+                        inner join ccb.tevento eve on eve.id_evento = rege.id_evento 
 					    inner join segu.tusuario usu1 on usu1.id_usuario = rege.id_usuario_reg
 						left join segu.tusuario usu2 on usu2.id_usuario = rege.id_usuario_mod
 					    where ';
@@ -108,7 +123,9 @@ EXCEPTION
 			v_resp = pxp.f_agrega_clave(v_resp,'procedimientos',v_nombre_funcion);
 			raise exception '%',v_resp;
 END;
-$BODY$
-LANGUAGE 'plpgsql' VOLATILE
+$body$
+LANGUAGE 'plpgsql'
+VOLATILE
+CALLED ON NULL INPUT
+SECURITY INVOKER
 COST 100;
-ALTER FUNCTION "ccb"."f_region_evento_sel"(integer, integer, character varying, character varying) OWNER TO postgres;
