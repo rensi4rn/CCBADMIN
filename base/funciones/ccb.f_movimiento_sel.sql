@@ -34,6 +34,7 @@ DECLARE
     g_registros2  record;
     
     v_cod varchar;
+    v_consulta0	varchar;
     v_consulta2 varchar;
     v_consulta1  varchar;
     v_total_fila numeric;
@@ -125,6 +126,7 @@ BEGIN
       --1) crear tabla temporal segun la fecha inicio y ficha final indicada
               
       v_consulta = 'create temp table tt_movimiento_'||p_id_usuario||'(
+      prioridad int4,
       id_movimieno_din serial,
       id_movimiento integer,
       desc_casa_oracion varchar,
@@ -137,6 +139,7 @@ BEGIN
       
       --prepara consulta de sum
       v_consulta_tem =' select
+                        prioridad,
                         id_movimieno_din,
                         id_movimiento,
                         desc_casa_oracion,
@@ -147,6 +150,7 @@ BEGIN
                         fecha';
       
       v_consulta_sum = 'select
+                        1,
                         0,
                         0,
                         ''Total''::varchar,
@@ -183,55 +187,28 @@ BEGIN
               
                  
                  
-                 end loop;
+     end loop;
                  
-               -- raise exception '%', v_consulta;
-                
-                --concatena el finald e la creacion
-                 v_consulta =v_consulta||',total numeric) on commit drop';
-                 
-                 v_consulta_sum=v_consulta_sum||', sum(total)';
-                 v_consulta_tem =v_consulta_tem||', total';
+     --concatena el finald e la creacion
+     v_consulta =v_consulta||',total numeric) on commit drop';
+     v_consulta_sum=v_consulta_sum||', sum(total)';
+     v_consulta_tem =v_consulta_tem||', total';
                  
                 
-                --crea tabla
+    --crea tabla
                 
-                 raise notice 'CREA TABLA TEMPORAL,%',v_consulta;
-                 execute(v_consulta);
+     raise notice 'CREA TABLA TEMPORAL,%',v_consulta;
+     execute(v_consulta);
                 
              
-               -- LLenamos la tabla temporal
+    -- LLenamos la tabla temporal
                              
-                -- 2) FOR consulta las fechas de la tabla equipo medicion filtrados por uni_cons,
-                -- raise exception 'paciencia';
-                     
-                     FOR g_registros in (
-                           
-                             select
-                             m.id_movimiento,
-                             m.id_casa_oracion,
-                             co.nombre as desc_casa_oracion,
-                             ep.mes as desc_estado_periodo,
-                             m.concepto,
-                             m.tipo,
-                             m.fecha,
-                             ep.mes,
-                             ges.gestion::integer as desc_gestion
-                             
-                             from ccb.tmovimiento m
-                             inner join ccb.testado_periodo ep on m.id_estado_periodo = ep.id_estado_periodo  
-                             inner join ccb.tcasa_oracion co on co.id_casa_oracion = m.id_casa_oracion
-                             inner join ccb.tgestion ges on ges.id_gestion =ep.id_gestion
-                              where
-                              m.id_casa_oracion = v_parametros.id_casa_oracion
-                              and ep.id_gestion= v_parametros.id_gestion
-                              and m.tipo= v_parametros.tipo) LOOP
-      
-                            --2.0) (atributos) arma primera parte de la cadena de insercion con datos del equipo y del mantenimiento
-           
-                     
-                  v_consulta1= 'INSERT into tt_movimiento_'||p_id_usuario||' (
-                                   
+    -- 2) FOR consulta las fechas de la tabla equipo medicion filtrados por uni_cons,
+    -- raise exception 'paciencia';
+         
+        --2.0) (atributos) arma primera parte de la cadena de insercion con datos del equipo y del mantenimiento
+         v_consulta0 = 'INSERT into tt_movimiento_'||p_id_usuario||' (
+                                  prioridad, 
                                   id_movimiento ,
                                   desc_casa_oracion ,
                                   desc_gestion ,
@@ -239,11 +216,38 @@ BEGIN
                                   concepto ,
                                   tipo, 
                                   fecha  ';
+         
+         
+         FOR g_registros in (
+                           
+                 select
+                 m.id_movimiento,
+                 m.id_casa_oracion,
+                 co.nombre as desc_casa_oracion,
+                 ep.mes as desc_estado_periodo,
+                 m.concepto,
+                 m.tipo,
+                 m.fecha,
+                 ep.mes,
+                 ges.gestion::integer as desc_gestion
+                             
+                 from ccb.tmovimiento m
+                 inner join ccb.testado_periodo ep on m.id_estado_periodo = ep.id_estado_periodo  
+                 inner join ccb.tcasa_oracion co on co.id_casa_oracion = m.id_casa_oracion
+                 inner join ccb.tgestion ges on ges.id_gestion =ep.id_gestion
+                  where
+                  m.id_casa_oracion = v_parametros.id_casa_oracion
+                  and ep.id_gestion= v_parametros.id_gestion
+                  and m.tipo= v_parametros.tipo) LOOP
+      
+                 
+                     
+                  v_consulta1 = v_consulta0;
                                                              
                 -- (valores) arma la cadena de insercion de valores
                
 
-                   v_consulta2= ',total) values('||g_registros.id_movimiento||','''||g_registros.desc_casa_oracion||''','||g_registros.desc_gestion||','''||g_registros.desc_estado_periodo||''','''||g_registros.concepto||''','''||g_registros.tipo||''','''||g_registros.fecha||'''';
+                   v_consulta2= ',total) values(0,'||g_registros.id_movimiento||','''||g_registros.desc_casa_oracion||''','||g_registros.desc_gestion||','''||g_registros.desc_estado_periodo||''','''||g_registros.concepto||''','''||g_registros.tipo||''','''||g_registros.fecha||'''';
                                   
                            v_total_fila =0;
                           
@@ -280,19 +284,15 @@ BEGIN
          
            execute(v_consulta1);
               
-                   END LOOP;
+      END LOOP;
                 
-               -- 3) consulta de la tabla temporal
+      -- 3) consulta de la tabla temporal
                
                
                
        v_consulta:='('||v_consulta_tem||' from tt_movimiento_'||p_id_usuario||' where '||v_parametros.filtro||'  ';
-      
-     
        v_consulta:= v_consulta||') UNION ('||v_consulta_sum||' from tt_movimiento_'||p_id_usuario||' where '||v_parametros.filtro||')';
-      
-      
-      v_consulta:=v_consulta||' order by ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
+       v_consulta:=v_consulta||' order by prioridad ASC, ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
 
                
       --Devuelve la respuesta

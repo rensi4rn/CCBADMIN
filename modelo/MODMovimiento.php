@@ -57,6 +57,7 @@ class MODMovimiento extends MODbase{
         $this->setParametro('id_gestion','id_gestion','integer');    
         $this->setParametro('tipo','tipo','varchar');    
         
+		$this->captura('prioridad','integer');
         for($i=0;$i<$tamaño;$i++){
              $parametros_tipo=explode('#',$parametros[$i]);
             
