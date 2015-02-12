@@ -274,8 +274,35 @@ WITHOUT OIDS;
 
 
 
+/***********************************I-SCP-RAC-CCB-1-03/03/2015****************************************/
 
 
+--------------- SQL ---------------
+
+ALTER TABLE ccb.tregion_evento
+  ADD COLUMN id_casa_oracion INTEGER;
+
+--------------- SQL ---------------
+
+ALTER TABLE ccb.tregion_evento
+  ADD COLUMN tipo_registro VARCHAR(20) DEFAULT 'detalle' NOT NULL;
+
+COMMENT ON COLUMN ccb.tregion_evento.tipo_registro
+IS 'topma los valores detalle o resumen,
+se realiza un resumen por gestion';
+
+--------------- SQL ---------------
+
+CREATE TABLE ccb.tusuario_permiso (
+  id_usuario_permiso SERIAL,
+  id_usuario_asignado INTEGER NOT NULL,
+  id_casa_oracion INTEGER NOT NULL,
+  CONSTRAINT tusuario_permiso_pkey PRIMARY KEY(id_usuario_permiso)
+) INHERITS (pxp.tbase)
+WITHOUT OIDS;
+
+
+/***********************************F-SCP-RAC-CCB-1-03/03/2015****************************************/
 
 
 

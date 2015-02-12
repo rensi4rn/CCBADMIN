@@ -62,14 +62,18 @@ BEGIN
 						usu2.cuenta as usr_mod,
                         ges.gestion as desc_gestion,
                         eve.nombre as desc_evento,
-                        reg.nombre as desc_region	
+                        reg.nombre as desc_region,
+                        co.id_casa_oracion,
+                        co.nombre as desc_casa_oracion,
+                        rege.tipo_registro	
 						from ccb.tregion_evento rege
                         inner join ccb.tgestion ges on ges.id_gestion = rege.id_gestion
                         inner join ccb.tregion reg on reg.id_region = rege.id_region
                         inner join ccb.tevento eve on eve.id_evento = rege.id_evento 
+                        inner join ccb.tcasa_oracion co on co.id_casa_oracion = rege.id_casa_oracion
 						inner join segu.tusuario usu1 on usu1.id_usuario = rege.id_usuario_reg
 						left join segu.tusuario usu2 on usu2.id_usuario = rege.id_usuario_mod
-				        where  ';
+                        where  ';
 			
 			--Definicion de la respuesta
 			v_consulta:=v_consulta||v_parametros.filtro;
@@ -96,9 +100,10 @@ BEGIN
                         inner join ccb.tgestion ges on ges.id_gestion = rege.id_gestion
                         inner join ccb.tregion reg on reg.id_region = rege.id_region
                         inner join ccb.tevento eve on eve.id_evento = rege.id_evento 
-					    inner join segu.tusuario usu1 on usu1.id_usuario = rege.id_usuario_reg
+                        inner join ccb.tcasa_oracion co on co.id_casa_oracion = rege.id_casa_oracion
+						inner join segu.tusuario usu1 on usu1.id_usuario = rege.id_usuario_reg
 						left join segu.tusuario usu2 on usu2.id_usuario = rege.id_usuario_mod
-					    where ';
+                        where ';
 			
 			--Definicion de la respuesta		    
 			v_consulta:=v_consulta||v_parametros.filtro;

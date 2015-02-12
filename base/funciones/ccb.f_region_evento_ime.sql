@@ -59,7 +59,9 @@ BEGIN
 			fecha_reg,
 			id_usuario_reg,
 			fecha_mod,
-			id_usuario_mod
+			id_usuario_mod,
+            id_casa_oracion,
+            tipo_registro
           	) values(
 			'activo',
 			v_parametros.id_gestion,
@@ -70,7 +72,10 @@ BEGIN
 			now(),
 			p_id_usuario,
 			null,
-			null
+			null,
+            v_parametros.id_casa_oracion,
+            v_parametros.tipo_registro
+            
 							
 			)RETURNING id_region_evento into v_id_region_evento;
 			
@@ -101,7 +106,9 @@ BEGIN
 			estado = v_parametros.estado,
 			id_region = v_parametros.id_region,
 			fecha_mod = now(),
-			id_usuario_mod = p_id_usuario
+			id_usuario_mod = p_id_usuario,
+            id_casa_oracion =  v_parametros.id_casa_oracion,
+            tipo_registro = v_parametros.tipo_registro
 			where id_region_evento=v_parametros.id_region_evento;
                
 			--Definicion de la respuesta

@@ -61,7 +61,7 @@ class MODCasaOracion extends MODbase{
 		$this->setParametro('direccion','direccion','text');
 		$this->setParametro('nombre','nombre','varchar');
 		$this->setParametro('fecha_apertura','fecha_apertura','date');
-
+		
 		//Ejecuta la instruccion
 		$this->armarConsulta();
 		$this->ejecutarConsulta();
@@ -86,7 +86,7 @@ class MODCasaOracion extends MODbase{
 		$this->setParametro('direccion','direccion','text');
 		$this->setParametro('nombre','nombre','varchar');
 		$this->setParametro('fecha_apertura','fecha_apertura','date');
-
+		
 		//Ejecuta la instruccion
 		$this->armarConsulta();
 		$this->ejecutarConsulta();

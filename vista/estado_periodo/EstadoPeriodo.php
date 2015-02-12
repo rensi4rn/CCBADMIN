@@ -330,7 +330,7 @@ Phx.vista.EstadoPeriodo=Ext.extend(Phx.gridInterfaz,{
 	},
 	loadValoresIniciales:function()
 	{
-		Phx.vista.Culto.superclass.loadValoresIniciales.call(this);
+		Phx.vista.EstadoPeriodo.superclass.loadValoresIniciales.call(this);
 		this.getComponente('id_casa_oracion').setValue(this.maestro.id_casa_oracion);
 		this.getComponente('id_gestion').setValue(this.cmbGestion.getValue());		
 	},

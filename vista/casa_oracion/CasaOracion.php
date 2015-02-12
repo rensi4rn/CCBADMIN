@@ -65,7 +65,7 @@ Phx.vista.CasaOracion=Ext.extend(Phx.gridInterfaz,{
 				width:210,
 				gwidth:220,
 				minChars:2,
-				renderer:function (value, p, record){return String.format('{0}', record.data['nombre']);}
+				renderer:function (value, p, record){return String.format('{0}', record.data['desc_region']);}
 			},
 			type:'ComboBox',
 			filters:{pfiltro:'reg.nombre',type:'string'},
@@ -154,7 +154,7 @@ Phx.vista.CasaOracion=Ext.extend(Phx.gridInterfaz,{
 				width:210,
 				gwidth:220,
 				minChars:2,
-				renderer:function (value, p, record){return String.format('{0}', record.data['nombre']);}
+				renderer:function (value, p, record){return String.format('{0}', record.data['desc_lugar']);}
 			},
 			type:'ComboBox',
 			filters:{pfiltro:'lug.nombre',type:'string'},
@@ -169,7 +169,7 @@ Phx.vista.CasaOracion=Ext.extend(Phx.gridInterfaz,{
 				allowBlank: true,
 				anchor: '80%',
 				gwidth: 100,
-				 format:'d-m-Y',
+				format:'Y-m-d',
 				renderer:function (value,p,record){return value?value.dateFormat('d/m/Y'):''}
 			},
 			type:'DateField',
@@ -312,6 +312,12 @@ Phx.vista.CasaOracion=Ext.extend(Phx.gridInterfaz,{
 		  height:'50%',
 		  cls:'EstadoPeriodo'
 		 },
+		 {
+		  url:'../../../sis_admin/vista/usuario_permiso/UsuarioPermiso.php',		
+		  title:'Autorizaciones', 
+		  height:'50%',
+		  cls:'UsuarioPermiso'
+		 }
 	
 	   ],
 	bdel:true,

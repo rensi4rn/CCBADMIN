@@ -104,12 +104,13 @@ Phx.vista.Obrero=Ext.extend(Phx.gridInterfaz,{
 		{
 			config:{
 				name: 'fecha_ini',
-				fieldLabel: 'fecha_ini',
+				fieldLabel: 'Fecha Nom',
+				qtip:'Fecha de nombramiento',
 				allowBlank: true,
 				anchor: '80%',
 				gwidth: 100,
-						format: 'd/m/Y', 
-						renderer:function (value,p,record){return value?value.dateFormat('d/m/Y'):''}
+				format: 'd/m/Y', 
+				renderer:function (value,p,record){return value?value.dateFormat('d/m/Y'):''}
 			},
 			type:'DateField',
 			filters:{pfiltro:'obr.fecha_ini',type:'date'},

@@ -36,6 +36,10 @@ class MODRegionEvento extends MODbase{
 		$this->captura('desc_gestion','varchar');
 		$this->captura('desc_evento','varchar');
 		$this->captura('desc_region','varchar');
+		$this->captura('id_casa_oracion','integer');
+		$this->captura('desc_casa_oracion','varchar');
+		$this->captura('tipo_registro','varchar');
+		
 		
 		//Ejecuta la instruccion
 		$this->armarConsulta();
@@ -58,6 +62,9 @@ class MODRegionEvento extends MODbase{
 		$this->setParametro('id_evento','id_evento','int4');
 		$this->setParametro('estado','estado','varchar');
 		$this->setParametro('id_region','id_region','int4');
+		$this->setParametro('id_casa_oracion','id_casa_oracion','integer');
+		$this->setParametro('tipo_registro','tipo_registro','varchar');
+		
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();
@@ -81,6 +88,9 @@ class MODRegionEvento extends MODbase{
 		$this->setParametro('id_evento','id_evento','int4');
 		$this->setParametro('estado','estado','varchar');
 		$this->setParametro('id_region','id_region','int4');
+		$this->setParametro('id_casa_oracion','id_casa_oracion','integer');
+		$this->setParametro('tipo_registro','tipo_registro','varchar');
+		
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();

@@ -17,9 +17,6 @@ Phx.vista.RegionEvento=Ext.extend(Phx.gridInterfaz,{
 		this.initButtons=[this.cmbGestion,this.cmbRegion];
     	//llama al constructor de la clase padre
 		Phx.vista.RegionEvento.superclass.constructor.call(this,config);
-		this.init();
-		this.load({params:{start:0, limit:50}})
-		
 		
 		this.cmbRegion.on('select',this.capturaFiltros,this);
 		this.cmbGestion.on('select',this.capturaFiltros,this);
@@ -49,6 +46,18 @@ Phx.vista.RegionEvento=Ext.extend(Phx.gridInterfaz,{
 			type:'Field',
 			form:true 
 		},
+		
+		{
+			//configuracion del componente
+			config:{
+					labelSeparator:'',
+					inputType:'hidden',
+					name: 'tipo_registro'
+			},
+			type:'Field',
+			form:true 
+		},
+			
 				
 		{
 			config:{
@@ -135,6 +144,46 @@ Phx.vista.RegionEvento=Ext.extend(Phx.gridInterfaz,{
 			grid:true,
 			form:true
 		},
+		
+		{
+			config: {
+				name: 'id_casa_oracion',
+                fieldLabel: 'Casa de Oración',
+                allowBlank: false,
+                emptyText:'Casa...',
+                store:new Ext.data.JsonStore(
+                {
+                    url: '../../sis_admin/control/CasaOracion/listarCasaOracion',
+                    id: 'id_casa_oracion',
+                    root: 'datos',
+                    sortInfo:{
+                        field: 'nombre',
+                        direction: 'ASC'
+                    },
+                    totalProperty: 'total',
+                    fields: ['id_casa_oracion','codigo','nombre'],
+                    // turn on remote sorting
+                    remoteSort: true,
+                    baseParams:{par_filtro:'nombre'}
+                }),
+                valueField: 'id_casa_oracion',
+                displayField: 'nombre',
+                hiddenName: 'id_casa_oracion',
+                triggerAction: 'all',
+                mode:'remote',
+                pageSize:50,
+                queryDelay:500,
+                listWidth:'280',
+                width:210,
+                minChars:2
+            },
+			type:'ComboBox',
+			filters:{pfiltro:'co.nombre',type:'string'},
+			id_grupo:1,
+			grid:true,
+			form:true
+			
+		},
 	
 		{
 			config:{
@@ -176,18 +225,17 @@ Phx.vista.RegionEvento=Ext.extend(Phx.gridInterfaz,{
 			filters:{pfiltro:'eve.nombre',type:'string'},
 			id_grupo:1,
 			grid:true,
-			form:true
+			form:true 
 		},
-		
 		{
 			config:{
 				name: 'fecha_programada',
 				fieldLabel: 'Fecha',
 				allowBlank: false,
-				//anchor: '80%',
+				anchor: '80%',
 				gwidth: 100,
-						format: 'd/m/Y', 
-						renderer:function (value,p,record){return value?value.dateFormat('d/m/Y'):''}
+				format: 'd/m/Y', 
+				renderer:function (value,p,record){return value?value.dateFormat('d/m/Y'):''}
 			},
 			type:'DateField',
 			filters:{pfiltro:'rege.fecha_programada',type:'date'},
