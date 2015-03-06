@@ -71,6 +71,7 @@ Phx.vista.TipoMinisterio=Ext.extend(Phx.gridInterfaz,{
 			type:'TextField',
 			filters:{pfiltro:'tipmi.codigo',type:'string'},
 			id_grupo:1,
+			egrid:true,
 			grid:true,
 			form:true
 		},
