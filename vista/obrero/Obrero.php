@@ -149,7 +149,7 @@ Phx.vista.Obrero=Ext.extend(Phx.gridInterfaz,{
                     fields: ['id_casa_oracion','codigo','nombre','desc_lugar','desc_region'],
                     // turn on remote sorting
                     remoteSort: true,
-                    baseParams:{par_filtro:'nombre#reg.nomb#relug.nombre'}
+                    baseParams:{par_filtro:'caor.nombre#reg.nomb#relug.nombre'}
                 }),
                 valueField: 'id_casa_oracion',
                 displayField: 'nombre',
