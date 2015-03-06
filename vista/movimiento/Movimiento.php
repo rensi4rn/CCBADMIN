@@ -166,7 +166,7 @@ Phx.vista.Movimiento=Ext.extend(Phx.gridInterfaz,{
                     fields: ['id_casa_oracion','codigo','nombre'],
                     // turn on remote sorting
                     remoteSort: true,     
-                    baseParams:{par_filtro:'caor.nombre#reg.nombre#relug.nombre'}
+                    baseParams:{par_filtro:'caor.nombre#reg.nombre#reg.nombre'}
                 
                
                 }),
@@ -182,6 +182,7 @@ Phx.vista.Movimiento=Ext.extend(Phx.gridInterfaz,{
                 width:210,
                 minChars:2
                 }),
+                
      cmbGestion:new Ext.form.ComboBox({
                 fieldLabel: 'Gestion',
                 allowBlank: false,
@@ -211,6 +212,7 @@ Phx.vista.Movimiento=Ext.extend(Phx.gridInterfaz,{
                 listWidth:'280',
                 width:80
             }),
+            
      cmbEstadoPeriodo:new Ext.form.ComboBox({
                 fieldLabel: 'Periodo',
                 allowBlank: false,

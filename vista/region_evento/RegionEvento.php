@@ -176,7 +176,7 @@ Phx.vista.RegionEvento=Ext.extend(Phx.gridInterfaz,{
                     fields: ['id_casa_oracion','codigo','nombre'],
                     // turn on remote sorting
                     remoteSort: true,    
-                    baseParams:{par_filtro:'caor.nombre#reg.nombre#relug.nombre'}
+                    baseParams:{par_filtro:'caor.nombre#reg.nombre#reg.nombre'}
                 
                 }),
                 valueField: 'id_casa_oracion',
