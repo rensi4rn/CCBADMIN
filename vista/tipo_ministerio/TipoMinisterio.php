@@ -65,6 +65,7 @@ Phx.vista.TipoMinisterio=Ext.extend(Phx.gridInterfaz,{
 				allowBlank: false,
 				anchor: '80%',
 				gwidth: 100,
+				egrid:true,
 				maxLength:20
 			},
 			type:'TextField',
@@ -85,6 +86,7 @@ Phx.vista.TipoMinisterio=Ext.extend(Phx.gridInterfaz,{
 			type:'TextField',
 			filters:{pfiltro:'tipmi.nombre',type:'string'},
 			id_grupo:1,
+			egrid:true,
 			grid:true,
 			form:true
 		},

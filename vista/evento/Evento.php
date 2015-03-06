@@ -43,6 +43,7 @@ Phx.vista.Evento=Ext.extend(Phx.gridInterfaz,{
 			type:'TextField',
 			filters:{pfiltro:'even.codigo',type:'string'},
 			id_grupo:1,
+			egrid:true,
 			grid:true,
 			form:true
 		},
@@ -58,6 +59,7 @@ Phx.vista.Evento=Ext.extend(Phx.gridInterfaz,{
 			type:'TextField',
 			filters:{pfiltro:'even.nombre',type:'string'},
 			id_grupo:1,
+			egrid:true,
 			grid:true,
 			form:true
 		},
@@ -73,6 +75,7 @@ Phx.vista.Evento=Ext.extend(Phx.gridInterfaz,{
 			type:'TextArea',
 			filters:{pfiltro:'even.descripcion',type:'string'},
 			id_grupo:1,
+			egrid:true,
 			grid:true,
 			form:true
 		},
