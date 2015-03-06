@@ -77,6 +77,21 @@ Phx.vista.RegionEventoResumen = {
 		}
 	},
 	
+	preparaMenu:function(n){
+      Phx.vista.RegionEventoResumen.superclass.preparaMenu.call(this,n); 
+      this.getBoton('btnGenerar').enable();    
+      
+      return this.tbar;
+    },
+    
+    liberaMenu:function(){
+        var tb = Phx.vista.RegionEventoResumen.superclass.liberaMenu.call(this);
+        if(tb){
+             this.getBoton('btnGenerar').disable();
+        }
+        return tb
+    },
+	
 	successSinc:function(){
 		Phx.CP.loadingHide();
 		this.onButtonAct();
