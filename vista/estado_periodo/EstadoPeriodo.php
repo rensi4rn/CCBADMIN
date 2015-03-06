@@ -33,11 +33,19 @@ Phx.vista.EstadoPeriodo=Ext.extend(Phx.gridInterfaz,{
 	   this.cmbGestion.on('select',this.capturaFiltros,this); 
 	   
 	   this.addButton('btnAtrib', {
-				text : 'Abrir Gestión',
+				text : 'Crear periodos',
 				iconCls : 'bchecklist',
 				disabled : false,
 				handler : this.onBtnAbrirGestion,
-				tooltip : '<b>Abrir Gestión</b><br/>Al abrir la gestión se crearán todos los periodos'
+				tooltip : '<b>Crear Periodos</b><br/>Crea los periodos para la casa de oración seleccionada'
+		});
+		
+		this.addButton('btnAbrirCerrar', {
+				text : 'Abrir/Cerrar',
+				iconCls : 'bchecklist',
+				disabled : false,
+				handler : this.onBtnAbrirCerrarPeriodo,
+				tooltip : '<b>Abrir o cerrar periodo</b><br/>Cuando el periodo se cierra los usuarios no pueden agregar eventos ni movimientos económicos'
 		});
 		  
 	      
@@ -116,7 +124,16 @@ Phx.vista.EstadoPeriodo=Ext.extend(Phx.gridInterfaz,{
 				allowBlank: true,
 				anchor: '80%',
 				gwidth: 100,
-				maxLength:255
+				maxLength:255,
+				renderer:function (value,p,record){
+					if(value == 'cerrado'){
+					   return '<font color="green">'+value+'</font>';	
+					}
+					else{
+						 return '<font color="red">'+value+'</font>';	
+					}
+					
+				}
 			},
 			type:'TextField',
 			filters:{pfiltro:'per.estado_periodo',type:'string'},
@@ -157,7 +174,7 @@ Phx.vista.EstadoPeriodo=Ext.extend(Phx.gridInterfaz,{
 		{
 			config:{
 				name: 'fecha_ini',
-				fieldLabel: 'Fecha Fin',
+				fieldLabel: 'Fecha Ini',
 				allowBlank: true,
 				anchor: '80%',
 				gwidth: 100,
@@ -173,7 +190,7 @@ Phx.vista.EstadoPeriodo=Ext.extend(Phx.gridInterfaz,{
 		{
 			config:{
 				name: 'fecha_fin',
-				fieldLabel: 'Fecha Ini',
+				fieldLabel: 'Fecha Fin',
 				allowBlank: true,
 				anchor: '80%',
 				gwidth: 100,
@@ -208,8 +225,8 @@ Phx.vista.EstadoPeriodo=Ext.extend(Phx.gridInterfaz,{
 				allowBlank: true,
 				anchor: '80%',
 				gwidth: 100,
-						format: 'd/m/Y', 
-						renderer:function (value,p,record){return value?value.dateFormat('d/m/Y H:i:s'):''}
+				format: 'd/m/Y', 
+				renderer:function (value,p,record){return value?value.dateFormat('d/m/Y H:i:s'):''}
 			},
 			type:'DateField',
 			filters:{pfiltro:'per.fecha_reg',type:'date'},
@@ -279,7 +296,7 @@ Phx.vista.EstadoPeriodo=Ext.extend(Phx.gridInterfaz,{
 		{name:'id_gestion', type: 'numeric'},
 		{name:'fecha_fin', type: 'date',dateFormat:'Y-m-d'},
 		{name:'mes', type: 'string'},
-		{name:'fecha_ini',type: 'date',dateFormat:'Y-m-d '},
+		{name:'fecha_ini',type: 'date',dateFormat:'Y-m-d'},
 		{name:'fecha_reg', type: 'date',dateFormat:'Y-m-d H:i:s.u'},
 		{name:'id_usuario_reg', type: 'numeric'},
 		{name:'fecha_mod', type: 'date',dateFormat:'Y-m-d H:i:s.u'},
@@ -291,6 +308,42 @@ Phx.vista.EstadoPeriodo=Ext.extend(Phx.gridInterfaz,{
 	sortInfo:{
 		field: 'id_estado_periodo',
 		direction: 'ASC'
+	},
+	
+	preparaMenu:function(n){
+      Phx.vista.EstadoPeriodo.superclass.preparaMenu.call(this,n); 
+      this.getBoton('btnAbrirCerrar').enable();    
+      
+      return this.tbar;
+    },
+    
+    liberaMenu:function(){
+        var tb = Phx.vista.EstadoPeriodo.superclass.liberaMenu.call(this);
+        if(tb){
+             this.getBoton('btnAbrirCerrar').disable();
+        }
+        return tb
+    },
+	
+	onBtnAbrirCerrarPeriodo:function(){
+		var rec=this.sm.getSelected();
+		if(rec){
+		
+			Phx.CP.loadingShow(); 
+			Ext.Ajax.request({
+				
+				url:'../../sis_admin/control/EstadoPeriodo/abrirCerrarPeriodo',
+				params:{'id_estado_periodo': rec.data.id_estado_periodo},
+				success:this.successSinc,
+				failure: this.conexionFailure,
+				timeout:this.timeout,
+				scope:this
+			});
+		}
+		else{
+			alert('seleccione un periodo primero')
+			
+		}
 	},
 	
 	onBtnAbrirGestion:function(){
@@ -317,7 +370,7 @@ Phx.vista.EstadoPeriodo=Ext.extend(Phx.gridInterfaz,{
 		}
 	},
 	
-	 successSinc:function(){
+	successSinc:function(){
 		Phx.CP.loadingHide();
 		this.onButtonAct();
 	}

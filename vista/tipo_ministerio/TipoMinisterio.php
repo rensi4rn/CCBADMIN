@@ -58,7 +58,21 @@ Phx.vista.TipoMinisterio=Ext.extend(Phx.gridInterfaz,{
 	       		grid:true,
 	       		form:true
 	       },
-		
+		{
+			config:{
+				name: 'codigo',
+				fieldLabel: 'Código',
+				allowBlank: false,
+				anchor: '80%',
+				gwidth: 100,
+				maxLength:20
+			},
+			type:'TextField',
+			filters:{pfiltro:'tipmi.codigo',type:'string'},
+			id_grupo:1,
+			grid:true,
+			form:true
+		},
 		{
 			config:{
 				name: 'nombre',
@@ -165,7 +179,7 @@ Phx.vista.TipoMinisterio=Ext.extend(Phx.gridInterfaz,{
 		{name:'fecha_mod', type: 'date', dateFormat:'Y-m-d H:i:s.u'},
 		{name:'id_usuario_mod', type: 'numeric'},
 		{name:'usr_reg', type: 'string'},
-		{name:'usr_mod', type: 'string'},
+		{name:'usr_mod', type: 'string'},'codigo'
 		
 	],
 	sortInfo:{

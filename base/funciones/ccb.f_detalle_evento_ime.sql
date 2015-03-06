@@ -31,7 +31,10 @@ DECLARE
 	v_resp		            varchar;
 	v_nombre_funcion        text;
 	v_mensaje_error         text;
-	v_id_detalle_evento	integer;
+	v_id_detalle_evento		integer;
+    v_fecha_programada		date;
+    v_regitros_padre      	record;
+    v_estado_periodo		varchar;
 			    
 BEGIN
 
@@ -48,6 +51,31 @@ BEGIN
 	if(p_transaccion='CCB_DEV_INS')then
 					
         begin
+        
+           --revisa si el periodo esta abierto
+             
+            select 
+              re.fecha_programada,
+              re.id_casa_oracion
+            into
+              v_regitros_padre
+            from ccb.tregion_evento re 
+            where re.id_region_evento = v_parametros.id_region_evento;
+            
+             select 
+              ep.estado_periodo
+            into
+              v_estado_periodo
+            from ccb.testado_periodo ep 
+            where ep.id_casa_oracion = v_regitros_padre.id_casa_oracion
+                 and  v_regitros_padre.fecha_programada::date BETWEEN  ep.fecha_ini::date and ep.fecha_fin::dATE;  
+              
+              
+            IF v_estado_periodo = 'cerrado' THEN
+                raise exception 'el periodo correspondiente se encuentra cerrado';
+            END IF;
+           
+        
         	--Sentencia de la insercion
         	insert into ccb.tdetalle_evento(
 			estado_reg,
@@ -91,6 +119,30 @@ BEGIN
 	elsif(p_transaccion='CCB_DEV_MOD')then
 
 		begin
+            --revisa si el periodo esta abierto
+             
+            select 
+              re.fecha_programada,
+              re.id_casa_oracion
+            into
+              v_regitros_padre
+            from ccb.tregion_evento re 
+            where re.id_region_evento = v_parametros.id_region_evento;
+            
+             select 
+              ep.estado_periodo
+            into
+              v_estado_periodo
+            from ccb.testado_periodo ep 
+            where ep.id_casa_oracion = v_regitros_padre.id_casa_oracion
+                 and  v_regitros_padre.fecha_programada::date BETWEEN  ep.fecha_ini::date and ep.fecha_fin::dATE;  
+              
+              
+            IF v_estado_periodo = 'cerrado' THEN
+                raise exception 'el periodo correspondiente se encuentra cerrado';
+            END IF;
+        
+        
 			--Sentencia de la modificacion
 			update ccb.tdetalle_evento set
 			catidad = v_parametros.catidad,
@@ -120,7 +172,32 @@ BEGIN
 	elsif(p_transaccion='CCB_DEV_ELI')then
 
 		begin
-			--Sentencia de la eliminacion
+			
+            --revisa si el periodo esta abierto
+            select 
+              re.fecha_programada,
+              re.id_casa_oracion
+            into
+              v_regitros_padre
+            from ccb.tregion_evento re 
+            inner join ccb.tdetalle_evento de on de.id_region_evento = re.id_region_evento
+            where de.id_detalle_evento  = v_parametros.id_detalle_evento;
+            
+             select 
+              ep.estado_periodo
+            into
+              v_estado_periodo
+            from ccb.testado_periodo ep 
+            where ep.id_casa_oracion = v_regitros_padre.id_casa_oracion
+                 and  v_regitros_padre.fecha_programada::date BETWEEN  ep.fecha_ini::date and ep.fecha_fin::dATE;  
+              
+              
+            IF v_estado_periodo = 'cerrado' THEN
+                raise exception 'el periodo correspondiente se encuentra cerrado';
+            END IF;
+            
+            
+            --Sentencia de la eliminacion
 			delete from ccb.tdetalle_evento
             where id_detalle_evento=v_parametros.id_detalle_evento;
                

@@ -56,7 +56,8 @@ BEGIN
 			fecha_reg,
 			id_usuario_reg,
 			fecha_mod,
-			id_usuario_mod
+			id_usuario_mod,
+            codigo
           	) values(
 			v_parametros.tipo,
 			v_parametros.nombre,
@@ -64,7 +65,8 @@ BEGIN
 			now(),
 			p_id_usuario,
 			null,
-			null
+			null,
+            lower(v_parametros.codigo)
 							
 			)RETURNING id_tipo_ministerio into v_id_tipo_ministerio;
 			
@@ -92,7 +94,8 @@ BEGIN
 			tipo = v_parametros.tipo,
 			nombre = v_parametros.nombre,
 			fecha_mod = now(),
-			id_usuario_mod = p_id_usuario
+			id_usuario_mod = p_id_usuario,
+            codigo = lower(v_parametros.codigo)
 			where id_tipo_ministerio=v_parametros.id_tipo_ministerio;
                
 			--Definicion de la respuesta

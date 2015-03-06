@@ -59,11 +59,15 @@ BEGIN
 						usper.fecha_mod,
 						usu1.cuenta as usr_reg,
 						usu2.cuenta as usr_mod,
-                        usu.cuenta as desc_usuario
+                        usper.id_region,
+                        reg.nombre as desc_region,
+                        co.nombre as desc_casa_oracion
 						from ccb.tusuario_permiso usper
-						inner join segu.tusuario usu1 on usu1.id_usuario = usper.id_usuario_reg
-                        inner join segu.tusuario usu on usu.id_usuario = usper.id_usuario_asignado
-						left join segu.tusuario usu2 on usu2.id_usuario = usper.id_usuario_mod
+                        inner join segu.tusuario usu1 on usu1.id_usuario = usper.id_usuario_reg
+						left join ccb.tregion reg on reg.id_region = usper.id_region
+                        left join ccb.tcasa_oracion co on co.id_casa_oracion = usper.id_casa_oracion
+                        
+                        left join segu.tusuario usu2 on usu2.id_usuario = usper.id_usuario_mod
 				        where  ';
 			
 			--Definicion de la respuesta
@@ -87,11 +91,13 @@ BEGIN
 		begin
 			--Sentencia de la consulta de conteo de registros
 			v_consulta:='select count(id_usuario_permiso)
-                          from ccb.tusuario_permiso usper
-                          inner join segu.tusuario usu1 on usu1.id_usuario = usper.id_usuario_reg
-                          inner join segu.tusuario usu on usu.id_usuario = usper.id_usuario_asignado
-                          left join segu.tusuario usu2 on usu2.id_usuario = usper.id_usuario_mod
-                          where ';
+                         from ccb.tusuario_permiso usper
+                        inner join segu.tusuario usu1 on usu1.id_usuario = usper.id_usuario_reg
+						left join ccb.tregion reg on reg.id_region = usper.id_region
+                        left join ccb.tcasa_oracion co on co.id_casa_oracion = usper.id_casa_oracion
+                        
+                        left join segu.tusuario usu2 on usu2.id_usuario = usper.id_usuario_mod
+				        where ';
 			
 			--Definicion de la respuesta		    
 			v_consulta:=v_consulta||v_parametros.filtro;

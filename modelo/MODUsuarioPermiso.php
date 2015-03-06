@@ -32,7 +32,13 @@ class MODUsuarioPermiso extends MODbase{
 		$this->captura('fecha_mod','timestamp');
 		$this->captura('usr_reg','varchar');
 		$this->captura('usr_mod','varchar');
-		$this->captura('desc_usuario','varchar');
+		
+		$this->captura('id_region','int4');
+		$this->captura('desc_region','varchar');
+		$this->captura('desc_casa_oracion','varchar');
+		
+		
+		
 		
 		
 		//Ejecuta la instruccion
@@ -43,15 +49,16 @@ class MODUsuarioPermiso extends MODbase{
 		return $this->respuesta;
 	}
 			
-	function insertarUsuarioPermiso(){
+	function insertarUsuarioPermiso(){   
 		//Definicion de variables para ejecucion del procedimiento
 		$this->procedimiento='ccb.ft_usuario_permiso_ime';
-		$this->transaccion='CCB_usper_INS';
+		$this->transaccion='CCB_USPER_INS';
 		$this->tipo_procedimiento='IME';
 				
 		//Define los parametros para la funcion
 		$this->setParametro('estado_reg','estado_reg','varchar');
 		$this->setParametro('id_casa_oracion','id_casa_oracion','int4');
+		$this->setParametro('id_region','id_region','int4');
 		$this->setParametro('id_usuario_asignado','id_usuario_asignado','int4');
 
 		//Ejecuta la instruccion
@@ -72,6 +79,7 @@ class MODUsuarioPermiso extends MODbase{
 		$this->setParametro('id_usuario_permiso','id_usuario_permiso','int4');
 		$this->setParametro('estado_reg','estado_reg','varchar');
 		$this->setParametro('id_casa_oracion','id_casa_oracion','int4');
+		$this->setParametro('id_region','id_region','int4');
 		$this->setParametro('id_usuario_asignado','id_usuario_asignado','int4');
 
 		//Ejecuta la instruccion

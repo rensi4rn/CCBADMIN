@@ -6,35 +6,45 @@
 *@date 13-01-2013 14:31:26
 *@description Archivo con la interfaz de usuario que permite la ejecucion de todas las funcionalidades del sistema
 */
-
 header("content-type: text/javascript; charset=UTF-8");
 ?>
 <script>
 Phx.vista.RegionEvento=Ext.extend(Phx.gridInterfaz,{
-
 	constructor:function(config){
 		this.maestro=config.maestro;
-		this.initButtons=[this.cmbGestion,this.cmbRegion];
-    	//llama al constructor de la clase padre
+		//llama al constructor de la clase padre
 		Phx.vista.RegionEvento.superclass.constructor.call(this,config);
-		
-		this.cmbRegion.on('select',this.capturaFiltros,this);
-		this.cmbGestion.on('select',this.capturaFiltros,this);
-		
-	},
-	capturaFiltros:function(combo, record, index){
-		this.store.baseParams.id_gestion=this.cmbGestion.getValue();
-		this.store.baseParams.id_region=this.cmbRegion.getValue();
-		this.store.load({params:{start:0, limit:250}});	
-			
+		this.store.load({params:{start:0, limit:250}});
+		this.iniciarEventos();
 		
 	},
-	onButtonAct:function(){
-		this.store.baseParams.id_gestion=this.cmbGestion.getValue();
-		this.store.baseParams.id_region=this.cmbRegion.getValue();
-		Phx.vista.RegionEvento.superclass.onButtonAct.call(this);
-	},
-			
+	
+	iniciarEventos:function(){
+	     this.Cmp.id_region.on('select', function(combo, record, index){ 
+            	
+            	this.Cmp.id_casa_oracion.reset();
+            	this.Cmp.id_casa_oracion.store.baseParams.id_region = this.Cmp.id_region.getValue();
+            	this.Cmp.id_casa_oracion.modificado = true;
+            	this.Cmp.id_casa_oracion.enable();
+            	
+            	
+            }, this);
+            
+          this.Cmp.id_gestion.on('select', function(combo, record, index){ 
+            	this.Cmp.fecha_programada.reset();
+            	
+                this.Cmp.fecha_programada.setMaxValue('31/12/' + record.data.gestion);
+                this.Cmp.fecha_programada.setMinValue('01/01/' + record.data.gestion);
+                console.log('setea datos..... ', record.data.gestion)
+             }, this);  
+            
+            
+            
+	
+	},		
+	
+	
+	
 	Atributos:[
 		{
 			//configuracion del componente
@@ -58,7 +68,6 @@ Phx.vista.RegionEvento=Ext.extend(Phx.gridInterfaz,{
 			form:true 
 		},
 			
-				
 		{
 			config:{
 				name: 'id_gestion',
@@ -98,6 +107,7 @@ Phx.vista.RegionEvento=Ext.extend(Phx.gridInterfaz,{
 			type:'ComboBox',
 			filters:{pfiltro:'ges.gestion',type:'string'},
 			id_grupo:1,
+			bottom_filter: true,
 			grid:true,
 			form:true
 		},
@@ -133,6 +143,7 @@ Phx.vista.RegionEvento=Ext.extend(Phx.gridInterfaz,{
 				pageSize:50,
 				queryDelay:500,
 				listWidth:'280',
+				
 				width:210,
 				gwidth:220,
 				minChars:2,
@@ -140,6 +151,7 @@ Phx.vista.RegionEvento=Ext.extend(Phx.gridInterfaz,{
 			},
 			type:'ComboBox',
 			filters:{pfiltro:'reg.nombre',type:'string'},
+			bottom_filter: true,
 			id_grupo:1,
 			grid:true,
 			form:true
@@ -168,6 +180,7 @@ Phx.vista.RegionEvento=Ext.extend(Phx.gridInterfaz,{
                 }),
                 valueField: 'id_casa_oracion',
                 displayField: 'nombre',
+                gdisplayField:'desc_casa_oracion',
                 hiddenName: 'id_casa_oracion',
                 triggerAction: 'all',
                 mode:'remote',
@@ -179,6 +192,7 @@ Phx.vista.RegionEvento=Ext.extend(Phx.gridInterfaz,{
             },
 			type:'ComboBox',
 			filters:{pfiltro:'co.nombre',type:'string'},
+			bottom_filter: true,
 			id_grupo:1,
 			grid:true,
 			form:true
@@ -223,6 +237,7 @@ Phx.vista.RegionEvento=Ext.extend(Phx.gridInterfaz,{
 			},
 			type:'ComboBox',
 			filters:{pfiltro:'eve.nombre',type:'string'},
+			bottom_filter: true,
 			id_grupo:1,
 			grid:true,
 			form:true 
@@ -239,6 +254,7 @@ Phx.vista.RegionEvento=Ext.extend(Phx.gridInterfaz,{
 			},
 			type:'DateField',
 			filters:{pfiltro:'rege.fecha_programada',type:'date'},
+			bottom_filter: true,
 			id_grupo:1,
 			grid:true,
 			form:true
@@ -264,6 +280,7 @@ Phx.vista.RegionEvento=Ext.extend(Phx.gridInterfaz,{
 	       		         pfiltro: 'estado',
 	       				 options: ['pendiente','estado','cancelado']	
 	       		 	},
+	       		bottom_filter: true,
 	       		grid:true,
 	       		form:true
 	       },
@@ -368,71 +385,9 @@ Phx.vista.RegionEvento=Ext.extend(Phx.gridInterfaz,{
 		{name:'id_usuario_mod', type: 'numeric'},
 		{name:'usr_reg', type: 'string'},
 		{name:'usr_mod', type: 'string'},
-		'desc_gestion','desc_evento','desc_region'		
+		'desc_gestion','desc_evento','desc_region','desc_casa_oracion'	
 	],
 	
-	cmbGestion:new Ext.form.ComboBox({
-				fieldLabel: 'Gestion',
-				allowBlank: true,
-				emptyText:'Gestion...',
-				store:new Ext.data.JsonStore(
-				{
-					url: '../../sis_admin/control/Gestion/listarGestion',
-					id: 'id_gestion',
-					root: 'datos',
-					sortInfo:{
-						field: 'gestion',
-						direction: 'ASC'
-					},
-					totalProperty: 'total',
-					fields: ['id_gestion','gestion'],
-					// turn on remote sorting
-					remoteSort: true,
-					baseParams:{par_filtro:'gestion'}
-				}),
-				valueField: 'id_gestion',
-				triggerAction: 'all',
-				displayField: 'gestion',
-			    hiddenName: 'id_gestion',
-    			mode:'remote',
-				pageSize:50,
-				queryDelay:500,
-				listWidth:'280',
-				width:80
-			}),
-			
-			
-			
-		cmbRegion:new Ext.form.ComboBox({
-				fieldLabel: 'Región',
-				allowBlank: true,
-				emptyText:'Región...',
-				store:new Ext.data.JsonStore(
-				{
-					url: '../../sis_admin/control/Region/listarRegion',
-					id: 'id_region',
-					root: 'datos',
-					sortInfo:{
-						field: 'nombre',
-						direction: 'ASC'
-					},
-					totalProperty: 'total',
-					fields: ['id_region','nombre'],
-					// turn on remote sorting
-					remoteSort: true,
-					baseParams:{par_filtro:'nombre'}
-				}),
-				valueField: 'id_region',
-				displayField: 'nombre',
-				hiddenName: 'id_region',
-    			triggerAction: 'all',
-    			mode:'remote',
-				pageSize:50,
-				queryDelay:500,
-				listWidth:'280',
-				width:210,
-				minChars:2
-				}),
 	sortInfo:{
 		field: 'id_region_evento',
 		direction: 'ASC'
@@ -447,6 +402,4 @@ Phx.vista.RegionEvento=Ext.extend(Phx.gridInterfaz,{
 	bsave:true
 	}
 )
-</script>
-		
-		
+</script>	

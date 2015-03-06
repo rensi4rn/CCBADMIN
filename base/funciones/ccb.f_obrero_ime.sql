@@ -60,7 +60,8 @@ BEGIN
 			fecha_reg,
 			id_usuario_reg,
 			fecha_mod,
-			id_usuario_mod
+			id_usuario_mod,
+            id_casa_oracion
           	) values(
 			'activo',
 			v_parametros.id_region,
@@ -72,7 +73,8 @@ BEGIN
 			now(),
 			p_id_usuario,
 			null,
-			null
+			null,
+            v_parametros.id_casa_oracion
 							
 			)RETURNING id_obrero into v_id_obrero;
 			
@@ -104,7 +106,8 @@ BEGIN
 			id_tipo_ministerio = v_parametros.id_tipo_ministerio,
 			id_persona = v_parametros.id_persona,
 			fecha_mod = now(),
-			id_usuario_mod = p_id_usuario
+			id_usuario_mod = p_id_usuario,
+            id_casa_oracion = v_parametros.id_casa_oracion
 			where id_obrero=v_parametros.id_obrero;
                
 			--Definicion de la respuesta

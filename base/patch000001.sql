@@ -306,3 +306,41 @@ WITHOUT OIDS;
 
 
 
+/***********************************I-SCP-RAC-CCB-1-06/03/2015****************************************/
+--------------- SQL ---------------
+
+ALTER TABLE ccb.tusuario_permiso
+  ADD COLUMN id_region INTEGER;
+
+COMMENT ON COLUMN ccb.tusuario_permiso.id_region
+IS 'el suario puede tener permisos sobre tod auna region';
+
+
+/***********************************F-SCP-RAC-CCB-1-06/03/2015****************************************/
+
+
+/***********************************I-SCP-RAC-CCB-2-06/03/2015****************************************/
+
+--------------- SQL ---------------
+
+ALTER TABLE ccb.tusuario_permiso
+  ALTER COLUMN id_casa_oracion DROP NOT NULL;
+  
+--------------- SQL ---------------
+
+ALTER TABLE ccb.tevento
+  ADD COLUMN codigo VARCHAR(20);
+
+--------------- SQL ---------------
+
+ALTER TABLE ccb.ttipo_ministerio
+  ADD COLUMN codigo VARCHAR(20);
+  
+--------------- SQL ---------------
+
+ALTER TABLE ccb.tobrero
+  ADD COLUMN id_casa_oracion INTEGER;
+  
+  
+/***********************************F-SCP-RAC-CCB-2-06/03/2015****************************************/
+

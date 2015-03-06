@@ -37,6 +37,15 @@ class MODObrero extends MODbase{
 		$this->captura('desc_persona','text');
 		$this->captura('desc_tipo_ministerio','varchar');
 		
+		$this->captura('desc_casa_oracion','varchar');
+		$this->captura('id_casa_oracion','int4');		
+		$this->captura('desc_region','varchar');
+		$this->captura('telefono1','varchar');
+		$this->captura('telefono2','varchar');
+		$this->captura('celular1','varchar');
+		$this->captura('correo','varchar');
+		
+		
 		//Ejecuta la instruccion
 		$this->armarConsulta();
 		$this->ejecutarConsulta();
@@ -54,6 +63,7 @@ class MODObrero extends MODbase{
 		//Define los parametros para la funcion
 		$this->setParametro('estado_reg','estado_reg','varchar');
 		$this->setParametro('id_region','id_region','int4');
+		$this->setParametro('id_casa_oracion','id_casa_oracion','int4');
 		$this->setParametro('fecha_fin','fecha_fin','date');
 		$this->setParametro('fecha_ini','fecha_ini','date');
 		$this->setParametro('obs','obs','text');
@@ -83,6 +93,7 @@ class MODObrero extends MODbase{
 		$this->setParametro('obs','obs','text');
 		$this->setParametro('id_tipo_ministerio','id_tipo_ministerio','int4');
 		$this->setParametro('id_persona','id_persona','int4');
+		$this->setParametro('id_casa_oracion','id_casa_oracion','int4');
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();

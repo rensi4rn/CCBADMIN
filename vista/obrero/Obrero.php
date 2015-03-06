@@ -17,7 +17,8 @@ Phx.vista.Obrero=Ext.extend(Phx.gridInterfaz,{
     	//llama al constructor de la clase padre
 		Phx.vista.Obrero.superclass.constructor.call(this,config);
 		this.init();
-		this.bloquearMenus();
+		this.iniciarEventos();
+		this.load({params:{start:0, limit:50}});	
 		
 	},
 			
@@ -84,22 +85,108 @@ Phx.vista.Obrero=Ext.extend(Phx.gridInterfaz,{
 			form:true
 		},
 		{
-		   			config:{
-		       		    name:'id_persona',
-		   				origen:'PERSONA',
-		   				tinit:true,
-		   				fieldLabel:'Persona',
-		   				allowBlank:false,
-		                gwidth:200,
-		   				valueField: 'id_persona',
-		   			    gdisplayField: 'desc_persona',
-		      			renderer:function(value, p, record){return String.format('{0}', record.data['desc_persona']);}
-		       	     },
-		   			type:'ComboRec',//ComboRec
-		   			id_grupo:0,
-		   			filters:{pfiltro:'per.nombre_completo1',type:'string'},
-		   		    grid:true,
-		   			form:true
+			config:{
+				name: 'id_region',
+				fieldLabel: 'Región',
+				allowBlank: false,
+				emptyText:'Región...',
+				store:new Ext.data.JsonStore(
+				{
+					url: '../../sis_admin/control/Region/listarRegion',
+					id: 'id_region',
+					root: 'datos',
+					sortInfo:{
+						field: 'nombre',
+						direction: 'ASC'
+					},
+					totalProperty: 'total',
+					fields: ['id_region','nombre'],
+					// turn on remote sorting
+					remoteSort: true,
+					baseParams:{par_filtro:'nombre'}
+				}),
+				valueField: 'id_region',
+				displayField: 'nombre',
+				gdisplayField:'desc_region',
+				hiddenName: 'id_region',
+    			triggerAction: 'all',
+    			lazyRender:true,
+				mode:'remote',
+				pageSize:50,
+				queryDelay:500,
+				listWidth:'280',
+				
+				width:210,
+				gwidth:220,
+				minChars:2,
+				renderer:function (value, p, record){return String.format('{0}', record.data['desc_region']);}
+			},
+			type:'ComboBox',
+			filters:{pfiltro:'reg.nombre',type:'string'},
+			bottom_filter: true,
+			id_grupo:1,
+			grid:true,
+			form:true
+		},
+		
+		{
+			config: {
+				name: 'id_casa_oracion',
+                fieldLabel: 'Casa de Oración',
+                allowBlank: false,
+                emptyText:'Casa...',
+                store:new Ext.data.JsonStore(
+                {
+                    url: '../../sis_admin/control/CasaOracion/listarCasaOracion',
+                    id: 'id_casa_oracion',
+                    root: 'datos',
+                    sortInfo:{
+                        field: 'nombre',
+                        direction: 'ASC'
+                    },
+                    totalProperty: 'total',
+                    fields: ['id_casa_oracion','codigo','nombre'],
+                    // turn on remote sorting
+                    remoteSort: true,
+                    baseParams:{par_filtro:'nombre'}
+                }),
+                valueField: 'id_casa_oracion',
+                displayField: 'nombre',
+                gdisplayField:'desc_casa_oracion',
+                hiddenName: 'id_casa_oracion',
+                triggerAction: 'all',
+                mode:'remote',
+                pageSize:50,
+                queryDelay:500,
+                listWidth:'280',
+                width:210,
+                minChars:2
+            },
+			type:'ComboBox',
+			filters:{pfiltro:'co.nombre',type:'string'},
+			bottom_filter: true,
+			id_grupo:1,
+			grid:true,
+			form:true
+			
+		},
+		{
+   			config:{
+       		    name:'id_persona',
+   				origen:'PERSONA',
+   				tinit:true,
+   				fieldLabel:'Persona',
+   				allowBlank:false,
+                gwidth:200,
+   				valueField: 'id_persona',
+   			    gdisplayField: 'desc_persona',
+      			renderer:function(value, p, record){return String.format('{0}', record.data['desc_persona']);}
+       	     },
+   			type:'ComboRec',//ComboRec
+   			id_grupo:0,
+   			filters:{pfiltro:'per.nombre_completo1',type:'string'},
+   		    grid:true,
+   			form:true
 		 },
 		{
 			config:{
@@ -148,6 +235,66 @@ Phx.vista.Obrero=Ext.extend(Phx.gridInterfaz,{
 			id_grupo:1,
 			grid:true,
 			form:true
+		},
+		{
+			config:{
+				name: 'telefono1',
+				fieldLabel: 'Telefono',
+				allowBlank: true,
+				anchor: '80%',
+				gwidth: 100,
+				maxLength:10
+			},
+			type:'TextField',
+			filters:{pfiltro:'per.telefono',type:'string'},
+			id_grupo:1,
+			grid:true,
+			form:false
+		},
+		{
+			config:{
+				name: 'telefono1',
+				fieldLabel: 'Telefono',
+				allowBlank: true,
+				anchor: '80%',
+				gwidth: 100,
+				maxLength:10
+			},
+			type:'TextField',
+			filters:{pfiltro:'per.telefono1',type:'string'},
+			id_grupo:1,
+			grid:true,
+			form:false
+		},
+		{
+			config:{
+				name: 'celular1',
+				fieldLabel: 'Celular',
+				allowBlank: true,
+				anchor: '80%',
+				gwidth: 100,
+				maxLength:10
+			},
+			type:'TextField',
+			filters:{pfiltro:'per.celuar1',type:'string'},
+			id_grupo:1,
+			grid:true,
+			form:false
+		},
+		{
+			config:{
+				name: 'correo',
+				fieldLabel: 'Correo',
+				allowBlank: true,
+				anchor: '80%',
+				gwidth: 100,
+				maxLength:10
+			},
+			type:'TextField',
+			filters:{pfiltro:'per.correo',type:'string'},
+			id_grupo:1,
+			grid:true,
+			form:false
 		},
 		{
 			config:{
@@ -247,28 +394,25 @@ Phx.vista.Obrero=Ext.extend(Phx.gridInterfaz,{
 		{name:'fecha_mod', type: 'date',dateFormat:'Y-m-d H:i:s.u'},
 		{name:'id_usuario_mod', type: 'numeric'},
 		{name:'usr_reg', type: 'string'},
-		{name:'usr_mod', type: 'string'},'desc_persona','desc_tipo_ministerio'
-		
+		{name:'usr_mod', type: 'string'},'desc_persona','desc_tipo_ministerio',
+		'desc_casa_oracion','id_casa_oracion','desc_region',
+		'telefono1','telefono2','celular1','correo'
 	],
-	loadValoresIniciales:function()
-	{
-		Phx.vista.Obrero.superclass.loadValoresIniciales.call(this);
-		this.getComponente('id_region').setValue(this.maestro.id_region);		
-	},
-	onReloadPage:function(m)
-	{
-		this.maestro=m;						
-		this.store.baseParams={id_region:this.maestro.id_region};
-		this.load({params:{start:0, limit:50}});			
-	},
+	
+	iniciarEventos:function(){
+	     this.Cmp.id_region.on('select', function(combo, record, index){ 
+            	this.Cmp.id_casa_oracion.reset();
+            	this.Cmp.id_casa_oracion.store.baseParams.id_region = this.Cmp.id_region.getValue();
+            	this.Cmp.id_casa_oracion.modificado = true;
+            	this.Cmp.id_casa_oracion.enable();
+            }, this);
+    },	
+	
 	sortInfo:{
 		field: 'id_obrero',
 		direction: 'ASC'
 	},
 	bdel:true,
 	bsave:true
-	}
-)
+})
 </script>
-		
-		

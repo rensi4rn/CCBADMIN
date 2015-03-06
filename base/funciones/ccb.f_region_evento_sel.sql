@@ -29,11 +29,13 @@ DECLARE
 	v_parametros  		record;
 	v_nombre_funcion   	text;
 	v_resp				varchar;
+    v_inner				varchar;
 			    
 BEGIN
 
 	v_nombre_funcion = 'ccb.f_region_evento_sel';
     v_parametros = pxp.f_get_record(p_tabla);
+    
 
 	/*********************************    
  	#TRANSACCION:  'CCB_REGE_SEL'
@@ -45,7 +47,16 @@ BEGIN
 	if(p_transaccion='CCB_REGE_SEL')then
      				
     	begin
-    		--Sentencia de la consulta
+    		
+            v_inner = '';
+            IF p_administrador != 1  THEN
+            
+              v_inner = ' inner join ccb.tusuario_permiso uper on uper.id_usuario_asignado = '||p_id_usuario||'  and (uper.id_region = rege.id_region or  uper.id_casa_oracion = rege.id_casa_oracion) ';
+            
+            END IF;
+            
+            
+            --Sentencia de la consulta
 			v_consulta:='select
 						rege.id_region_evento,
 						rege.estado_reg,
@@ -71,8 +82,9 @@ BEGIN
                         inner join ccb.tregion reg on reg.id_region = rege.id_region
                         inner join ccb.tevento eve on eve.id_evento = rege.id_evento 
                         inner join ccb.tcasa_oracion co on co.id_casa_oracion = rege.id_casa_oracion
-						inner join segu.tusuario usu1 on usu1.id_usuario = rege.id_usuario_reg
-						left join segu.tusuario usu2 on usu2.id_usuario = rege.id_usuario_mod
+						inner join segu.tusuario usu1 on usu1.id_usuario = rege.id_usuario_reg 
+                        '|| v_inner ||'
+                        left join segu.tusuario usu2 on usu2.id_usuario = rege.id_usuario_mod
                         where  ';
 			
 			--Definicion de la respuesta
@@ -94,6 +106,14 @@ BEGIN
 	elsif(p_transaccion='CCB_REGE_CONT')then
 
 		begin
+        
+            v_inner = '';
+            IF p_administrador != 1  THEN
+            
+              v_inner = ' inner join ccb.tusuario_permiso uper on uper.id_usuario_asignado = '||p_id_usuario||'  and (uper.id_region = rege.id_region or  uper.id_casa_oracion = rege.id_casa_oracion) ';
+            
+            END IF;
+            
 			--Sentencia de la consulta de conteo de registros
 			v_consulta:='select count(id_region_evento)
 					    from ccb.tregion_evento rege
@@ -101,13 +121,15 @@ BEGIN
                         inner join ccb.tregion reg on reg.id_region = rege.id_region
                         inner join ccb.tevento eve on eve.id_evento = rege.id_evento 
                         inner join ccb.tcasa_oracion co on co.id_casa_oracion = rege.id_casa_oracion
-						inner join segu.tusuario usu1 on usu1.id_usuario = rege.id_usuario_reg
-						left join segu.tusuario usu2 on usu2.id_usuario = rege.id_usuario_mod
+						inner join segu.tusuario usu1 on usu1.id_usuario = rege.id_usuario_reg 
+                        '|| v_inner ||'
+                        left join segu.tusuario usu2 on usu2.id_usuario = rege.id_usuario_mod
                         where ';
 			
 			--Definicion de la respuesta		    
 			v_consulta:=v_consulta||v_parametros.filtro;
-
+            
+             
 			--Devuelve la respuesta
 			return v_consulta;
 

@@ -14,8 +14,8 @@ class ACTUsuarioPermiso extends ACTbase{
 
 		$this->objParam->defecto('dir_ordenacion','asc');
 		
-		if($this->objParam->getParametro('id_casa_oracion')!=''){
-	    	$this->objParam->addFiltro("id_casa_oracion = ".$this->objParam->getParametro('id_casa_oracion'));	
+		if($this->objParam->getParametro('id_usuario_asignado')!=''){
+	    	$this->objParam->addFiltro("usper.id_usuario_asignado = ".$this->objParam->getParametro('id_usuario_asignado'));	
 		}
 		
 		if($this->objParam->getParametro('tipoReporte')=='excel_grid' || $this->objParam->getParametro('tipoReporte')=='pdf_grid'){
@@ -40,7 +40,7 @@ class ACTUsuarioPermiso extends ACTbase{
 	}
 						
 	function eliminarUsuarioPermiso(){
-			$this->objFunc=$this->create('MODUsuarioPermiso');	
+		$this->objFunc=$this->create('MODUsuarioPermiso');	
 		$this->res=$this->objFunc->eliminarUsuarioPermiso($this->objParam);
 		$this->res->imprimirRespuesta($this->res->generarJson());
 	}

@@ -45,53 +45,92 @@ Phx.vista.UsuarioPermiso=Ext.extend(Phx.gridInterfaz,{
 			config:{
 					labelSeparator:'',
 					inputType:'hidden',
-					name: 'id_casa_oracion'
+					name: 'id_usuario_asignado'
 			},
 			type:'Field',
 			form:true 
 		},
 		{
-			config: {
-				name: 'id_usuario_asignado',
-				fieldLabel: 'Usuario',
-				allowBlank: false,
-				emptyText: 'Elija una opción...',
-				store: new Ext.data.JsonStore({
-					url: '../../sis_seguridad/control/Usuario/listarUsuario',
-					id: 'id_usuario',
+			config:{
+				name: 'id_region',
+				fieldLabel: 'Región',
+				allowBlank: true,
+				emptyText:'Región...',
+				store:new Ext.data.JsonStore(
+				{
+					url: '../../sis_admin/control/Region/listarRegion',
+					id: 'id_region',
 					root: 'datos',
-					sortInfo: {
-						field: 'cuenta',
+					sortInfo:{
+						field: 'nombre',
 						direction: 'ASC'
 					},
 					totalProperty: 'total',
-					fields: ['id_usuario', 'cuenta', 'desc_person'],
+					fields: ['id_region','nombre'],
+					// turn on remote sorting
 					remoteSort: true,
-					baseParams: {par_filtro: 'cuenta'}
+					baseParams:{par_filtro:'nombre'}
 				}),
-				valueField: 'id_usuario',
-				displayField: 'cuenta',
-				gdisplayField: 'desc_usuario',
-				hiddenName: 'id_usuario_asignado',
-				forceSelection: true,
-				typeAhead: false,
-				triggerAction: 'all',
-				lazyRender: true,
-				mode: 'remote',
-				pageSize: 15,
-				queryDelay: 1000,
-				anchor: '100%',
-				gwidth: 150,
-				minChars: 2,
-				renderer : function(value, p, record) {
-					return String.format('{0}', record.data['desc_usuario']);
-				}
+				valueField: 'id_region',
+				displayField: 'nombre',
+				gdisplayField:'desc_region',
+				hiddenName: 'id_region',
+    			triggerAction: 'all',
+    			lazyRender:true,
+				mode:'remote',
+				pageSize:50,
+				queryDelay:500,
+				listWidth:'280',
+				width:210,
+				gwidth:220,
+				minChars:2,
+				renderer:function (value, p, record){return String.format('{0}', record.data['desc_region']);}
 			},
-			type: 'ComboBox',
-			id_grupo: 0,
-			filters: {pfiltro: 'usu.cuenta', type: 'string'},
-			grid: true,
-			form: true
+			type:'ComboBox',
+			filters:{pfiltro:'reg.nombre',type:'string'},
+			id_grupo:1,
+			grid:true,
+			form:true
+		},
+		{
+			config: {
+				name: 'id_casa_oracion',
+                fieldLabel: 'Casa de Oración',
+                allowBlank: true,
+                emptyText:'Casa...',
+                store:new Ext.data.JsonStore(
+                {
+                    url: '../../sis_admin/control/CasaOracion/listarCasaOracion',
+                    id: 'id_casa_oracion',
+                    root: 'datos',
+                    sortInfo:{
+                        field: 'nombre',
+                        direction: 'ASC'
+                    },
+                    totalProperty: 'total',
+                    fields: ['id_casa_oracion','codigo','nombre'],
+                    // turn on remote sorting
+                    remoteSort: true,
+                    baseParams:{par_filtro:'nombre'}
+                }),
+                valueField: 'id_casa_oracion',
+                displayField: 'nombre',
+                gdisplayField:'desc_casa_oracion',
+                hiddenName: 'id_casa_oracion',
+                triggerAction: 'all',
+                mode:'remote',
+                pageSize:50,
+                queryDelay:500,
+                listWidth:'280',
+                width:210,
+                minChars:2
+            },
+			type:'ComboBox',
+			filters:{pfiltro:'co.nombre',type:'string'},
+			id_grupo:1,
+			grid:true,
+			form:true
+			
 		},
 		{
 			config:{
@@ -218,7 +257,7 @@ Phx.vista.UsuarioPermiso=Ext.extend(Phx.gridInterfaz,{
 		{name:'id_usuario_mod', type: 'numeric'},
 		{name:'fecha_mod', type: 'date',dateFormat:'Y-m-d H:i:s.u'},
 		{name:'usr_reg', type: 'string'},
-		{name:'usr_mod', type: 'string'},'desc_usuario'
+		{name:'usr_mod', type: 'string'},'desc_casa_oracion','desc_region','id_region'
 		
 	],
 	sortInfo:{
@@ -228,13 +267,13 @@ Phx.vista.UsuarioPermiso=Ext.extend(Phx.gridInterfaz,{
 	onReloadPage:function(m)
 	{
 		this.maestro=m;						
-		this.store.baseParams={id_casa_oracion:this.maestro.id_casa_oracion};
+		this.store.baseParams={id_usuario_asignado:this.maestro.id_usuario};
 		this.load({params:{start:0, limit:50}});			
 	},
 	loadValoresIniciales:function()
 	{
 		Phx.vista.UsuarioPermiso.superclass.loadValoresIniciales.call(this);
-		this.getComponente('id_casa_oracion').setValue(this.maestro.id_casa_oracion);	
+		this.getComponente('id_usuario_asignado').setValue(this.maestro.id_usuario);	
 	},
 	bdel:true,
 	bsave:true

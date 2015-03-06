@@ -44,10 +44,18 @@ class ACTEstadoPeriodo extends ACTbase{
 	}
 	
 	function generarGestion(){
-			$this->objFunc=$this->create('MODEstadoPeriodo');	
+		$this->objFunc=$this->create('MODEstadoPeriodo');	
 		$this->res=$this->objFunc->generarGestion($this->objParam);
 		$this->res->imprimirRespuesta($this->res->generarJson());
 	}
+	
+	function abrirCerrarPeriodo(){
+		$this->objFunc=$this->create('MODEstadoPeriodo');	
+		$this->res=$this->objFunc->abrirCerrarPeriodo($this->objParam);
+		$this->res->imprimirRespuesta($this->res->generarJson());
+	}
+	
+	
 						
 	function eliminarEstadoPeriodo(){
 			$this->objFunc=$this->create('MODEstadoPeriodo');	

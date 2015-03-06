@@ -126,6 +126,22 @@ class MODEstadoPeriodo extends MODbase{
 		//Devuelve la respuesta
 		return $this->respuesta;
 	}
-			
+	
+	function abrirCerrarPeriodo(){
+		//Definicion de variables para ejecucion del procedimiento
+		$this->procedimiento='ccb.f_estado_periodo_ime';
+		$this->transaccion='CCB_ABRCERAR_INS';
+		$this->tipo_procedimiento='IME';
+				
+		//Define los parametros para la funcion
+		$this->setParametro('id_estado_periodo','id_estado_periodo','int4');
+
+		//Ejecuta la instruccion
+		$this->armarConsulta();
+		$this->ejecutarConsulta();
+
+		//Devuelve la respuesta
+		return $this->respuesta;
+	}		
 }
 ?>

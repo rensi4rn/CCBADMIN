@@ -31,15 +31,16 @@ DECLARE
 	v_resp		            varchar;
 	v_nombre_funcion        text;
 	v_mensaje_error         text;
-	v_id_estado_periodo	integer;
+	v_id_estado_periodo		integer;
     
-    v_fecha_ini date;
-    v_fecha_fin date;
+    v_fecha_ini 			date;
+    v_fecha_fin 			date;
     
     
-    v_cont integer;
-    v_mes varchar;
-    v_gestion integer;
+    v_cont 					integer;
+    v_mes 					varchar;
+    v_gestion 				integer;
+    v_estado_periodo		varchar;
 			    
 BEGIN
 
@@ -49,7 +50,7 @@ BEGIN
     
     
     
-/*********************************    
+    /*********************************    
  	#TRANSACCION:  'CCB_GENGES_INS'
  	#DESCRIPCION:	Insercion de registros
  	#AUTOR:		admin	
@@ -288,7 +289,46 @@ BEGIN
             return v_resp;
 
 		end;
-         
+    
+    /*********************************    
+ 	#TRANSACCION:  'CCB_ABRCERAR_INS'
+ 	#DESCRIPCION:	abrir o cerrar el periodo
+ 	#AUTOR:		admin	
+ 	#FECHA:		24-02-2013 14:35:36
+	***********************************/
+
+	elsif(p_transaccion='CCB_ABRCERAR_INS')then
+
+		begin
+			
+            
+            select 
+            	ep.estado_periodo
+            into
+            	v_estado_periodo
+            from ccb.testado_periodo ep
+            where ep.id_estado_periodo = v_parametros.id_estado_periodo;
+            
+            
+            IF v_estado_periodo = 'abierto' THEN
+              v_estado_periodo = 'cerrado';
+            ELSE
+              v_estado_periodo = 'abierto';
+            END IF;
+            
+            --Sentencia de la modificacion
+			update ccb.testado_periodo set
+			estado_periodo = v_estado_periodo
+			where id_estado_periodo=v_parametros.id_estado_periodo;
+               
+			--Definicion de la respuesta
+            v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Periodo modificado(a)'); 
+            v_resp = pxp.f_agrega_clave(v_resp,'id_estado_periodo',v_parametros.id_estado_periodo::varchar);
+               
+            --Devuelve la respuesta
+            return v_resp;
+            
+		end;     
 	else
      
     	raise exception 'Transaccion inexistente: %',p_transaccion;

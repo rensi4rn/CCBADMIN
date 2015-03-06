@@ -311,12 +311,6 @@ Phx.vista.CasaOracion=Ext.extend(Phx.gridInterfaz,{
 		  title:'Periodos', 
 		  height:'50%',
 		  cls:'EstadoPeriodo'
-		 },
-		 {
-		  url:'../../../sis_admin/vista/usuario_permiso/UsuarioPermiso.php',		
-		  title:'Autorizaciones', 
-		  height:'50%',
-		  cls:'UsuarioPermiso'
 		 }
 	
 	   ],

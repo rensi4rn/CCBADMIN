@@ -31,7 +31,11 @@ DECLARE
 	v_resp		            varchar;
 	v_nombre_funcion        text;
 	v_mensaje_error         text;
-	v_id_region_evento	integer;
+	v_id_region_evento		integer;
+    v_registros_evento		record;
+    va_tipo					varchar[];
+    v_registros  			record;
+    v_estado_periodo		varchar;
 			    
 BEGIN
 
@@ -48,36 +52,108 @@ BEGIN
 	if(p_transaccion='CCB_REGE_INS')then
 					
         begin
-        	--Sentencia de la insercion
-        	insert into ccb.tregion_evento(
-			estado_reg,
-			id_gestion,
-			fecha_programada,
-			id_evento,
-			estado,
-			id_region,
-			fecha_reg,
-			id_usuario_reg,
-			fecha_mod,
-			id_usuario_mod,
-            id_casa_oracion,
-            tipo_registro
-          	) values(
-			'activo',
-			v_parametros.id_gestion,
-			v_parametros.fecha_programada,
-			v_parametros.id_evento,
-			v_parametros.estado,
-			v_parametros.id_region,
-			now(),
-			p_id_usuario,
-			null,
-			null,
-            v_parametros.id_casa_oracion,
-            v_parametros.tipo_registro
+        	
+            -- si es del tipo resumen validamos que no se duplique 
+           if  v_parametros.tipo_registro = 'detalle' then
+           
+              select 
+                ep.estado_periodo
+              into
+                v_estado_periodo
+              from ccb.testado_periodo ep 
+              where ep.id_casa_oracion = v_parametros.id_casa_oracion
+                   and  v_parametros.fecha_programada::date BETWEEN  ep.fecha_ini::date and ep.fecha_fin::dATE;  
+              
+              
+              IF v_estado_periodo = 'cerrado' THEN
+                  raise exception 'el periodo correspondiente se encuentra cerrado';
+              END IF;
+           
+           else 
+           
+             --validamos que no exista un resumen lara la misma gestion y misma casa de oracion   
+              
+           
+           end if;
+        
             
+            --Sentencia de la insercion
+        	insert into ccb.tregion_evento(
+              estado_reg,
+              id_gestion,
+              fecha_programada,
+              id_evento,
+              estado,
+              id_region,
+              fecha_reg,
+              id_usuario_reg,
+              fecha_mod,
+              id_usuario_mod,
+              id_casa_oracion,
+              tipo_registro
+          	) values(
+              'activo',
+              v_parametros.id_gestion,
+              v_parametros.fecha_programada,
+              v_parametros.id_evento,
+              v_parametros.estado,
+              v_parametros.id_region,
+              now(),
+              p_id_usuario,
+              null,
+              null,
+              v_parametros.id_casa_oracion,
+              v_parametros.tipo_registro    
 							
 			)RETURNING id_region_evento into v_id_region_evento;
+            
+            --recuperar el tip de evento
+            
+            select e.nombre, e.codigo
+            into
+             v_registros_evento
+            from  ccb.tevento e
+            where e.id_evento = v_parametros.id_evento;
+            
+            --insertar detalle de evento en numero cero segun el tipo ...
+            
+           
+            IF v_registros_evento.codigo in ('bautizo','santacena') THEN
+               va_tipo = '{"hermana","hermano"}'; 
+            ELSIF v_registros_evento.codigo in ('reuniondejuventud','santacena')  THEN
+              va_tipo = '{"anciano","diacono","cooperador","cooperadordejovenes","violinista","organista","tronpetista","clarinetista"}';
+            END IF;
+            
+           
+            
+            FOR v_registros  in (select
+                                   tm.id_tipo_ministerio,
+                                   0 as defecto
+                                 from ccb.ttipo_ministerio tm 
+                                 where tm.codigo =ANY(va_tipo))  LOOP
+                                 
+                      INSERT INTO 
+                          ccb.tdetalle_evento
+                        (
+                          id_usuario_reg,
+                          fecha_reg,
+                          estado_reg,
+                          id_region_evento,
+                          id_tipo_ministerio,
+                          catidad
+                        )
+                        VALUES (
+                          p_id_usuario,
+                          now(),
+                          'activo',
+                          v_id_region_evento,
+                          v_registros.id_tipo_ministerio,
+                          0
+                        );           
+            
+            END LOOP;
+                
+            
 			
 			--Definicion de la respuesta
 			v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Eventos por Región almacenado(a) con exito (id_region_evento'||v_id_region_evento||')'); 

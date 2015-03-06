@@ -96,6 +96,7 @@ Phx.vista.DetalleEvento=Ext.extend(Phx.gridInterfaz,{
 			filters:{pfiltro:'dev.catidad',type:'numeric'},
 			id_grupo:1,
 			grid:true,
+			egrid:true,
 			form:true
 		},
 		{

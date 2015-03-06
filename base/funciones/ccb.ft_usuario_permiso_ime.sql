@@ -1,8 +1,13 @@
-CREATE OR REPLACE FUNCTION "ccb"."ft_usuario_permiso_ime" (	
-				p_administrador integer, p_id_usuario integer, p_tabla character varying, p_transaccion character varying)
-RETURNS character varying AS
-$BODY$
+--------------- SQL ---------------
 
+CREATE OR REPLACE FUNCTION ccb.ft_usuario_permiso_ime (
+  p_administrador integer,
+  p_id_usuario integer,
+  p_tabla varchar,
+  p_transaccion varchar
+)
+RETURNS varchar AS
+$body$
 /**************************************************************************
  SISTEMA:		ADMCCB
  FUNCION: 		ccb.ft_usuario_permiso_ime
@@ -29,20 +34,31 @@ DECLARE
 	v_id_usuario_permiso	integer;
 			    
 BEGIN
-
+ 
     v_nombre_funcion = 'ccb.ft_usuario_permiso_ime';
     v_parametros = pxp.f_get_record(p_tabla);
 
 	/*********************************    
- 	#TRANSACCION:  'CCB_usper_INS'
+ 	#TRANSACCION:  'CCB_USPER_INS'
  	#DESCRIPCION:	Insercion de registros
  	#AUTOR:		admin	
  	#FECHA:		12-02-2015 14:36:49
 	***********************************/
 
-	if(p_transaccion='CCB_usper_INS')then
+
+
+	if(p_transaccion='CCB_USPER_INS')then
 					
         begin
+        
+     
+        
+            IF  v_parametros.id_casa_oracion is NULL  and v_parametros.id_region is NULL THEN
+            
+              raise exception 'Por lo menos es necesario indicar la casa de oración o la región';
+              
+            END IF;
+        
         	--Sentencia de la insercion
         	insert into ccb.tusuario_permiso(
 			estado_reg,
@@ -53,7 +69,8 @@ BEGIN
 			fecha_reg,
 			id_usuario_ai,
 			id_usuario_mod,
-			fecha_mod
+			fecha_mod,
+            id_region
           	) values(
 			'activo',
 			v_parametros.id_casa_oracion,
@@ -63,7 +80,8 @@ BEGIN
 			now(),
 			v_parametros._id_usuario_ai,
 			null,
-			null
+			null,
+            v_parametros.id_region
 							
 			
 			
@@ -91,6 +109,7 @@ BEGIN
 			--Sentencia de la modificacion
 			update ccb.tusuario_permiso set
 			id_casa_oracion = v_parametros.id_casa_oracion,
+            id_region = v_parametros.id_region,
 			id_usuario_asignado = v_parametros.id_usuario_asignado,
 			id_usuario_mod = p_id_usuario,
 			fecha_mod = now(),
@@ -146,7 +165,9 @@ EXCEPTION
 		raise exception '%',v_resp;
 				        
 END;
-$BODY$
-LANGUAGE 'plpgsql' VOLATILE
+$body$
+LANGUAGE 'plpgsql'
+VOLATILE
+CALLED ON NULL INPUT
+SECURITY INVOKER
 COST 100;
-ALTER FUNCTION "ccb"."ft_usuario_permiso_ime"(integer, integer, character varying, character varying) OWNER TO postgres;

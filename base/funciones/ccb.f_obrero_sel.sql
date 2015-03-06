@@ -62,12 +62,21 @@ BEGIN
 						usu1.cuenta as usr_reg,
 						usu2.cuenta as usr_mod,
                         per.nombre_completo1 as desc_persona,
-                        tipmi.nombre as desc_tipo_ministerio
-						from ccb.tobrero obr
+                        tipmi.nombre as desc_tipo_ministerio,
+                        co.nombre as desc_casa_oracion,
+                        obr.id_casa_oracion,
+                        reg.nombre as desc_region,
+                        per.telefono1,
+                        per.telefono2,
+                        per.celular1,
+                        per.correo
+                        from ccb.tobrero obr
                         inner join ccb.ttipo_ministerio tipmi on tipmi.id_tipo_ministerio = obr.id_tipo_ministerio
+                        inner join ccb.tregion reg on reg.id_region = obr.id_region
                         inner join segu.vpersona per on per.id_persona = obr.id_persona
 						inner join segu.tusuario usu1 on usu1.id_usuario = obr.id_usuario_reg
 						left join segu.tusuario usu2 on usu2.id_usuario = obr.id_usuario_mod
+                        left join ccb.tcasa_oracion co on co.id_casa_oracion =  obr.id_casa_oracion
 				        where  ';
 			
 			--Definicion de la respuesta
@@ -93,10 +102,12 @@ BEGIN
 			v_consulta:='select count(id_obrero)
 					    from ccb.tobrero obr
                         inner join ccb.ttipo_ministerio tipmi on tipmi.id_tipo_ministerio = obr.id_tipo_ministerio
+                        inner join ccb.tregion reg on reg.id_region = obr.id_region
                         inner join segu.vpersona per on per.id_persona = obr.id_persona
-					    inner join segu.tusuario usu1 on usu1.id_usuario = obr.id_usuario_reg
+						inner join segu.tusuario usu1 on usu1.id_usuario = obr.id_usuario_reg
 						left join segu.tusuario usu2 on usu2.id_usuario = obr.id_usuario_mod
-					    where ';
+                        left join ccb.tcasa_oracion co on co.id_casa_oracion =  obr.id_casa_oracion
+				        where ';
 			
 			--Definicion de la respuesta		    
 			v_consulta:=v_consulta||v_parametros.filtro;

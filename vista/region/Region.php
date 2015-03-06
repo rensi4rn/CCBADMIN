@@ -156,23 +156,7 @@ Phx.vista.Region=Ext.extend(Phx.gridInterfaz,{
 		{name:'usr_mod', type: 'string'},
 		
 	],
-	tabsouth:[
-	      {
-		  url:'../../../sis_admin/vista/obrero/Obrero.php',
-		  title:'Obreros', 
-		  //width:'50%',
-		  height:'50%',
-		  cls:'Obrero'
-		 }/*,
-	     {
-		  url:'../../../sis_hidrologia/vista/sensor/Sensor.php',
-		  title:'Sensores', 
-		  height:'50%',
-		  cls:'Sensor'
-		 },*/
-	
-	   ]	, 
-	
+		
 	sortInfo:{
 		field: 'id_region',
 		direction: 'ASC'
