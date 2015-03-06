@@ -51,7 +51,12 @@ class ACTRegionEvento extends ACTbase{
 		$this->res=$this->objFunc->eliminarRegionEvento($this->objParam);
 		$this->res->imprimirRespuesta($this->res->generarJson());
 	}
-			
+	
+	function generarResumen(){
+		$this->objFunc=$this->create('MODRegionEvento');	
+		$this->res=$this->objFunc->generarResumen($this->objParam);
+		$this->res->imprimirRespuesta($this->res->generarJson());
+	}
+		
 }
-
 ?>

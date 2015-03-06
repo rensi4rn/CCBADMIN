@@ -36,6 +36,8 @@ DECLARE
     va_tipo					varchar[];
     v_registros  			record;
     v_estado_periodo		varchar;
+    v_resgistros_detalle    record;
+    v_id_detalle_evento     integer;
 			    
 BEGIN
 
@@ -167,7 +169,7 @@ BEGIN
             
 			
 			--Definicion de la respuesta
-			v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Eventos por Región almacenado(a) con exito (id_region_evento'||v_id_region_evento||')'); 
+			v_resp = pxp.f_agrega_clave(v_resp,'mensaje','insercion de registros exitosa'); 
             v_resp = pxp.f_agrega_clave(v_resp,'id_region_evento',v_id_region_evento::varchar);
 
             --Devuelve la respuesta
@@ -223,6 +225,111 @@ BEGIN
                
             --Definicion de la respuesta
             v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Eventos por Región eliminado(a)'); 
+            v_resp = pxp.f_agrega_clave(v_resp,'id_region_evento',v_parametros.id_region_evento::varchar);
+              
+            --Devuelve la respuesta
+            return v_resp;
+
+		end;
+    
+    /*********************************    
+ 	#TRANSACCION:  'CCB_GENRESU_INS'
+ 	#DESCRIPCION:	genera resumen
+ 	#AUTOR:		admin	
+ 	#FECHA:		13-01-2013 14:31:26
+	***********************************/
+
+	elsif(p_transaccion='CCB_GENRESU_INS')then
+
+		begin
+			
+            --obtiene configuracion basica
+            select
+              re.id_gestion,
+              re.id_casa_oracion,
+              re.id_evento
+            into
+             v_registros
+            from ccb.tregion_evento re
+            where re.id_region_evento = v_parametros.id_region_evento;
+			
+            
+            --validar que la gestion noeste cerrada
+            
+           --seleciona los datos del tipo detalle evento
+           
+           FOR v_resgistros_detalle in (
+                                     select
+                                       sum(de.catidad) as cantidad,
+                                       de.id_tipo_ministerio
+                                     
+                                     from ccb.tregion_evento re
+                                     inner join ccb.tdetalle_evento de on de.id_region_evento = re.id_region_evento
+                                     where re.id_gestion = v_registros.id_gestion 
+                                           and re.id_casa_oracion = v_registros.id_casa_oracion
+                                           and re.id_evento = v_registros.id_evento
+                                           and re.tipo_registro = 'detalle'
+                                           and re.estado_reg = 'activo'
+                                     group by 
+                                       de.id_tipo_ministerio) LOOP
+    		
+                 v_id_detalle_evento = NULL;
+                 
+                 select 
+                  de.id_detalle_evento
+                 into
+                  v_id_detalle_evento 
+                 from  ccb.tdetalle_evento de 
+                 where de.id_region_evento = v_parametros.id_region_evento 
+                       and de.id_tipo_ministerio = v_resgistros_detalle.id_tipo_ministerio
+                       and de.estado_reg = 'activo';
+           
+                -- si el registros exis lo modifica
+                IF  v_id_detalle_evento is not NULL THEN
+                
+                      UPDATE 
+                        ccb.tdetalle_evento 
+                      SET 
+                        id_usuario_mod = p_id_usuario,
+                        fecha_mod = now(),
+                        catidad = v_resgistros_detalle.cantidad
+                      WHERE 
+                        id_detalle_evento = v_id_detalle_evento;
+                
+                ELSE
+             
+                -- si no existe lo inserta
+             			INSERT INTO 
+                        ccb.tdetalle_evento
+                      (
+                        id_usuario_reg,
+                        fecha_reg,
+                        estado_reg,
+                        id_region_evento,
+                        id_tipo_ministerio,
+                        catidad,
+                        obs
+                      )
+                      VALUES (
+                        p_id_usuario,
+                        now(),
+                        'activo',
+                        v_parametros.id_region_evento,
+                        v_resgistros_detalle.id_tipo_ministerio,
+                        v_resgistros_detalle.cantidad,
+                        'insertado al generar resumen'
+                      );
+                END IF;
+           
+           END LOOP;
+            
+            
+            
+            
+            
+            
+            --Definicion de la respuesta
+            v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Resumen de eventos registrado exitosamente'); 
             v_resp = pxp.f_agrega_clave(v_resp,'id_region_evento',v_parametros.id_region_evento::varchar);
               
             --Devuelve la respuesta

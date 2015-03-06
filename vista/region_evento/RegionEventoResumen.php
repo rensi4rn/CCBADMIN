@@ -23,6 +23,14 @@ Phx.vista.RegionEventoResumen = {
         this.Cmp.fecha_programada.disable();
         this.Cmp.fecha_programada.hide();
         
+        this.addButton('btnGenerar', {
+				text : 'Generar resumen',
+				iconCls : 'bchecklist',
+				disabled: false,
+				handler : this.onBtnGenerarResumen,
+				tooltip : '<b>Resumen</b><br/>Busca en todo los registros del año y guarda la suma'
+		});
+        
     },
     
     
@@ -46,7 +54,33 @@ Phx.vista.RegionEventoResumen = {
             
             
      
-    }
+    },
+    
+    onBtnGenerarResumen:function(){
+		var rec=this.sm.getSelected();
+		if(rec){
+		
+			Phx.CP.loadingShow(); 
+			Ext.Ajax.request({
+				
+				url:'../../sis_admin/control/RegionEvento/generarResumen',
+				params:{'id_region_evento': rec.data.id_region_evento},
+				success:this.successSinc,
+				failure: this.conexionFailure,
+				timeout:this.timeout,
+				scope:this
+			});
+		}
+		else{
+			alert('seleccione un periodo primero')
+			
+		}
+	},
+	
+	successSinc:function(){
+		Phx.CP.loadingHide();
+		this.onButtonAct();
+	}
     
    
     
