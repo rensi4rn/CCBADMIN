@@ -136,6 +136,7 @@ Phx.vista.MovimientoDinamico=Ext.extend(Phx.gridInterfaz,{
                                 type:'TextField',
                                 filters:{pfiltro:'desc_estado_periodo',type:'string'},
                                 grid:true,
+                                bottom_filter: true,
                                 form:false 
                         };                      
                recText = recText+'@desc_estado_periodo#varchar'; 
@@ -172,6 +173,7 @@ Phx.vista.MovimientoDinamico=Ext.extend(Phx.gridInterfaz,{
                                 type:'TextField',
                                 filters:{pfiltro:'concepto',type:'string'},
                                 grid:true,
+                                bottom_filter: true,
                                 form:false 
                         };
                         
