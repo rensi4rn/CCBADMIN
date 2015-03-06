@@ -175,14 +175,17 @@ Phx.vista.RegionEvento=Ext.extend(Phx.gridInterfaz,{
                     totalProperty: 'total',
                     fields: ['id_casa_oracion','codigo','nombre'],
                     // turn on remote sorting
-                    remoteSort: true,
-                    baseParams:{par_filtro:'nombre'}
+                    remoteSort: true,    
+                    baseParams:{par_filtro:'nombre#reg.nomb#relug.nombre'}
+                
                 }),
                 valueField: 'id_casa_oracion',
                 displayField: 'nombre',
                 gdisplayField:'desc_casa_oracion',
                 hiddenName: 'id_casa_oracion',
                 triggerAction: 'all',
+                tpl:'<tpl for="."><div class="x-combo-list-item"><p>{nombre}</p><p>{desc_lugar} - {desc_region}</p> </div></tpl>',
+				
                 mode:'remote',
                 pageSize:50,
                 queryDelay:500,
