@@ -118,7 +118,7 @@ Phx.vista.Obrero=Ext.extend(Phx.gridInterfaz,{
 				listWidth:'280',
 				
 				width:210,
-				gwidth:220,
+				gwidth:180,
 				minChars:2,
 				renderer:function (value, p, record){return String.format('{0}', record.data['desc_region']);}
 			},
@@ -160,6 +160,7 @@ Phx.vista.Obrero=Ext.extend(Phx.gridInterfaz,{
                 pageSize:50,
                 queryDelay:500,
                 listWidth:'280',
+                gwidth:180,
                 width:210,
                 tpl:'<tpl for="."><div class="x-combo-list-item"><p>{nombre}</p><p>{desc_lugar} - {desc_region}</p> </div></tpl>',
 				minChars:2
