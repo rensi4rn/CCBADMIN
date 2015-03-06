@@ -79,6 +79,7 @@ Phx.vista.Obrero=Ext.extend(Phx.gridInterfaz,{
 				renderer:function (value, p, record){return String.format('{0}', record.data['desc_tipo_ministerio']);}
 			},
 			type:'ComboBox',
+			bottom_filter: true,
 			filters:{pfiltro:'tipmi.nombre',type:'string'},
 			id_grupo:1,
 			grid:true,
@@ -185,6 +186,7 @@ Phx.vista.Obrero=Ext.extend(Phx.gridInterfaz,{
    			type:'ComboRec',//ComboRec
    			id_grupo:0,
    			filters:{pfiltro:'per.nombre_completo1',type:'string'},
+   			bottom_filter: true,
    		    grid:true,
    			form:true
 		 },
@@ -235,21 +237,6 @@ Phx.vista.Obrero=Ext.extend(Phx.gridInterfaz,{
 			id_grupo:1,
 			grid:true,
 			form:true
-		},
-		{
-			config:{
-				name: 'telefono1',
-				fieldLabel: 'Telefono',
-				allowBlank: true,
-				anchor: '80%',
-				gwidth: 100,
-				maxLength:10
-			},
-			type:'TextField',
-			filters:{pfiltro:'per.telefono',type:'string'},
-			id_grupo:1,
-			grid:true,
-			form:false
 		},
 		{
 			config:{
