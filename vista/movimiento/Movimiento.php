@@ -166,7 +166,7 @@ Phx.vista.Movimiento=Ext.extend(Phx.gridInterfaz,{
                     fields: ['id_casa_oracion','codigo','nombre'],
                     // turn on remote sorting
                     remoteSort: true,     
-                    baseParams:{par_filtro:'caor.nombre#reg.nomb#relug.nombre'}
+                    baseParams:{par_filtro:'caor.nombre#reg.nombre#relug.nombre'}
                 
                
                 }),
