@@ -71,9 +71,20 @@ BEGIN
            
            else 
            
-             --validamos que no exista un resumen lara la misma gestion y misma casa de oracion   
-              
-           
+               --validamos que no exista un resumen lara la misma gestion y misma casa de oracion   
+               IF EXISTS( 
+                         select
+                         1
+                         from ccb.tregion_evento re 
+                         where re.id_gestion = v_parametros.id_gestion 
+                               and  re.id_casa_oracion = v_parametros.id_casa_oracion
+                               and re.id_region = v_parametros.id_region 
+                               and re.id_evento = v_parametros.id_evento 
+                               and re.tipo_registro = 'resumen'
+                               and re.estado_reg = 'activo') THEN
+                        
+                        raise exception 'Ya existe un registro del tipo resumen para esta casa de oracion';       
+               END IF;
            end if;
         
             

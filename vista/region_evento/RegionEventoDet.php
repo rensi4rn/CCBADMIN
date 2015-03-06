@@ -10,9 +10,9 @@ header("content-type: text/javascript; charset=UTF-8");
 ?>
 <script>
 Phx.vista.RegionEventoDet = {
-    require:'../../../sis_admin/vista/region_evento/RegionEvento.php',
-    requireclase:'Phx.vista.RegionEvento',
-    title:'Detalle de Eventos',
+    require: '../../../sis_admin/vista/region_evento/RegionEvento.php',
+    requireclase: 'Phx.vista.RegionEvento',
+    title: 'Detalle de Eventos',
     nombreVista: 'RegionEventoDet',
     
     constructor: function(config) {
@@ -30,7 +30,10 @@ Phx.vista.RegionEventoDet = {
     
     onButtonNew:function(){         
             Phx.vista.RegionEventoDet.superclass.onButtonNew.call(this);
-            this.Cmp.tipo_registro.setValue('detalle')
+            this.Cmp.tipo_registro.setValue('detalle');
+            this.Cmp.id_gestion.enable();
+            this.Cmp.id_region.enable();
+            this.Cmp.id_casa_oracion.disable();
         
     },
     
@@ -38,6 +41,9 @@ Phx.vista.RegionEventoDet = {
     	
     	        
             Phx.vista.RegionEventoDet.superclass.onButtonEdit.call(this);
+            this.Cmp.id_gestion.disable();
+            this.Cmp.id_region.disable();
+            this.Cmp.id_casa_oracion.disable();
             
             
             
