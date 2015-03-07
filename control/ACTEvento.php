@@ -14,7 +14,7 @@ class ACTEvento extends ACTbase{
         $this->objParam->defecto('dir_ordenacion','asc');
 		
 		if($this->objParam->getParametro('filtro_evento')=='bsc'){
-			   $this->objParam->addFiltro("eve.codigo in  (''bautizo'',''santa_cena'')");	
+			   $this->objParam->addFiltro("even.codigo in  (''bautizo'',''santa_cena'')");	
 		}
 		
 		if($this->objParam->getParametro('tipoReporte')=='excel_grid' || $this->objParam->getParametro('tipoReporte')=='pdf_grid'){
