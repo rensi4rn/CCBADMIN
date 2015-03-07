@@ -301,3 +301,54 @@ AS
         re.tipo_registro::text = 'detalle'::text;
         
 /********************************************F-DEP-RAC-WF-0-17/03/2015*************************************/
+
+
+
+/********************************************I-DEP-RAC-WF-0-18/03/2015*************************************/
+
+
+--------------- SQL ---------------
+
+ -- object recreation
+DROP VIEW ccb.vevento_bautizo_santa_cena;
+
+
+CREATE VIEW ccb.vevento_bautizo_santa_cena
+AS
+  SELECT re.fecha_programada,
+         re.estado,
+         re.id_region_evento,
+         re.id_casa_oracion,
+         reg.id_region,
+         reg.nombre AS nombre_region,
+         co.nombre AS nombre_co,
+         deh.cantidad AS cantidad_hermano,
+         dee.cantidad AS cantidad_hermana,
+         ges.id_gestion,
+         ges.gestion,
+         deh.id_detalle_evento AS id_detalle_evento_hermano,
+         dee.id_detalle_evento AS id_detalle_evento_hermana,
+         ev.id_evento,
+         ev.codigo,
+         ev.nombre,
+         re.id_usuario_mod,
+         us.cuenta
+  FROM ccb.tregion_evento re
+       JOIN segu.tusuario us ON us.id_usuario = re.id_usuario_mod
+       JOIN ccb.tregion reg ON reg.id_region = re.id_region
+       JOIN ccb.tcasa_oracion co ON co.id_casa_oracion = re.id_casa_oracion
+       JOIN ccb.tdetalle_evento deh ON deh.id_region_evento =
+         re.id_region_evento
+       JOIN ccb.ttipo_ministerio tm ON tm.id_tipo_ministerio =
+         deh.id_tipo_ministerio AND tm.codigo::text = 'hermano'::text
+       JOIN ccb.tdetalle_evento dee ON dee.id_region_evento =
+         re.id_region_evento
+       JOIN ccb.ttipo_ministerio tm2 ON tm2.id_tipo_ministerio =
+         dee.id_tipo_ministerio AND tm2.codigo::text = 'hermana'::text
+       JOIN ccb.tevento ev ON ev.id_evento = re.id_evento
+       JOIN ccb.tgestion ges ON ges.id_gestion = re.id_gestion
+  WHERE (ev.codigo::text = ANY (ARRAY [ 'bautizo'::text, 'santacena'::text ]))
+  AND
+        re.tipo_registro::text = 'detalle'::text;
+        
+/********************************************F-DEP-RAC-WF-0-18/03/2015*************************************/

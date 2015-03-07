@@ -178,6 +178,8 @@ class MODRegionEvento extends MODbase{
 		$this->captura('id_evento','INTEGER');
 		$this->captura('codigo','varchar');
 		$this->captura('nombre','varchar');
+		$this->captura('id_usuario_mod','integer');
+		$this->captura('cuenta','varchar');
 		
 		
 		

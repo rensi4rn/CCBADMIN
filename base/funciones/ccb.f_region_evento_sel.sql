@@ -171,7 +171,9 @@ BEGIN
                             id_detalle_evento_hermana,
                             id_evento,
                             codigo,
-                            nombre
+                            nombre,
+                            id_usuario_mod,
+                            cuenta
                           FROM 
                             ccb.vevento_bautizo_santa_cena eve
                         '|| v_inner ||'

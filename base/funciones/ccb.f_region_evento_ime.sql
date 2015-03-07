@@ -116,8 +116,8 @@ BEGIN
               v_parametros.id_region,
               now(),
               p_id_usuario,
-              null,
-              null,
+              now(),
+              p_id_usuario,
               v_parametros.id_casa_oracion,
               v_parametros.tipo_registro    
 							
@@ -443,8 +443,8 @@ BEGIN
               v_id_region,
               now(),
               p_id_usuario,
-              null,
-              null,
+              now(),
+              p_id_usuario,
               v_parametros.id_casa_oracion,
              'detalle'    
 							
