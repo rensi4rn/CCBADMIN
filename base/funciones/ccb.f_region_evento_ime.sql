@@ -246,6 +246,35 @@ BEGIN
             return v_resp;
 
 		end;
+        
+    /*********************************    
+ 	#TRANSACCION:  'CCB_REGEBSC_ELI'
+ 	#DESCRIPCION:	Eliminacion de eventoscon su detalle
+ 	#AUTOR:		admin	
+ 	#FECHA:		13-01-2015 14:31:26
+	***********************************/
+
+	elsif(p_transaccion='CCB_REGEBSC_ELI')then
+
+		begin
+			--Sentencia que elimina el detalle
+            delete from ccb.tdetalle_evento
+            where id_region_evento=v_parametros.id_region_evento;
+            
+            
+			delete from ccb.tregion_evento
+            where id_region_evento=v_parametros.id_region_evento;
+               
+            --Definicion de la respuesta
+            v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Eventos por Región eliminado(a)'); 
+            v_resp = pxp.f_agrega_clave(v_resp,'id_region_evento',v_parametros.id_region_evento::varchar);
+              
+            --Devuelve la respuesta
+            return v_resp;
+
+		end;    
+     
+       
     
     /*********************************    
  	#TRANSACCION:  'CCB_GENRESU_INS'

@@ -119,6 +119,25 @@ class MODRegionEvento extends MODbase{
 		return $this->respuesta;
 	}
 
+
+
+   function eliminarBautizoSantaCena(){
+		//Definicion de variables para ejecucion del procedimiento
+		$this->procedimiento='ccb.f_region_evento_ime';
+		$this->transaccion='CCB_REGEBSC_ELI';
+		$this->tipo_procedimiento='IME';
+				
+		//Define los parametros para la funcion
+		$this->setParametro('id_region_evento','id_region_evento','int4');
+
+		//Ejecuta la instruccion
+		$this->armarConsulta();
+		$this->ejecutarConsulta();
+
+		//Devuelve la respuesta
+		return $this->respuesta;
+	}
+
     function generarResumen(){
 		//Definicion de variables para ejecucion del procedimiento
 		$this->procedimiento='ccb.f_region_evento_ime';
