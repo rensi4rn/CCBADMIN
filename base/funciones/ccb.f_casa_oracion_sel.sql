@@ -29,6 +29,7 @@ DECLARE
 	v_parametros  		record;
 	v_nombre_funcion   	text;
 	v_resp				varchar;
+    v_inner 			varchar;
 			    
 BEGIN
 
@@ -45,6 +46,11 @@ BEGIN
 	if(p_transaccion='CCB_CAOR_SEL')then
      				
     	begin
+        
+            v_inner = '';
+            IF p_administrador != 1  THEN
+               v_inner = ' inner join ccb.tusuario_permiso uper on uper.id_usuario_asignado = '||p_id_usuario||'  and (uper.id_region = caor.id_region or  uper.id_casa_oracion = caor.id_casa_oracion) ';
+            END IF;
     		--Sentencia de la consulta
 			v_consulta:='select
 						caor.id_casa_oracion,
@@ -68,6 +74,7 @@ BEGIN
                         inner join ccb.tregion reg on reg.id_region = caor.id_region
                         inner join param.tlugar lug on lug.id_lugar = caor.id_lugar
 						inner join segu.tusuario usu1 on usu1.id_usuario = caor.id_usuario_reg
+                        '|| v_inner ||'
 						left join segu.tusuario usu2 on usu2.id_usuario = caor.id_usuario_mod
 				        where  ';
 			
@@ -90,12 +97,17 @@ BEGIN
 	elsif(p_transaccion='CCB_CAOR_CONT')then
 
 		begin
+            v_inner = '';
+            IF p_administrador != 1  THEN
+               v_inner = ' inner join ccb.tusuario_permiso uper on uper.id_usuario_asignado = '||p_id_usuario||'  and (uper.id_region = caor.id_region or  uper.id_casa_oracion = caor.id_casa_oracion) ';
+            END IF;
 			--Sentencia de la consulta de conteo de registros
 			v_consulta:='select count(id_casa_oracion)
 					    from ccb.tcasa_oracion caor
 					    inner join ccb.tregion reg on reg.id_region = caor.id_region
                         inner join param.tlugar lug on lug.id_lugar = caor.id_lugar
 						inner join segu.tusuario usu1 on usu1.id_usuario = caor.id_usuario_reg
+                        '|| v_inner ||'
 						left join segu.tusuario usu2 on usu2.id_usuario = caor.id_usuario_mod
 					    where ';
 			

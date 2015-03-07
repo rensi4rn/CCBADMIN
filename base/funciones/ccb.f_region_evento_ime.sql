@@ -39,6 +39,8 @@ DECLARE
     v_resgistros_detalle    record;
     v_id_detalle_evento     integer;
     v_cantidad              integer;
+    v_id_region				integer;
+    v_id_gestion			integer;
 			    
 BEGIN
 
@@ -391,13 +393,16 @@ BEGIN
 	elseif(p_transaccion='CCB_RNSC_INS')then
 					
         begin
-        	
+        	  
+        -- a partir de la fecha conseguimos la gestion
           
            
               select 
-                ep.estado_periodo
+                ep.estado_periodo,
+                ep.id_gestion
               into
-                v_estado_periodo
+                v_estado_periodo,
+                v_id_gestion
               from ccb.testado_periodo ep 
               where ep.id_casa_oracion = v_parametros.id_casa_oracion
                    and  v_parametros.fecha_programada::date BETWEEN  ep.fecha_ini::date and ep.fecha_fin::dATE;  
@@ -407,8 +412,13 @@ BEGIN
                   raise exception 'el periodo correspondiente se encuentra cerrado';
               END IF;
            
-         
-        
+            --desde la casa de oracion conseguimos la region
+           select 
+            co.id_region
+            into
+            v_id_region
+           from ccb.tcasa_oracion co 
+           where co.id_casa_oracion =  v_parametros.id_casa_oracion;
             
             --Sentencia de la insercion
         	insert into ccb.tregion_evento(
@@ -426,11 +436,11 @@ BEGIN
               tipo_registro
           	) values(
               'activo',
-              v_parametros.id_gestion,
+              v_id_gestion,
               v_parametros.fecha_programada,
               v_parametros.id_evento,
               v_parametros.estado,
-              v_parametros.id_region,
+              v_id_region,
               now(),
               p_id_usuario,
               null,
@@ -503,9 +513,11 @@ BEGIN
 		begin
         
               select 
-                ep.estado_periodo
+                ep.estado_periodo,
+                ep.id_gestion
               into
-                v_estado_periodo
+                v_estado_periodo,
+                v_id_gestion
               from ccb.testado_periodo ep 
               where ep.id_casa_oracion = v_parametros.id_casa_oracion
                    and  v_parametros.fecha_programada::date BETWEEN  ep.fecha_ini::date and ep.fecha_fin::dATE;  
@@ -515,14 +527,24 @@ BEGIN
                   raise exception 'el periodo correspondiente se encuentra cerrado';
               END IF;
               
+            --desde la casa de oracion conseguimos la region
+           select 
+            co.id_region
+            into
+            v_id_region
+           from ccb.tcasa_oracion co 
+           where co.id_casa_oracion =  v_parametros.id_casa_oracion;
+              
+               
+              
               
 			--Sentencia de la modificacion
 			update ccb.tregion_evento set
-			id_gestion = v_parametros.id_gestion,
+			id_gestion = v_id_gestion,
 			fecha_programada = v_parametros.fecha_programada,
 			id_evento = v_parametros.id_evento,
 			estado = v_parametros.estado,
-			id_region = v_parametros.id_region,
+			id_region = v_id_region,
 			fecha_mod = now(),
 			id_usuario_mod = p_id_usuario,
             id_casa_oracion =  v_parametros.id_casa_oracion

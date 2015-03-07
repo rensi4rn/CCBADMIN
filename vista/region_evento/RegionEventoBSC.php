@@ -21,28 +21,9 @@ Phx.vista.RegionEventoBSC=Ext.extend(Phx.gridInterfaz,{
 	},
 	
 	iniciarEventos:function(){
-	     this.Cmp.id_region.on('select', function(combo, record, index){ 
-            	
-            	this.Cmp.id_casa_oracion.reset();
-            	this.Cmp.id_casa_oracion.store.baseParams.id_region = this.Cmp.id_region.getValue();
-            	this.Cmp.id_casa_oracion.modificado = true;
-            	this.Cmp.id_casa_oracion.enable();
-            	
-            	
-            }, this);
+	     
             
-          this.Cmp.id_gestion.on('select', function(combo, record, index){ 
-            	this.Cmp.fecha_programada.reset();
-            	
-                this.Cmp.fecha_programada.setMaxValue('31/12/' + record.data.gestion);
-                this.Cmp.fecha_programada.setMinValue('01/01/' + record.data.gestion);
-                console.log('setea datos..... ', record.data.gestion)
-             }, this);  
-            
-            
-            
-	
-	},		
+    },		
 	
 	
 	
@@ -121,7 +102,7 @@ Phx.vista.RegionEventoBSC=Ext.extend(Phx.gridInterfaz,{
 			id_grupo:1,
 			bottom_filter: true,
 			grid:true,
-			form:true
+			form:false
 		},
 	
 		{
@@ -166,7 +147,7 @@ Phx.vista.RegionEventoBSC=Ext.extend(Phx.gridInterfaz,{
 			bottom_filter: true,
 			id_grupo:1,
 			grid:true,
-			form:true
+			form:false
 		},
 		
 		{
