@@ -38,6 +38,7 @@ DECLARE
     v_estado_periodo		varchar;
     v_resgistros_detalle    record;
     v_id_detalle_evento     integer;
+    v_cantidad              integer;
 			    
 BEGIN
 
@@ -187,6 +188,20 @@ BEGIN
 	elsif(p_transaccion='CCB_REGE_MOD')then
 
 		begin
+        
+              select 
+                ep.estado_periodo
+              into
+                v_estado_periodo
+              from ccb.testado_periodo ep 
+              where ep.id_casa_oracion = v_parametros.id_casa_oracion
+                   and  v_parametros.fecha_programada::date BETWEEN  ep.fecha_ini::date and ep.fecha_fin::dATE;  
+              
+              
+              IF v_estado_periodo = 'cerrado' THEN
+                  raise exception 'el periodo correspondiente se encuentra cerrado';
+              END IF;
+        
 			--Sentencia de la modificacion
 			update ccb.tregion_evento set
 			id_gestion = v_parametros.id_gestion,
@@ -335,6 +350,178 @@ BEGIN
             --Devuelve la respuesta
             return v_resp;
 
+		end;
+        
+   /*********************************    
+ 	#TRANSACCION:  'CCB_RNSC_INS'
+ 	#DESCRIPCION:	Insercion de registros de santa cena y bautizo
+ 	#AUTOR:		admin	
+ 	#FECHA:		13-01-2013 14:31:26
+	***********************************/
+
+	elseif(p_transaccion='CCB_RNSC_INS')then
+					
+        begin
+        	
+          
+           
+              select 
+                ep.estado_periodo
+              into
+                v_estado_periodo
+              from ccb.testado_periodo ep 
+              where ep.id_casa_oracion = v_parametros.id_casa_oracion
+                   and  v_parametros.fecha_programada::date BETWEEN  ep.fecha_ini::date and ep.fecha_fin::dATE;  
+              
+              
+              IF v_estado_periodo = 'cerrado' THEN
+                  raise exception 'el periodo correspondiente se encuentra cerrado';
+              END IF;
+           
+         
+        
+            
+            --Sentencia de la insercion
+        	insert into ccb.tregion_evento(
+              estado_reg,
+              id_gestion,
+              fecha_programada,
+              id_evento,
+              estado,
+              id_region,
+              fecha_reg,
+              id_usuario_reg,
+              fecha_mod,
+              id_usuario_mod,
+              id_casa_oracion,
+              tipo_registro
+          	) values(
+              'activo',
+              v_parametros.id_gestion,
+              v_parametros.fecha_programada,
+              v_parametros.id_evento,
+              v_parametros.estado,
+              v_parametros.id_region,
+              now(),
+              p_id_usuario,
+              null,
+              null,
+              v_parametros.id_casa_oracion,
+             'detalle'    
+							
+			)RETURNING id_region_evento into v_id_region_evento;
+            
+            
+           
+            va_tipo = '{"hermana","hermano"}'; 
+            
+            
+           
+            
+            FOR v_registros  in (select
+                                   tm.id_tipo_ministerio,
+                                   tm.codigo
+                                 from ccb.ttipo_ministerio tm 
+                                 where tm.codigo =ANY(va_tipo))  LOOP
+                                 
+                      IF v_registros.codigo = 'hermano' THEN
+                        v_cantidad  =  v_parametros.cantidad_hermano;
+                      ELSE
+                       v_cantidad  =  v_parametros.cantidad_hermana;
+                      END IF;
+                      
+                      INSERT INTO 
+                          ccb.tdetalle_evento
+                        (
+                          id_usuario_reg,
+                          fecha_reg,
+                          estado_reg,
+                          id_region_evento,
+                          id_tipo_ministerio,
+                          cantidad
+                        )
+                        VALUES (
+                          p_id_usuario,
+                          now(),
+                          'activo',
+                          v_id_region_evento,
+                          v_registros.id_tipo_ministerio,
+                          COALESCE(v_cantidad,0)
+                        );           
+            
+            END LOOP;
+                
+            
+			
+			--Definicion de la respuesta
+			v_resp = pxp.f_agrega_clave(v_resp,'mensaje','insercion de registros exitosa'); 
+            v_resp = pxp.f_agrega_clave(v_resp,'id_region_evento',v_id_region_evento::varchar);
+
+            --Devuelve la respuesta
+            return v_resp;
+
+		end;
+    
+    /*********************************    
+ 	#TRANSACCION:  'CCB_RNSC_MOD'
+ 	#DESCRIPCION:	Modificacion de registros de santa cenas y bautizos
+ 	#AUTOR:		admin	
+ 	#FECHA:		14-03-2015 14:31:26
+	***********************************/
+
+	elsif(p_transaccion='CCB_RNSC_MOD')then
+
+		begin
+        
+              select 
+                ep.estado_periodo
+              into
+                v_estado_periodo
+              from ccb.testado_periodo ep 
+              where ep.id_casa_oracion = v_parametros.id_casa_oracion
+                   and  v_parametros.fecha_programada::date BETWEEN  ep.fecha_ini::date and ep.fecha_fin::dATE;  
+              
+              
+              IF v_estado_periodo = 'cerrado' THEN
+                  raise exception 'el periodo correspondiente se encuentra cerrado';
+              END IF;
+              
+              
+			--Sentencia de la modificacion
+			update ccb.tregion_evento set
+			id_gestion = v_parametros.id_gestion,
+			fecha_programada = v_parametros.fecha_programada,
+			id_evento = v_parametros.id_evento,
+			estado = v_parametros.estado,
+			id_region = v_parametros.id_region,
+			fecha_mod = now(),
+			id_usuario_mod = p_id_usuario,
+            id_casa_oracion =  v_parametros.id_casa_oracion
+			where id_region_evento=v_parametros.id_region_evento;
+            
+            
+            --Sentencia de la modificacion
+			update ccb.tdetalle_evento set
+			cantidad = v_parametros.cantidad_hermano,
+			fecha_mod = now(),
+			id_usuario_mod = p_id_usuario
+			where id_detalle_evento=v_parametros.id_detalle_evento_hermano;
+            
+            
+            --Sentencia de la modificacion
+			update ccb.tdetalle_evento set
+			cantidad = v_parametros.cantidad_hermana,
+			fecha_mod = now(),
+			id_usuario_mod = p_id_usuario
+			where id_detalle_evento=v_parametros.id_detalle_evento_hermana;
+               
+			--Definicion de la respuesta
+            v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Eventos por Región modificado(a)'); 
+            v_resp = pxp.f_agrega_clave(v_resp,'id_region_evento',v_parametros.id_region_evento::varchar);
+               
+            --Devuelve la respuesta
+            return v_resp;
+            
 		end;
          
 	else

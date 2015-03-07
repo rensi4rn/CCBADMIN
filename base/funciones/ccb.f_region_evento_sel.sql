@@ -135,7 +135,92 @@ BEGIN
 
 		end;
 					
-	else
+	/*********************************    
+ 	#TRANSACCION:  'CCB_REGESC_SEL'
+ 	#DESCRIPCION:	Consulta de santa cenas y bautizos
+ 	#AUTOR:		admin	
+ 	#FECHA:		13-01-2013 14:31:26
+	***********************************/
+
+	elsif(p_transaccion='CCB_REGESC_SEL')then
+     				
+    	begin
+    		
+            v_inner = '';
+            IF p_administrador != 1  THEN
+            
+              v_inner = ' inner join ccb.tusuario_permiso uper on uper.id_usuario_asignado = '||p_id_usuario||'  and (uper.id_region = eve.id_region or  uper.id_casa_oracion = eve.id_casa_oracion) ';
+            
+            END IF;
+            
+            
+            --Sentencia de la consulta
+			v_consulta:='SELECT 
+                            fecha_programada,
+                            estado,
+                            id_region_evento,
+                            id_casa_oracion,
+                            id_region,
+                            nombre_region,
+                            nombre_co,
+                            cantidad_hermano,
+                            cantidad_hermana,
+                            id_gestion,
+                            gestion,
+                            id_detalle_evento_hermano,
+                            id_detalle_evento_hermana,
+                            id_evento,
+                            codigo,
+                            nombre
+                          FROM 
+                            ccb.vevento_bautizo_santa_cena eve
+                        '|| v_inner ||'
+                        where  ';
+			
+			--Definicion de la respuesta
+			v_consulta:=v_consulta||v_parametros.filtro;
+			v_consulta:=v_consulta||' order by ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
+            --raise exception 'xxx %',v_consulta ;
+			--Devuelve la respuesta
+			return v_consulta;
+						
+		end;
+
+	/*********************************    
+ 	#TRANSACCION:  'CCB_REGESC_CONT'
+ 	#DESCRIPCION:	Conteo de registros
+ 	#AUTOR:		admin	
+ 	#FECHA:		13-01-2013 14:31:26
+	***********************************/
+
+	elsif(p_transaccion='CCB_REGESC_CONT')then
+
+		begin
+        
+             v_inner = '';
+            IF p_administrador != 1  THEN
+            
+              v_inner = ' inner join ccb.tusuario_permiso uper on uper.id_usuario_asignado = '||p_id_usuario||'  and (uper.id_region = eve.id_region or  uper.id_casa_oracion = eve.id_casa_oracion) ';
+            
+            END IF;
+            
+			--Sentencia de la consulta de conteo de registros
+			v_consulta:='select count(id_region_evento)
+					    FROM 
+                            ccb.vevento_bautizo_santa_cena eve
+                        '|| v_inner ||'
+                        where   ';
+			
+			--Definicion de la respuesta		    
+			v_consulta:=v_consulta||v_parametros.filtro;
+            
+             
+			--Devuelve la respuesta
+			return v_consulta;
+
+		end;
+    
+    else
 					     
 		raise exception 'Transaccion inexistente';
 					         
