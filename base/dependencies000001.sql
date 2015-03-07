@@ -194,34 +194,35 @@ ALTER TABLE ccb.tculto
 
 --------------- SQL ---------------
 
+ -- object recreation
+DROP VIEW ccb.vevento_bautizo_santa_cena;
+
 CREATE VIEW ccb.vevento_bautizo_santa_cena 
-AS 
-SELECT
-re.fecha_programada,
-re.estado,
-re.id_region_evento,
-re.id_casa_oracion,
-reg.nombre as nombre_region,
-co.nombre as nombre_co,
-deh.cantidad as cantidad_hemano,
-dee.cantidad as cantidad_hemana,
-ges.id_gestion,
-ges.gestion,
-deh.id_detalle_evento as id_detalle_evento_hermano,
-dee.id_detalle_evento as id_detalle_evento_hermana,
-ev.id_evento,
-ev.codigo,
-ev.nombre
-from ccb.tregion_evento re
-inner join ccb.tregion reg on reg.id_region = re.id_region
-inner join ccb.tcasa_oracion co on co.id_casa_oracion = re.id_casa_oracion
-inner join  ccb.tdetalle_evento deh on deh.id_region_evento = re.id_region_evento
-inner join ccb.ttipo_ministerio tm on tm.id_tipo_ministerio = deh.id_tipo_ministerio and tm.codigo = 'hermano'
-inner join  ccb.tdetalle_evento dee on dee.id_region_evento = re.id_region_evento
-inner join ccb.ttipo_ministerio tm2 on tm2.id_tipo_ministerio = dee.id_tipo_ministerio and tm2.codigo = 'hermana'
-inner join ccb.tevento ev on ev.id_evento = re.id_evento
-inner join ccb.tgestion ges on ges.id_gestion = re.id_gestion
-where ev.codigo = 'bautizo' and re.tipo_registro = 'detalle' ;
-
-
+AS
+ SELECT re.fecha_programada,
+    re.estado,
+    re.id_region_evento,
+    re.id_casa_oracion,
+    reg.id_region,
+    reg.nombre AS nombre_region,
+    co.nombre AS nombre_co,
+    deh.cantidad AS cantidad_hermano,
+    dee.cantidad AS cantidad_hermana,
+    ges.id_gestion,
+    ges.gestion,
+    deh.id_detalle_evento AS id_detalle_evento_hermano,
+    dee.id_detalle_evento AS id_detalle_evento_hermana,
+    ev.id_evento,
+    ev.codigo,
+    ev.nombre
+   FROM ccb.tregion_evento re
+     JOIN ccb.tregion reg ON reg.id_region = re.id_region
+     JOIN ccb.tcasa_oracion co ON co.id_casa_oracion = re.id_casa_oracion
+     JOIN ccb.tdetalle_evento deh ON deh.id_region_evento = re.id_region_evento
+     JOIN ccb.ttipo_ministerio tm ON tm.id_tipo_ministerio = deh.id_tipo_ministerio AND tm.codigo::text = 'hermano'::text
+     JOIN ccb.tdetalle_evento dee ON dee.id_region_evento = re.id_region_evento
+     JOIN ccb.ttipo_ministerio tm2 ON tm2.id_tipo_ministerio = dee.id_tipo_ministerio AND tm2.codigo::text = 'hermana'::text
+     JOIN ccb.tevento ev ON ev.id_evento = re.id_evento
+     JOIN ccb.tgestion ges ON ges.id_gestion = re.id_gestion
+  WHERE ev.codigo::text = 'bautizo'::text AND re.tipo_registro::text = 'detalle'::text;
 /********************************************F-DEP-RAC-WF-0-11/03/2015*************************************/

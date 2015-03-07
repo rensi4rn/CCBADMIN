@@ -48,6 +48,8 @@ class MODRegionEvento extends MODbase{
 		//Devuelve la respuesta
 		return $this->respuesta;
 	}
+
+    
 			
 	function insertarRegionEvento(){
 		//Definicion de variables para ejecucion del procedimiento
@@ -125,6 +127,99 @@ class MODRegionEvento extends MODbase{
 				
 		//Define los parametros para la funcion
 		$this->setParametro('id_region_evento','id_region_evento','int4');
+
+		//Ejecuta la instruccion
+		$this->armarConsulta();
+		$this->ejecutarConsulta();
+
+		//Devuelve la respuesta
+		return $this->respuesta;
+	}
+	
+	function listarBautizoSantaCena(){
+		//Definicion de variables para ejecucion del procedimientp
+		$this->procedimiento='ccb.f_region_evento_sel';
+		$this->transaccion='CCB_REGESC_SEL';
+		$this->tipo_procedimiento='SEL';//tipo de transaccion
+				
+		//Definicion de la lista del resultado del query
+		$this->captura('fecha_programada','date');
+		$this->captura('estado','varchar');
+		$this->captura('id_region_evento','int4');
+		$this->captura('id_casa_oracion','integer');
+		$this->captura('id_region','int4');
+		$this->captura('nombre_region','varchar');
+		$this->captura('nombre_co','varchar');
+		$this->captura('cantidad_hermano','int4');		
+		$this->captura('cantidad_hermana','int4');		
+		$this->captura('id_gestion','int4');		
+		$this->captura('gestion','varchar');
+		$this->captura('id_detalle_evento_hermano','int4');
+		$this->captura('id_detalle_evento_hermana','int4');
+		$this->captura('id_evento','INTEGER');
+		$this->captura('codigo','varchar');
+		$this->captura('nombre','varchar');
+		
+		
+		
+  
+  
+		
+		//Ejecuta la instruccion
+		$this->armarConsulta();
+		$this->ejecutarConsulta();
+		
+		//Devuelve la respuesta
+		return $this->respuesta;
+	}
+	
+	function insertarBautizoSantaCena(){
+		//Definicion de variables para ejecucion del procedimiento
+		$this->procedimiento='ccb.f_region_evento_ime';
+		$this->transaccion='CCB_RNSC_INS';
+		$this->tipo_procedimiento='IME';
+				
+		//Define los parametros para la funcion
+		
+		$this->setParametro('id_gestion','id_gestion','int4');
+		$this->setParametro('fecha_programada','fecha_programada','date');
+		$this->setParametro('id_evento','id_evento','int4');
+		$this->setParametro('estado','estado','varchar');
+		$this->setParametro('id_region','id_region','int4');
+		$this->setParametro('id_casa_oracion','id_casa_oracion','integer');		
+		$this->setParametro('cantidad_hermano','cantidad_hermano','int4');
+		$this->setParametro('cantidad_hermana','cantidad_hermana','int4');
+		$this->setParametro('id_detalle_evento_hermano','id_detalle_evento_hermano','int4');
+		$this->setParametro('id_detalle_evento_hermana','id_detalle_evento_hermana','int4');
+		
+
+		//Ejecuta la instruccion
+		$this->armarConsulta();
+		$this->ejecutarConsulta();
+
+		//Devuelve la respuesta
+		return $this->respuesta;
+	}
+			
+	function modificarBautizoSantaCena(){
+		//Definicion de variables para ejecucion del procedimiento
+		$this->procedimiento='ccb.f_region_evento_ime';
+		$this->transaccion='CCB_RNSC_MOD';
+		$this->tipo_procedimiento='IME';
+				
+		//Define los parametros para la funcion
+		$this->setParametro('id_region_evento','id_region_evento','int4');
+		$this->setParametro('id_gestion','id_gestion','int4');
+		$this->setParametro('fecha_programada','fecha_programada','date');
+		$this->setParametro('id_evento','id_evento','int4');
+		$this->setParametro('estado','estado','varchar');
+		$this->setParametro('id_region','id_region','int4');
+		$this->setParametro('id_casa_oracion','id_casa_oracion','integer');		
+		$this->setParametro('cantidad_hermano','cantidad_hermano','int4');
+		$this->setParametro('cantidad_hermana','cantidad_hermana','int4');
+		$this->setParametro('id_detalle_evento_hermano','id_detalle_evento_hermano','int4');
+		$this->setParametro('id_detalle_evento_hermana','id_detalle_evento_hermana','int4');
+		
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();

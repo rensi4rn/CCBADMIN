@@ -35,6 +35,33 @@ class ACTRegionEvento extends ACTbase{
 		}
 		$this->res->imprimirRespuesta($this->res->generarJson());
 	}
+
+   function listarBautizoSantaCena(){
+		$this->objParam->defecto('ordenacion','fecha_programada');
+
+		if($this->objParam->getParametro('id_region')!=''){
+			    	$this->objParam->addFiltro("eveid_region = ".$this->objParam->getParametro('id_region'));	
+		}
+
+        if($this->objParam->getParametro('id_gestion')!=''){
+			    	$this->objParam->addFiltro("eve.id_gestion = ".$this->objParam->getParametro('id_gestion'));	
+		}
+		
+		if($this->objParam->getParametro('codigo')!=''){
+			    	$this->objParam->addFiltro("eve.codigo = ''".$this->objParam->getParametro('codigo'))."''";	
+		}
+		
+		$this->objParam->defecto('dir_ordenacion','asc');
+		if($this->objParam->getParametro('tipoReporte')=='excel_grid' || $this->objParam->getParametro('tipoReporte')=='pdf_grid'){
+			$this->objReporte = new Reporte($this->objParam,$this);
+			$this->res = $this->objReporte->generarReporteListado('MODRegionEvento','listarBautizoSantaCena');
+		} else{
+			$this->objFunc=$this->create('MODRegionEvento');
+			
+			$this->res=$this->objFunc->listarBautizoSantaCena($this->objParam);
+		}
+		$this->res->imprimirRespuesta($this->res->generarJson());
+	}
 				
 	function insertarRegionEvento(){
 		$this->objFunc=$this->create('MODRegionEvento');	
@@ -42,6 +69,16 @@ class ACTRegionEvento extends ACTbase{
 			$this->res=$this->objFunc->insertarRegionEvento($this->objParam);			
 		} else{			
 			$this->res=$this->objFunc->modificarRegionEvento($this->objParam);
+		}
+		$this->res->imprimirRespuesta($this->res->generarJson());
+	}
+	
+	function insertarBautizoSantaCena(){
+		$this->objFunc=$this->create('MODRegionEvento');	
+		if($this->objParam->insertar('id_region_evento')){
+			$this->res=$this->objFunc->insertarBautizoSantaCena($this->objParam);			
+		} else{			
+			$this->res=$this->objFunc->modificarBautizoSantaCena($this->objParam);
 		}
 		$this->res->imprimirRespuesta($this->res->generarJson());
 	}
