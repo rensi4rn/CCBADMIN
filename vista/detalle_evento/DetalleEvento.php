@@ -85,15 +85,15 @@ Phx.vista.DetalleEvento=Ext.extend(Phx.gridInterfaz,{
 		
 		{
 			config:{
-				name: 'catidad',
-				fieldLabel: 'catidad',
+				name: 'cantidad',
+				fieldLabel: 'cantidad',
 				allowBlank: true,
 				anchor: '80%',
 				gwidth: 100,
 				maxLength:3
 			},
 			type:'NumberField',
-			filters:{pfiltro:'dev.catidad',type:'numeric'},
+			filters:{pfiltro:'dev.cantidad',type:'numeric'},
 			id_grupo:1,
 			grid:true,
 			egrid:true,
@@ -201,7 +201,7 @@ Phx.vista.DetalleEvento=Ext.extend(Phx.gridInterfaz,{
 	fields: [
 		{name:'id_detalle_evento', type: 'numeric'},
 		{name:'estado_reg', type: 'string'},
-		{name:'catidad', type: 'numeric'},
+		{name:'cantidad', type: 'numeric'},
 		{name:'id_region_evento', type: 'numeric'},
 		{name:'id_tipo_ministerio', type: 'numeric'},
 		{name:'obs', type: 'string'},

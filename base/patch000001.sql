@@ -355,3 +355,12 @@ ALTER TABLE ccb.tregion_evento
   ALTER COLUMN fecha_programada DROP NOT NULL;
   
 /***********************************F-SCP-RAC-CCB-2-08/03/2015****************************************/
+
+
+/***********************************I-SCP-RAC-CCB-2-11/03/2015****************************************/
+-------------- SQL ---------------
+
+ALTER TABLE ccb.tdetalle_evento
+  RENAME COLUMN catidad TO cantidad;
+ 
+/***********************************F-SCP-RAC-CCB-2-11/03/2015****************************************/

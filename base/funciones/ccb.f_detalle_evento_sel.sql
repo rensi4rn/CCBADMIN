@@ -49,7 +49,7 @@ BEGIN
 			v_consulta:='select
 						dev.id_detalle_evento,
 						dev.estado_reg,
-						dev.catidad,
+						dev.cantidad,
 						dev.id_region_evento,
 						dev.id_tipo_ministerio,
 						dev.obs,

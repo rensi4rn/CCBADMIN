@@ -153,7 +153,7 @@ BEGIN
                           estado_reg,
                           id_region_evento,
                           id_tipo_ministerio,
-                          catidad
+                          cantidad
                         )
                         VALUES (
                           p_id_usuario,
@@ -260,7 +260,7 @@ BEGIN
            
            FOR v_resgistros_detalle in (
                                      select
-                                       sum(de.catidad) as cantidad,
+                                       sum(de.cantidad) as cantidad,
                                        de.id_tipo_ministerio
                                      
                                      from ccb.tregion_evento re
@@ -292,7 +292,7 @@ BEGIN
                       SET 
                         id_usuario_mod = p_id_usuario,
                         fecha_mod = now(),
-                        catidad = v_resgistros_detalle.cantidad
+                        cantidad = v_resgistros_detalle.cantidad
                       WHERE 
                         id_detalle_evento = v_id_detalle_evento;
                 
@@ -307,7 +307,7 @@ BEGIN
                         estado_reg,
                         id_region_evento,
                         id_tipo_ministerio,
-                        catidad,
+                        cantidad,
                         obs
                       )
                       VALUES (

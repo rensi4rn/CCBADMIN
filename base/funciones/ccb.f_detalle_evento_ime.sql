@@ -79,7 +79,7 @@ BEGIN
         	--Sentencia de la insercion
         	insert into ccb.tdetalle_evento(
 			estado_reg,
-			catidad,
+			cantidad,
 			id_region_evento,
 			id_tipo_ministerio,
 			obs,
@@ -89,7 +89,7 @@ BEGIN
 			id_usuario_mod
           	) values(
 			'activo',
-			v_parametros.catidad,
+			v_parametros.cantidad,
 			v_parametros.id_region_evento,
 			v_parametros.id_tipo_ministerio,
 			v_parametros.obs,
@@ -145,7 +145,7 @@ BEGIN
         
 			--Sentencia de la modificacion
 			update ccb.tdetalle_evento set
-			catidad = v_parametros.catidad,
+			cantidad = v_parametros.cantidad,
 			id_region_evento = v_parametros.id_region_evento,
 			id_tipo_ministerio = v_parametros.id_tipo_ministerio,
 			obs = v_parametros.obs,

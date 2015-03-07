@@ -131,7 +131,7 @@ Phx.vista.MovimientoDinamico=Ext.extend(Phx.gridInterfaz,{
                                         inputType:'hidden',
                                         fieldLabel: 'Periodo',
                                         allowBlank: false,
-                                        gwidth: 200,
+                                        gwidth: 80,
                                         },
                                 type:'TextField',
                                 filters:{pfiltro:'desc_estado_periodo',type:'string'},

@@ -22,7 +22,7 @@ class MODDetalleEvento extends MODbase{
 		//Definicion de la lista del resultado del query
 		$this->captura('id_detalle_evento','int4');
 		$this->captura('estado_reg','varchar');
-		$this->captura('catidad','int4');
+		$this->captura('cantidad','int4');
 		$this->captura('id_region_evento','int4');
 		$this->captura('id_tipo_ministerio','int4');
 		$this->captura('obs','varchar');
@@ -50,7 +50,7 @@ class MODDetalleEvento extends MODbase{
 				
 		//Define los parametros para la funcion
 		$this->setParametro('estado_reg','estado_reg','varchar');
-		$this->setParametro('catidad','catidad','int4');
+		$this->setParametro('cantidad','cantidad','int4');
 		$this->setParametro('id_region_evento','id_region_evento','int4');
 		$this->setParametro('id_tipo_ministerio','id_tipo_ministerio','int4');
 		$this->setParametro('obs','obs','varchar');
@@ -72,7 +72,7 @@ class MODDetalleEvento extends MODbase{
 		//Define los parametros para la funcion
 		$this->setParametro('id_detalle_evento','id_detalle_evento','int4');
 		$this->setParametro('estado_reg','estado_reg','varchar');
-		$this->setParametro('catidad','catidad','int4');
+		$this->setParametro('cantidad','cantidad','int4');
 		$this->setParametro('id_region_evento','id_region_evento','int4');
 		$this->setParametro('id_tipo_ministerio','id_tipo_ministerio','int4');
 		$this->setParametro('obs','obs','varchar');

@@ -186,3 +186,42 @@ ALTER TABLE ccb.tculto
 
  
 /********************************************F-DEP-RAC-WF-0-08/03/2015*************************************/
+
+
+
+/********************************************I-DEP-RAC-WF-0-11/03/2015*************************************/
+
+
+--------------- SQL ---------------
+
+CREATE VIEW ccb.vevento_bautizo_santa_cena 
+AS 
+SELECT
+re.fecha_programada,
+re.estado,
+re.id_region_evento,
+re.id_casa_oracion,
+reg.nombre as nombre_region,
+co.nombre as nombre_co,
+deh.cantidad as cantidad_hemano,
+dee.cantidad as cantidad_hemana,
+ges.id_gestion,
+ges.gestion,
+deh.id_detalle_evento as id_detalle_evento_hermano,
+dee.id_detalle_evento as id_detalle_evento_hermana,
+ev.id_evento,
+ev.codigo,
+ev.nombre
+from ccb.tregion_evento re
+inner join ccb.tregion reg on reg.id_region = re.id_region
+inner join ccb.tcasa_oracion co on co.id_casa_oracion = re.id_casa_oracion
+inner join  ccb.tdetalle_evento deh on deh.id_region_evento = re.id_region_evento
+inner join ccb.ttipo_ministerio tm on tm.id_tipo_ministerio = deh.id_tipo_ministerio and tm.codigo = 'hermano'
+inner join  ccb.tdetalle_evento dee on dee.id_region_evento = re.id_region_evento
+inner join ccb.ttipo_ministerio tm2 on tm2.id_tipo_ministerio = dee.id_tipo_ministerio and tm2.codigo = 'hermana'
+inner join ccb.tevento ev on ev.id_evento = re.id_evento
+inner join ccb.tgestion ges on ges.id_gestion = re.id_gestion
+where ev.codigo = 'bautizo' and re.tipo_registro = 'detalle' ;
+
+
+/********************************************F-DEP-RAC-WF-0-11/03/2015*************************************/
