@@ -226,37 +226,15 @@ BEGIN
             
 		end;
 
-	/*********************************    
- 	#TRANSACCION:  'CCB_REGE_ELI'
- 	#DESCRIPCION:	Eliminacion de registros
- 	#AUTOR:		admin	
- 	#FECHA:		13-01-2013 14:31:26
-	***********************************/
-
-	elsif(p_transaccion='CCB_REGE_ELI')then
-
-		begin
-			--Sentencia de la eliminacion
-			delete from ccb.tregion_evento
-            where id_region_evento=v_parametros.id_region_evento;
-               
-            --Definicion de la respuesta
-            v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Eventos por Región eliminado(a)'); 
-            v_resp = pxp.f_agrega_clave(v_resp,'id_region_evento',v_parametros.id_region_evento::varchar);
-              
-            --Devuelve la respuesta
-            return v_resp;
-
-		end;
         
     /*********************************    
- 	#TRANSACCION:  'CCB_REGEBSC_ELI'
+ 	#TRANSACCION:  'CCB_REGE_ELI'
  	#DESCRIPCION:	Eliminacion de eventoscon su detalle
  	#AUTOR:		admin	
  	#FECHA:		13-01-2015 14:31:26
 	***********************************/
 
-	elsif(p_transaccion='CCB_REGEBSC_ELI')then
+	elsif(p_transaccion='CCB_REGE_ELI')then
 
 		begin
 			--Sentencia que elimina el detalle
@@ -411,7 +389,12 @@ BEGIN
               IF v_estado_periodo = 'cerrado' THEN
                   raise exception 'el periodo correspondiente se encuentra cerrado';
               END IF;
+              
+              IF  v_id_gestion is null THEN              
+                raise exception 'La casa de oración no tienen una gestión abierta';
+              END IF;
            
+      --  raise exception '...%',v_id_gestion;
             --desde la casa de oracion conseguimos la region
            select 
             co.id_region
