@@ -37,11 +37,17 @@ class ACTObrero extends ACTbase{
 		}
 		$this->res->imprimirRespuesta($this->res->generarJson());
 	}
+	
+	function modificarObreroMobile(){
+		$this->objFunc=$this->create('MODObrero');	
+		$this->res=$this->objFunc->modificarObreroMobile($this->objParam);
+		$this->res->imprimirRespuesta($this->res->generarJson());
+	}
 						
 	function eliminarObrero(){
-			$this->objFunc=$this->create('MODObrero');	
-		$this->res=$this->objFunc->eliminarObrero($this->objParam);
-		$this->res->imprimirRespuesta($this->res->generarJson());
+		$this->objFunc=$this->create('MODObrero');	
+	    $this->res=$this->objFunc->eliminarObrero($this->objParam);
+	    $this->res->imprimirRespuesta($this->res->generarJson());
 	}
 			
 }

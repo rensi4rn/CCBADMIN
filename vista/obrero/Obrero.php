@@ -253,7 +253,7 @@ Phx.vista.Obrero=Ext.extend(Phx.gridInterfaz,{
 			filters:{pfiltro:'per.telefono1',type:'string'},
 			id_grupo:1,
 			grid:true,
-			form:false
+			form:true
 		},
 		{
 			config:{
@@ -268,7 +268,7 @@ Phx.vista.Obrero=Ext.extend(Phx.gridInterfaz,{
 			filters:{pfiltro:'per.celuar1',type:'string'},
 			id_grupo:1,
 			grid:true,
-			form:false
+			form:true
 		},
 		{
 			config:{
@@ -283,7 +283,7 @@ Phx.vista.Obrero=Ext.extend(Phx.gridInterfaz,{
 			filters:{pfiltro:'per.correo',type:'string'},
 			id_grupo:1,
 			grid:true,
-			form:false
+			form:true
 		},
 		{
 			config:{

@@ -72,8 +72,8 @@ BEGIN
 			v_parametros.id_persona,
 			now(),
 			p_id_usuario,
-			null,
-			null,
+			now(),
+			p_id_usuario,
             v_parametros.id_casa_oracion
 							
 			)RETURNING id_obrero into v_id_obrero;
@@ -109,6 +109,9 @@ BEGIN
 			id_usuario_mod = p_id_usuario,
             id_casa_oracion = v_parametros.id_casa_oracion
 			where id_obrero=v_parametros.id_obrero;
+            
+                     
+            
                
 			--Definicion de la respuesta
             v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Obrero modificado(a)'); 
@@ -118,7 +121,44 @@ BEGIN
             return v_resp;
             
 		end;
+    /*********************************    
+ 	#TRANSACCION:  'CCB_UPDMOB_MOD'
+ 	#DESCRIPCION:	Modificacion de registros
+ 	#AUTOR:		admin	
+ 	#FECHA:		13-01-2013 12:24:54
+	***********************************/
 
+	elsif(p_transaccion='CCB_UPDMOB_MOD')then
+
+		begin
+			--Sentencia de la modificacion
+			update ccb.tobrero set			
+			fecha_mod = now(),
+			id_usuario_mod = p_id_usuario
+			where id_obrero=v_parametros.id_obrero;
+            
+            
+            --moficiamoslos dato de la persona
+            UPDATE segu.tpersona 
+                SET 
+                  id_usuario_mod = p_id_usuario,                 
+                  fecha_mod = now(),
+                  correo = v_parametros.correo,
+                  celular1 = v_parametros.celular1,
+                  telefono1 = v_parametros.telefono1
+                WHERE 
+                  id_persona = v_parametros.id_persona;
+            
+            
+               
+			--Definicion de la respuesta
+            v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Obrero modificado(a)'); 
+            v_resp = pxp.f_agrega_clave(v_resp,'id_obrero',v_parametros.id_obrero::varchar);
+               
+            --Devuelve la respuesta
+            return v_resp;
+            
+		end;
 	/*********************************    
  	#TRANSACCION:  'CCB_OBR_ELI'
  	#DESCRIPCION:	Eliminacion de registros

@@ -102,6 +102,28 @@ class MODObrero extends MODbase{
 		//Devuelve la respuesta
 		return $this->respuesta;
 	}
+	
+	function modificarObreroMobile(){
+		//Definicion de variables para ejecucion del procedimiento
+		$this->procedimiento='ccb.f_obrero_ime';
+		$this->transaccion='CCB_UPDMOB_MOD';
+		$this->tipo_procedimiento='IME';
+				
+		//Define los parametros para la funcion
+		$this->setParametro('id_obrero','id_obrero','int4');
+		$this->setParametro('id_persona','id_persona','int4');
+		$this->setParametro('telefono1','telefono1','varchar');
+		$this->setParametro('celular1','celular1','varchar');
+		$this->setParametro('correo','correo','varchar');
+		
+		
+		//Ejecuta la instruccion
+		$this->armarConsulta();
+		$this->ejecutarConsulta();
+
+		//Devuelve la respuesta
+		return $this->respuesta;
+	}
 			
 	function eliminarObrero(){
 		//Definicion de variables para ejecucion del procedimiento
