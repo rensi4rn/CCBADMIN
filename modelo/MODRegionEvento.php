@@ -124,7 +124,7 @@ class MODRegionEvento extends MODbase{
    function eliminarBautizoSantaCena(){
 		//Definicion de variables para ejecucion del procedimiento
 		$this->procedimiento='ccb.f_region_evento_ime';
-		$this->transaccion='CCB_REGEBSC_ELI';
+		$this->transaccion='CCB_REGE_ELI';
 		$this->tipo_procedimiento='IME';
 				
 		//Define los parametros para la funcion

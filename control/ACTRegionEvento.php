@@ -11,6 +11,7 @@ class ACTRegionEvento extends ACTbase{
 			
 	function listarRegionEvento(){
 		$this->objParam->defecto('ordenacion','id_region_evento');
+		
 
 		if($this->objParam->getParametro('id_region')!=''){
 			    	$this->objParam->addFiltro("rege.id_region = ".$this->objParam->getParametro('id_region'));	
@@ -38,6 +39,7 @@ class ACTRegionEvento extends ACTbase{
 
    function listarBautizoSantaCena(){
 		$this->objParam->defecto('ordenacion','fecha_programada');
+		$this->objParam->defecto('dir_ordenacion','DESC');
 
 		if($this->objParam->getParametro('id_region')!=''){
 			    	$this->objParam->addFiltro("eveid_region = ".$this->objParam->getParametro('id_region'));	
