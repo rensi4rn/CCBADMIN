@@ -156,24 +156,24 @@ BEGIN
             
             --Sentencia de la consulta
 			v_consulta:='SELECT 
-                            fecha_programada,
-                            estado,
-                            id_region_evento,
-                            id_casa_oracion,
-                            id_region,
-                            nombre_region,
-                            nombre_co,
-                            cantidad_hermano,
-                            cantidad_hermana,
-                            id_gestion,
-                            gestion,
-                            id_detalle_evento_hermano,
-                            id_detalle_evento_hermana,
-                            id_evento,
-                            codigo,
-                            nombre,
-                            id_usuario_mod,
-                            cuenta
+                            eve.fecha_programada,
+                            eve.estado,
+                            eve.id_region_evento,
+                            eve.id_casa_oracion,
+                            eve.id_region,
+                            eve.nombre_region,
+                            eve.nombre_co,
+                            eve.cantidad_hermano,
+                            eve.cantidad_hermana,
+                            eve.id_gestion,
+                            eve.gestion,
+                            eve.id_detalle_evento_hermano,
+                            eve.id_detalle_evento_hermana,
+                            eve.id_evento,
+                            eve.codigo,
+                            eve.nombre,
+                            eve.id_usuario_mod,
+                            eve.cuenta
                           FROM 
                             ccb.vevento_bautizo_santa_cena eve
                         '|| v_inner ||'

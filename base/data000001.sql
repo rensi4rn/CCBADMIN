@@ -576,3 +576,39 @@ select pxp.f_insert_trol_procedimiento_gui ('Administrador CCB', 'CCB_MOVDIN_SEL
 
 /********************************************F-DAT-RAC-CCB-0-15/03/2015********************************************/
 
+
+/********************************************I-DAT-RAC-CCB-0-04/04/2015********************************************/
+
+
+----------------------------------
+--COPY LINES TO data.sql FILE  
+---------------------------------
+
+select pxp.f_insert_tgui ('Movimientos', 'Movimientos', 'MOV', 'si', 1, 'sis_admin/vista/movimiento/Movimiento.php', 3, '', 'Movimiento', 'CCB');
+select pxp.f_insert_tgui ('Ingresos', 'Registro de ingresos', 'MOVING', 'si', 3, 'sis_admin/vista/movimiento/MovimientoIngreso.php', 3, '', 'MovimientoIngreso', 'CCB');
+select pxp.f_insert_tgui ('Egresos', 'Egresos', 'MOVEGRE', 'si', 4, 'sis_admin/vista/movimiento/MovimientoEgreso.php', 3, '', 'MovimientoEgreso', 'CCB');
+select pxp.f_insert_tprocedimiento ('CCB_REGEBSC_ELI', 'Eliminacion de eventoscon su detalle', 'si', '', '', 'ccb.f_region_evento_ime');
+select pxp.f_insert_tprocedimiento ('CCB_GENRESU_INS', 'genera resumen', 'si', '', '', 'ccb.f_region_evento_ime');
+select pxp.f_insert_tprocedimiento ('CCB_RNSC_INS', 'Insercion de registros de santa cena y bautizo', 'si', '', '', 'ccb.f_region_evento_ime');
+select pxp.f_insert_tprocedimiento ('CCB_RNSC_MOD', 'Modificacion de registros de santa cenas y bautizos', 'si', '', '', 'ccb.f_region_evento_ime');
+select pxp.f_insert_tprocedimiento ('CCB_REGESC_SEL', 'Consulta de santa cenas y bautizos', 'si', '', '', 'ccb.f_region_evento_sel');
+select pxp.f_insert_tprocedimiento ('CCB_REGESC_CONT', 'Conteo de registros', 'si', '', '', 'ccb.f_region_evento_sel');
+----------------------------------
+--COPY LINES TO dependencies.sql FILE  
+---------------------------------
+
+select pxp.f_insert_testructura_gui ('MOVING', 'MOVECO');
+select pxp.f_insert_testructura_gui ('MOVEGRE', 'MOVECO');
+select pxp.f_insert_tprocedimiento_gui ('CCB_GENRESU_INS', 'REVEN', 'no');
+select pxp.f_insert_tprocedimiento_gui ('CCB_GES_SEL', 'BATSACE', 'no');
+select pxp.f_insert_tprocedimiento_gui ('CCB_REGI_SEL', 'BATSACE', 'no');
+select pxp.f_insert_tprocedimiento_gui ('CCB_CAOR_SEL', 'BATSACE', 'no');
+select pxp.f_insert_tprocedimiento_gui ('CCB_EVEN_SEL', 'BATSACE', 'no');
+select pxp.f_insert_tprocedimiento_gui ('CCB_RNSC_INS', 'BATSACE', 'no');
+select pxp.f_insert_tprocedimiento_gui ('CCB_RNSC_MOD', 'BATSACE', 'no');
+select pxp.f_insert_tprocedimiento_gui ('CCB_REGEBSC_ELI', 'BATSACE', 'no');
+select pxp.f_insert_tprocedimiento_gui ('CCB_REGESC_SEL', 'BATSACE', 'no')
+
+/********************************************F-DAT-RAC-CCB-0-04/04/2015********************************************/
+
+

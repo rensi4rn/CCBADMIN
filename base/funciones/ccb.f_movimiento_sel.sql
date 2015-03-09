@@ -111,7 +111,170 @@ BEGIN
 			return v_consulta;
 
 		end;
-					
+	
+    /*********************************    
+ 	#TRANSACCION:  'CCB_MOVING_SEL'
+ 	#DESCRIPCION:	Consulta los movimientos ingresados
+ 	#AUTOR:		admin	
+ 	#FECHA:		16-03-2013 00:22:36
+	***********************************/
+
+	elsif(p_transaccion='CCB_MOVING_SEL')then
+     				
+    	begin
+    		--Sentencia de la consulta
+			v_consulta:='SELECT 
+                            mov.id_movimiento,
+                            mov.estado_reg,
+                            mov.tipo,
+                            mov.id_casa_oracion,
+                            mov.concepto,
+                            mov.obs,
+                            mov.fecha,
+                            mov.id_estado_periodo,
+                            mov.fecha_reg,
+                            mov.id_usuario_reg,
+                            mov.fecha_mod,
+                            mov.id_usuario_mod,
+                            mov.usr_reg,
+                            mov.usr_mod,
+                            mov.id_tipo_movimiento_mantenimiento,
+                            mov.id_movimiento_det_mantenimiento,
+                            mov.monto_mantenimiento,
+                            mov.id_tipo_movimiento_especial,
+                            mov.id_movimiento_det_especial,
+                            mov.monto_especial,
+                            mov.id_tipo_movimiento_piedad,
+                            mov.id_movimiento_det_piedad,
+                            mov.monto_piedad,
+                            mov.id_tipo_movimiento_construccion,
+                            mov.id_movimiento_det_construccion,
+                            mov.monto_construccion,
+                            mov.id_tipo_movimiento_viaje,
+                            mov.id_movimiento_det_viaje,
+                            mov.monto_viaje,
+                            mov.monto_dia,
+                            mov.id_obrero,
+                            mov.desc_obrero,
+                            mov.estado
+                          FROM 
+                            ccb.vmovimiento_ingreso mov
+                          WHERE ';
+			
+			--Definicion de la respuesta
+			v_consulta:=v_consulta||v_parametros.filtro;
+			v_consulta:=v_consulta||' order by ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
+            raise notice '>>  %  <<<', v_consulta;
+			--Devuelve la respuesta
+			return v_consulta;
+						
+		end;
+
+	/*********************************    
+ 	#TRANSACCION:  'CCB_MOVING_CONT'
+ 	#DESCRIPCION:	Conteo de registros
+ 	#AUTOR:		admin	
+ 	#FECHA:		16-03-2013 00:22:36
+	***********************************/
+
+	elsif(p_transaccion='CCB_MOVING_CONT')then
+
+		begin
+			--Sentencia de la consulta de conteo de registros
+			v_consulta:='select 
+                          count(mov.id_movimiento),
+                          sum(mov.monto_construccion) as total_construccion,
+                          sum(mov.monto_viaje) as total_viaje,
+                          sum(mov.monto_especial) as total_especial,
+                          sum(mov.monto_piedad) as total_piedad,
+                          sum(mov.monto_mantenimiento) as total_mantenimiento,
+                          sum(mov.monto_dia) as total_dia
+                          FROM ccb.vmovimiento_ingreso mov
+                        WHERE ';
+			
+			--Definicion de la respuesta		    
+			v_consulta:=v_consulta||v_parametros.filtro;
+
+			--Devuelve la respuesta
+			return v_consulta;
+
+		end;
+    
+    /*********************************    
+ 	#TRANSACCION:  'CCB_MOVEGRE_SEL'
+ 	#DESCRIPCION:	Consulta los movimientos egresos
+ 	#AUTOR:		admin	
+ 	#FECHA:		16-03-2013 00:22:36
+	***********************************/
+
+	elsif(p_transaccion='CCB_MOVEGRE_SEL')then
+     				
+    	begin
+       -- raise exception 'ssssss';
+    		--Sentencia de la consulta
+			v_consulta:='SELECT 
+                              mov.id_movimiento,
+                              mov.estado_reg,
+                              mov.tipo,
+                              mov.id_casa_oracion,
+                              mov.concepto,
+                              mov.obs,
+                              mov.fecha,
+                              mov.id_estado_periodo,
+                              mov.fecha_reg,
+                              mov.id_usuario_reg,
+                              mov.fecha_mod,
+                              mov.id_usuario_mod,
+                              mov.usr_reg,
+                              mov.usr_mod,
+                              mov.id_tipo_movimiento,
+                              mov.id_movimiento_det,
+                              mov.monto,
+                              mov.id_obrero,
+                              mov.desc_obrero,
+                              mov.estado,
+                              mov.tipo_documento,
+                              mov.num_documento,
+                              mov.desc_tipo_movimiento
+                            FROM 
+                              ccb.vmovimiento_egreso  mov
+                          WHERE ';
+			
+			--Definicion de la respuesta
+			v_consulta:=v_consulta||v_parametros.filtro;
+			v_consulta:=v_consulta||' order by ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
+            raise notice '>>  %  <<<', v_consulta;
+			--Devuelve la respuesta
+			return v_consulta;
+						
+		end;
+
+	/*********************************    
+ 	#TRANSACCION:  'CCB_MOVEGRE_CONT'
+ 	#DESCRIPCION:	Conteo de registros
+ 	#AUTOR:		admin	
+ 	#FECHA:		16-03-2013 00:22:36
+	***********************************/
+
+	elsif(p_transaccion='CCB_MOVEGRE_CONT')then
+
+		begin
+			--Sentencia de la consulta de conteo de registros
+			v_consulta:='select 
+                          count(mov.id_movimiento),
+                          sum(mov.monto) as total_monto
+                          FROM 
+                              ccb.vmovimiento_egreso  mov
+                        WHERE ';
+			
+			--Definicion de la respuesta		    
+			v_consulta:=v_consulta||v_parametros.filtro;
+
+			--Devuelve la respuesta
+			return v_consulta;
+
+		end;
+        			
 	  /*********************************
       #TRANSACCION: 'CCB_MOVDIN_SEL'
       #DESCRIPCION: coonsulta dinamica delos movimientos economicos

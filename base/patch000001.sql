@@ -364,3 +364,43 @@ ALTER TABLE ccb.tdetalle_evento
   RENAME COLUMN catidad TO cantidad;
  
 /***********************************F-SCP-RAC-CCB-2-11/03/2015****************************************/
+
+
+
+/***********************************I-SCP-RAC-CCB-2-03/04/2015****************************************/
+
+--------------- SQL ---------------
+
+ALTER TABLE ccb.tmovimiento
+  ADD COLUMN id_obrero INTEGER;
+
+COMMENT ON COLUMN ccb.tmovimiento.id_obrero
+IS 'persona resposble que lelva la colecta';
+
+
+--------------- SQL ---------------
+
+ALTER TABLE ccb.tmovimiento
+  ADD COLUMN estado VARCHAR(15) DEFAULT 'entregado' NOT NULL;
+
+COMMENT ON COLUMN ccb.tmovimiento.estado
+IS 'entregado, pendiente';
+
+--------------- SQL ---------------
+
+ALTER TABLE ccb.tmovimiento
+  ADD COLUMN tipo_documento VARCHAR(20);
+
+COMMENT ON COLUMN ccb.tmovimiento.tipo_documento
+IS 'factura o recibo';
+
+--------------- SQL ---------------
+
+ALTER TABLE ccb.tmovimiento
+  ADD COLUMN num_documento VARCHAR(30);
+
+COMMENT ON COLUMN ccb.tmovimiento.num_documento
+IS 'para egreso identifica el numero de factura o recibo';
+
+/***********************************F-SCP-RAC-CCB-2-03/04/2015****************************************/
+
