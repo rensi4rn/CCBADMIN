@@ -102,7 +102,7 @@ BEGIN
                v_inner = ' inner join ccb.tusuario_permiso uper on uper.id_usuario_asignado = '||p_id_usuario||'  and (uper.id_region = caor.id_region or  uper.id_casa_oracion = caor.id_casa_oracion) ';
             END IF;
 			--Sentencia de la consulta de conteo de registros
-			v_consulta:='select count(id_casa_oracion)
+			v_consulta:='select count(caor.id_casa_oracion)
 					    from ccb.tcasa_oracion caor
 					    inner join ccb.tregion reg on reg.id_region = caor.id_region
                         inner join param.tlugar lug on lug.id_lugar = caor.id_lugar
