@@ -156,7 +156,12 @@ BEGIN
                             mov.monto_dia,
                             mov.id_obrero,
                             mov.desc_obrero,
-                            mov.estado
+                            mov.estado,
+                            mov.desc_casa_oracion,
+                            mov.mes,
+                            mov.estado_periodo,
+                            mov.id_gestion,
+                            mov.gestion
                           FROM 
                             ccb.vmovimiento_ingreso mov
                           WHERE ';
@@ -164,7 +169,7 @@ BEGIN
 			--Definicion de la respuesta
 			v_consulta:=v_consulta||v_parametros.filtro;
 			v_consulta:=v_consulta||' order by ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
-            raise notice '>>  %  <<<', v_consulta;
+            --raise exception '>>  %  <<<', v_consulta;
 			--Devuelve la respuesta
 			return v_consulta;
 						
@@ -235,7 +240,12 @@ BEGIN
                               mov.estado,
                               mov.tipo_documento,
                               mov.num_documento,
-                              mov.desc_tipo_movimiento
+                              mov.desc_tipo_movimiento,
+                              mov.desc_casa_oracion,
+                              mov.mes,
+                              mov.estado_periodo,
+                              mov.id_gestion,
+                              mov.gestion
                             FROM 
                               ccb.vmovimiento_egreso  mov
                           WHERE ';

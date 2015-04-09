@@ -94,6 +94,14 @@ class MODMovimiento extends MODbase{
 		$this->captura('desc_obrero','text');
 		$this->captura('estado','varchar');
 		
+		$this->captura('desc_casa_oracion','varchar');
+		$this->captura('mes','varchar');
+		$this->captura('estado_periodo','varchar');
+		$this->captura('id_gestion','int4');
+		$this->captura('gestion','varchar');
+		
+		
+		
 		
 		
 		
@@ -141,6 +149,11 @@ class MODMovimiento extends MODbase{
 		$this->captura('tipo_documento','varchar');
 		$this->captura('num_documento','varchar');
 		$this->captura('desc_tipo_movimiento','varchar');
+		$this->captura('desc_casa_oracion','varchar');
+		$this->captura('mes','varchar');
+		$this->captura('estado_periodo','varchar');
+		$this->captura('id_gestion','int4');
+		$this->captura('gestion','varchar');
 		
 		//Ejecuta la instruccion
 		$this->armarConsulta();

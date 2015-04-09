@@ -12,7 +12,7 @@ header("content-type: text/javascript; charset=UTF-8");
 <script>
 Phx.vista.MovimientoIngreso=Ext.extend(Phx.gridInterfaz,{
 
-	constructor:function(config){
+	constructor: function(config){
 	    
 		this.maestro=config.maestro;
 		this.initButtons=[this.cmbTipo,this.cmbCasaOracion,this.cmbGestion,this.cmbEstadoPeriodo];
@@ -816,7 +816,7 @@ Phx.vista.MovimientoIngreso=Ext.extend(Phx.gridInterfaz,{
           var tb =this.tbar;
           Phx.vista.MovimientoIngreso.superclass.preparaMenu.call(this,n);
           console.log('data....' ,data)
-          if(data.tipo_reg=='summary'){
+          if(data.tipo_reg  == 'summary'){
                 this.getBoton('del').disable();
                 this.getBoton('edit').disable();
           }

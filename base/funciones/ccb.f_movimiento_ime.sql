@@ -35,6 +35,8 @@ DECLARE
     
     v_registros 			record;
     v_monto 				numeric;
+    v_id_estado_periodo		integer;
+    v_estado_periodo        varchar;
 			    
 BEGIN
 
@@ -136,7 +138,28 @@ BEGIN
 	elsif(p_transaccion='CCB_MOVING_INS')then
 					
         begin
-        	--Sentencia de la insercion
+        
+              select 
+                ep.estado_periodo,
+                ep.id_estado_periodo
+              into
+                v_estado_periodo,
+                v_id_estado_periodo
+              from ccb.testado_periodo ep 
+              where ep.id_casa_oracion = v_parametros.id_casa_oracion
+                   and  v_parametros.fecha::date BETWEEN  ep.fecha_ini::date and ep.fecha_fin::dATE;  
+              
+              
+              IF v_estado_periodo = 'cerrado' THEN
+                  raise exception 'el periodo correspondiente se encuentra cerrado';
+              END IF;
+        	
+            
+            
+            
+            
+            
+            --Sentencia de la insercion
         	insert into ccb.tmovimiento(
 			estado_reg,
 			tipo,
@@ -158,7 +181,7 @@ BEGIN
 			v_parametros.concepto,
 			v_parametros.obs,
 			v_parametros.fecha,
-			v_parametros.id_estado_periodo,
+			v_id_estado_periodo,
 			now(),
 			p_id_usuario,
 			now(),
@@ -229,6 +252,9 @@ BEGIN
 	elsif(p_transaccion='CCB_MOVEGRE_INS')then
 					
         begin
+        
+        
+        
         	--Sentencia de la insercion
         	insert into ccb.tmovimiento(
 			estado_reg,
@@ -339,6 +365,22 @@ BEGIN
 	elsif(p_transaccion='CCB_MOVING_MOD')then
 
 		begin
+              select 
+                ep.estado_periodo,
+                ep.id_estado_periodo
+              into
+                v_estado_periodo,
+                v_id_estado_periodo
+              from ccb.testado_periodo ep 
+              where ep.id_casa_oracion = v_parametros.id_casa_oracion
+                   and  v_parametros.fecha::date BETWEEN  ep.fecha_ini::date and ep.fecha_fin::dATE;  
+              
+              
+              IF v_estado_periodo = 'cerrado' THEN
+                  raise exception 'el periodo correspondiente se encuentra cerrado';
+              END IF;
+        
+        
 			--Sentencia de la modificacion
 			update ccb.tmovimiento set
               tipo = v_parametros.tipo,
@@ -346,7 +388,7 @@ BEGIN
               concepto = v_parametros.concepto,
               obs = v_parametros.obs,
               fecha = v_parametros.fecha,
-              id_estado_periodo = v_parametros.id_estado_periodo,
+              id_estado_periodo = v_id_estado_periodo,
               fecha_mod = now(),
               id_usuario_mod = p_id_usuario,
              id_obrero = v_parametros.id_obrero,
@@ -448,6 +490,22 @@ BEGIN
 	elsif(p_transaccion='CCB_MOV_ELI')then
 
 		begin
+        
+        
+              select 
+                ep.estado_periodo,
+                ep.id_estado_periodo
+              into
+                v_estado_periodo,
+                v_id_estado_periodo
+              from ccb.tmovimiento mov
+              inner join ccb.testado_periodo ep  on mov.id_estado_periodo = ep.id_estado_periodo
+              where mov.id_movimiento = v_parametros.id_movimiento;  
+              
+              
+              IF v_estado_periodo = 'cerrado' THEN
+                  raise exception 'No puede borrar el periodo correspondiente se encuentra cerrado';
+              END IF;
         
             delete from ccb.tmovimiento_det
             where id_movimiento=v_parametros.id_movimiento;
