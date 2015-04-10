@@ -18,7 +18,8 @@ class MODRegionEvento extends MODbase{
 		$this->procedimiento='ccb.f_region_evento_sel';
 		$this->transaccion='CCB_REGE_SEL';
 		$this->tipo_procedimiento='SEL';//tipo de transaccion
-				
+		
+		$this->setParametro('id_lugar','id_lugar','int4');		
 		//Definicion de la lista del resultado del query
 		$this->captura('id_region_evento','int4');
 		$this->captura('estado_reg','varchar');
@@ -39,12 +40,18 @@ class MODRegionEvento extends MODbase{
 		$this->captura('id_casa_oracion','integer');
 		$this->captura('desc_casa_oracion','varchar');
 		$this->captura('tipo_registro','varchar');
+		$this->captura('id_lugar','integer');
+		$this->captura('desc_lugar','varchar');
+		$this->captura('mes','varchar');
+		
+		
 		
 		
 		//Ejecuta la instruccion
 		$this->armarConsulta();
 		$this->ejecutarConsulta();
-		
+		//echo $this->getConsulta();
+		//exit;
 		//Devuelve la respuesta
 		return $this->respuesta;
 	}

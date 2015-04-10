@@ -30,6 +30,8 @@ DECLARE
 	v_nombre_funcion   	text;
 	v_resp				varchar;
     v_inner				varchar;
+    v_lugares	        varchar;
+    v_filtro_lugares    varchar;
 			    
 BEGIN
 
@@ -49,13 +51,38 @@ BEGIN
     	begin
     		
             v_inner = '';
+            v_lugares = '0';
+            v_filtro_lugares = '0=0 and';
             IF p_administrador != 1  THEN
             
-              v_inner = ' inner join ccb.tusuario_permiso uper on uper.id_usuario_asignado = '||p_id_usuario||'  and (uper.id_region = rege.id_region or  uper.id_casa_oracion = rege.id_casa_oracion) ';
+             -- v_inner = ' inner join ccb.tusuario_permiso uper on uper.id_usuario_asignado = '||p_id_usuario||'  and (uper.id_region = rege.id_region or  uper.id_casa_oracion = rege.id_casa_oracion) ';
             
             END IF;
             
+           -- raise exception '%',  pxp.f_existe_parametro(p_tabla,'id_lugar');
+            IF  pxp.f_existe_parametro(p_tabla,'id_lugar')  THEN
             
+                  WITH RECURSIVE lugar_rec (id_lugar, id_lugar_fk, nombre) AS (
+                    SELECT lug.id_lugar, id_lugar_fk, nombre
+                    FROM param.tlugar lug
+                    WHERE lug.id_lugar = v_parametros.id_lugar and lug.estado_reg = 'activo'
+                  UNION ALL
+                    SELECT lug2.id_lugar, lug2.id_lugar_fk, lug2.nombre
+                    FROM lugar_rec lrec 
+                    INNER JOIN param.tlugar lug2 ON lrec.id_lugar = lug2.id_lugar_fk
+                    where lug2.estado_reg = 'activo'
+                  )
+                SELECT  pxp.list(id_lugar::varchar) 
+                  into 
+                    v_lugares
+                FROM lugar_rec;
+                
+                
+                
+                v_filtro_lugares = ' lug.id_lugar in ('||v_lugares||') and ';
+           END IF; 
+            
+           --raise exception 'ssss %', v_parametros;
             --Sentencia de la consulta
 			v_consulta:='select
 						rege.id_region_evento,
@@ -76,27 +103,31 @@ BEGIN
                         reg.nombre as desc_region,
                         co.id_casa_oracion,
                         co.nombre as desc_casa_oracion,
-                        rege.tipo_registro	
+                        rege.tipo_registro,
+                        lug.id_lugar,
+                        lug.nombre as  desc_lugar,
+                        ep.mes	
 						from ccb.tregion_evento rege
                         inner join ccb.tgestion ges on ges.id_gestion = rege.id_gestion
                         inner join ccb.tregion reg on reg.id_region = rege.id_region
                         inner join ccb.tevento eve on eve.id_evento = rege.id_evento 
                         inner join ccb.tcasa_oracion co on co.id_casa_oracion = rege.id_casa_oracion
-						inner join segu.tusuario usu1 on usu1.id_usuario = rege.id_usuario_reg 
+						inner join segu.tusuario usu1 on usu1.id_usuario = rege.id_usuario_reg
+                        inner join param.tlugar lug on lug.id_lugar = co.id_lugar
+                        inner join ccb.testado_periodo ep   on  rege.fecha_programada::date BETWEEN  ep.fecha_ini::date and ep.fecha_fin::dATE 
                         '|| v_inner ||'
                         left join segu.tusuario usu2 on usu2.id_usuario = rege.id_usuario_mod
-                        where  ';
+                        where  '||v_filtro_lugares;
 			
 			--Definicion de la respuesta
 			v_consulta:=v_consulta||v_parametros.filtro;
 			v_consulta:=v_consulta||' order by ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
-
+            raise notice  '.. % ...', v_consulta;
 			--Devuelve la respuesta
 			return v_consulta;
 						
 		end;
-
-	/*********************************    
+    /*********************************    
  	#TRANSACCION:  'CCB_REGE_CONT'
  	#DESCRIPCION:	Conteo de registros
  	#AUTOR:		admin	
@@ -110,7 +141,7 @@ BEGIN
             v_inner = '';
             IF p_administrador != 1  THEN
             
-              v_inner = ' inner join ccb.tusuario_permiso uper on uper.id_usuario_asignado = '||p_id_usuario||'  and (uper.id_region = rege.id_region or  uper.id_casa_oracion = rege.id_casa_oracion) ';
+             -- v_inner = ' inner join ccb.tusuario_permiso uper on uper.id_usuario_asignado = '||p_id_usuario||'  and (uper.id_region = rege.id_region or  uper.id_casa_oracion = rege.id_casa_oracion) ';
             
             END IF;
             
@@ -121,7 +152,9 @@ BEGIN
                         inner join ccb.tregion reg on reg.id_region = rege.id_region
                         inner join ccb.tevento eve on eve.id_evento = rege.id_evento 
                         inner join ccb.tcasa_oracion co on co.id_casa_oracion = rege.id_casa_oracion
-						inner join segu.tusuario usu1 on usu1.id_usuario = rege.id_usuario_reg 
+						inner join segu.tusuario usu1 on usu1.id_usuario = rege.id_usuario_reg
+                        inner join param.tlugar lug on lug.id_lugar = co.id_lugar
+                        inner join ccb.testado_periodo ep   on  rege.fecha_programada::date BETWEEN  ep.fecha_ini::date and ep.fecha_fin::dATE 
                         '|| v_inner ||'
                         left join segu.tusuario usu2 on usu2.id_usuario = rege.id_usuario_mod
                         where ';
@@ -134,6 +167,7 @@ BEGIN
 			return v_consulta;
 
 		end;
+	
 					
 	/*********************************    
  	#TRANSACCION:  'CCB_REGESC_SEL'

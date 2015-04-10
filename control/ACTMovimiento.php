@@ -108,9 +108,16 @@ class ACTMovimiento extends ACTbase{
 	
 	
 	function listarMovimientoEgreso(){
-		$this->objParam->defecto('ordenacion','id_movimiento');
-
-		$this->objParam->defecto('dir_ordenacion','asc');
+		
+		
+		 if($this->objParam->getParametro('tipolist')=='mobile'){
+            $this->objParam->defecto('ordenacion','mov.fecha');
+            $this->objParam->defecto('dir_ordenacion','desc');
+         }	
+		 else{
+		    $this->objParam->defecto('ordenacion','id_movimiento');
+            $this->objParam->defecto('dir_ordenacion','asc');	
+		 }
 		
 		 if($this->objParam->getParametro('tipo')!=''){
                     $this->objParam->addFiltro("mov.tipo = ''".$this->objParam->getParametro('tipo')."''");   
@@ -123,6 +130,10 @@ class ACTMovimiento extends ACTbase{
          if($this->objParam->getParametro('id_casa_oracion')!=''){
                 $this->objParam->addFiltro("mov.id_casa_oracion = ".$this->objParam->getParametro('id_casa_oracion'));   
          }
+		 
+		 if($this->objParam->getParametro('id_gestion')!=''){
+                $this->objParam->addFiltro("mov.id_gestion = ".$this->objParam->getParametro('id_gestion'));   
+         }
         
 		
 		if($this->objParam->getParametro('tipoReporte')=='excel_grid' || $this->objParam->getParametro('tipoReporte')=='pdf_grid'){
@@ -133,19 +144,16 @@ class ACTMovimiento extends ACTbase{
 			
 			$this->res=$this->objFunc->listarMovimientoEgreso($this->objParam);
 		}
-
-
 		
-
-		//adicionar una fila al resultado con el summario
-		$temp = Array();
-		$temp['total_monto'] = $this->res->extraData['total_monto'];
-		$temp['tipo_reg'] = 'summary';
-		$temp['id_movimiento'] = 0;
-		
-		$this->res->total++;
-		
-		$this->res->addLastRecDatos($temp);
+		if($this->objParam->getParametro('tipolist')!='mobile'){
+	            //adicionar una fila al resultado con el summario
+				$temp = Array();
+				$temp['total_monto'] = $this->res->extraData['total_monto'];
+				$temp['tipo_reg'] = 'summary';
+				$temp['id_movimiento'] = 0;				
+				$this->res->total++;				
+				$this->res->addLastRecDatos($temp);		
+		}
 		$this->res->imprimirRespuesta($this->res->generarJson());
 	}
 	function listarMovimientoDinamico(){

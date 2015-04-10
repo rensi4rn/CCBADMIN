@@ -252,42 +252,56 @@ BEGIN
 	elsif(p_transaccion='CCB_MOVEGRE_INS')then
 					
         begin
-        
+            
+               select 
+                ep.estado_periodo,
+                ep.id_estado_periodo
+              into
+                v_estado_periodo,
+                v_id_estado_periodo
+              from ccb.testado_periodo ep 
+              where ep.id_casa_oracion = v_parametros.id_casa_oracion
+                   and  v_parametros.fecha::date BETWEEN  ep.fecha_ini::date and ep.fecha_fin::dATE;  
+              
+              
+              IF v_estado_periodo = 'cerrado' THEN
+                  raise exception 'el periodo correspondiente se encuentra cerrado';
+              END IF;
         
         
         	--Sentencia de la insercion
         	insert into ccb.tmovimiento(
-			estado_reg,
-			tipo,
-			id_casa_oracion,
-			concepto,
-			obs,
-			fecha,
-			id_estado_periodo,
-			fecha_reg,
-			id_usuario_reg,
-			fecha_mod,
-			id_usuario_mod,
-            id_obrero,
-            estado,
-            tipo_documento,
-            num_documento
+                estado_reg,
+                tipo,
+                id_casa_oracion,
+                concepto,
+                obs,
+                fecha,
+                id_estado_periodo,
+                fecha_reg,
+                id_usuario_reg,
+                fecha_mod,
+                id_usuario_mod,
+                id_obrero,
+                estado,
+                tipo_documento,
+                num_documento
           	) values(
-			'activo',
-			v_parametros.tipo,
-			v_parametros.id_casa_oracion,
-			v_parametros.concepto,
-			v_parametros.obs,
-			v_parametros.fecha,
-			v_parametros.id_estado_periodo,
-			now(),
-			p_id_usuario,
-			now(),
-			p_id_usuario,
-            v_parametros.id_obrero,
-            v_parametros.estado,
-            v_parametros.tipo_documento,
-            v_parametros.num_documento
+				'activo',
+                v_parametros.tipo,
+                v_parametros.id_casa_oracion,
+                v_parametros.concepto,
+                v_parametros.obs,
+                v_parametros.fecha,
+                v_id_estado_periodo,
+                now(),
+                p_id_usuario,
+                now(),
+                p_id_usuario,
+                v_parametros.id_obrero,
+                v_parametros.estado,
+                v_parametros.tipo_documento,
+                v_parametros.num_documento
 							
 			)RETURNING id_movimiento into v_id_movimiento;
             
@@ -311,7 +325,7 @@ BEGIN
                );
              
            
-			
+			--raise exception 'ssss  %', v_id_movimiento;
 			--Definicion de la respuesta
 			v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Movimientos almacenado(a) con exito (id_movimiento'||v_id_movimiento||')'); 
             v_resp = pxp.f_agrega_clave(v_resp,'id_movimiento',v_id_movimiento::varchar);
@@ -448,6 +462,23 @@ BEGIN
 	elsif(p_transaccion='CCB_MOVEGRE_MOD')then
 
 		begin
+              select 
+                ep.estado_periodo,
+                ep.id_estado_periodo
+              into
+                v_estado_periodo,
+                v_id_estado_periodo
+              from ccb.testado_periodo ep 
+              where ep.id_casa_oracion = v_parametros.id_casa_oracion
+                   and  v_parametros.fecha::date BETWEEN  ep.fecha_ini::date and ep.fecha_fin::dATE;  
+              
+              
+              IF v_estado_periodo = 'cerrado' THEN
+                  raise exception 'el periodo correspondiente se encuentra cerrado';
+              END IF;
+        
+        
+        
 			--Sentencia de la modificacion
 			update ccb.tmovimiento set
               tipo = v_parametros.tipo,
@@ -455,7 +486,7 @@ BEGIN
               concepto = v_parametros.concepto,
               obs = v_parametros.obs,
               fecha = v_parametros.fecha,
-              id_estado_periodo = v_parametros.id_estado_periodo,
+              id_estado_periodo = v_id_estado_periodo,
               fecha_mod = now(),
               id_usuario_mod = p_id_usuario,
              id_obrero = v_parametros.id_obrero,
