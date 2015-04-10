@@ -86,9 +86,11 @@ Phx.vista.Culto=Ext.extend(Phx.gridInterfaz,{
 				name: 'hora',
 				fieldLabel: 'hora',
 				allowBlank: true,
-				
+				minValue: '8:00 AM',
+                maxValue: '11:00 PM',
+                increment: 30,
 				gwidth: 100,
-				maxLength:8
+				format: 'H:i:s
 			},
 			type:'TimeField',
 			filters:{pfiltro:'cul.hora',type:'string'},

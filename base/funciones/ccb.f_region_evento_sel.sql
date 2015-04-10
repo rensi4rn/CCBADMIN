@@ -106,7 +106,8 @@ BEGIN
                         rege.tipo_registro,
                         lug.id_lugar,
                         lug.nombre as  desc_lugar,
-                        ep.mes	
+                        ep.mes,
+                        rege.hora	
 						from ccb.tregion_evento rege
                         inner join ccb.tgestion ges on ges.id_gestion = rege.id_gestion
                         inner join ccb.tregion reg on reg.id_region = rege.id_region

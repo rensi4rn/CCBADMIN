@@ -43,6 +43,7 @@ class MODRegionEvento extends MODbase{
 		$this->captura('id_lugar','integer');
 		$this->captura('desc_lugar','varchar');
 		$this->captura('mes','varchar');
+		$this->captura('hora','time');
 		
 		
 		
@@ -73,6 +74,7 @@ class MODRegionEvento extends MODbase{
 		$this->setParametro('id_region','id_region','int4');
 		$this->setParametro('id_casa_oracion','id_casa_oracion','integer');
 		$this->setParametro('tipo_registro','tipo_registro','varchar');
+		$this->setParametro('hora','hora','time');
 		
 
 		//Ejecuta la instruccion
@@ -99,6 +101,7 @@ class MODRegionEvento extends MODbase{
 		$this->setParametro('id_region','id_region','int4');
 		$this->setParametro('id_casa_oracion','id_casa_oracion','integer');
 		$this->setParametro('tipo_registro','tipo_registro','varchar');
+		$this->setParametro('hora','hora','time');
 		
 
 		//Ejecuta la instruccion

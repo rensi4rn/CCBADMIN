@@ -263,6 +263,23 @@ Phx.vista.RegionEvento=Ext.extend(Phx.gridInterfaz,{
 			form:true
 		},
 		{
+			config:{
+				name: 'hora',
+				fieldLabel: 'hora',
+				allowBlank: false,
+				minValue: '8:00 AM',
+                maxValue: '11:00 PM',
+                increment: 30,
+				gwidth: 100,
+				format: 'H:i:s'
+			},
+			type: 'TimeField',
+			filters: { pfiltro:'rege.hora', type:'string' },
+			id_grupo: 1,
+			grid: true,
+			form: true
+		},
+		{
 	       		config:{
 	       			name:'estado',
 	       			fieldLabel:'Estado',
@@ -387,8 +404,8 @@ Phx.vista.RegionEvento=Ext.extend(Phx.gridInterfaz,{
 		{name:'fecha_mod', type: 'date',dateFormat:'Y-m-d H:i:s.u'},
 		{name:'id_usuario_mod', type: 'numeric'},
 		{name:'usr_reg', type: 'string'},
-		{name:'usr_mod', type: 'string'},
-		'desc_gestion','desc_evento','desc_region','desc_casa_oracion'	
+		{name:'usr_mod', type: 'string'},'tipo_registro',
+		'hora','desc_gestion','desc_evento','desc_region','desc_casa_oracion','id_casa_oracion'	
 	],
 	
 	sortInfo:{
