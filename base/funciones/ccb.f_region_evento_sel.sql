@@ -235,7 +235,8 @@ BEGIN
                             eve.codigo,
                             eve.nombre,
                             eve.id_usuario_mod,
-                            eve.cuenta
+                            eve.cuenta,
+                            eve.hora
                           FROM 
                             ccb.vevento_bautizo_santa_cena eve
                         '|| v_inner ||'

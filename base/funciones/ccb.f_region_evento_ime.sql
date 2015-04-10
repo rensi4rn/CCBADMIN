@@ -389,6 +389,7 @@ BEGIN
                    and  v_parametros.fecha_programada::date BETWEEN  ep.fecha_ini::date and ep.fecha_fin::dATE;  
               
               
+              
               IF v_estado_periodo = 'cerrado' THEN
                   raise exception 'el periodo correspondiente se encuentra cerrado';
               END IF;
@@ -419,7 +420,8 @@ BEGIN
               fecha_mod,
               id_usuario_mod,
               id_casa_oracion,
-              tipo_registro
+              tipo_registro,
+              hora
           	) values(
               'activo',
               v_id_gestion,
@@ -432,7 +434,8 @@ BEGIN
               now(),
               p_id_usuario,
               v_parametros.id_casa_oracion,
-             'detalle'    
+             'detalle' ,
+             v_parametros.hora   
 							
 			)RETURNING id_region_evento into v_id_region_evento;
             
@@ -508,6 +511,9 @@ BEGIN
               where ep.id_casa_oracion = v_parametros.id_casa_oracion
                    and  v_parametros.fecha_programada::date BETWEEN  ep.fecha_ini::date and ep.fecha_fin::dATE;  
               
+              IF v_estado_periodo is null THEN              
+                 raise exception 'Verifique si la casa de oración tiene periodos activos (comuniquese con un administradorde sistema)';   
+              END IF;
               
               IF v_estado_periodo = 'cerrado' THEN
                   raise exception 'el periodo correspondiente se encuentra cerrado';
@@ -522,6 +528,7 @@ BEGIN
            where co.id_casa_oracion =  v_parametros.id_casa_oracion;
               
                
+            
               
               
 			--Sentencia de la modificacion
@@ -533,7 +540,8 @@ BEGIN
 			id_region = v_id_region,
 			fecha_mod = now(),
 			id_usuario_mod = p_id_usuario,
-            id_casa_oracion =  v_parametros.id_casa_oracion
+            id_casa_oracion =  v_parametros.id_casa_oracion,
+            hora = v_parametros.hora
 			where id_region_evento=v_parametros.id_region_evento;
             
             

@@ -190,6 +190,7 @@ class MODRegionEvento extends MODbase{
 		$this->captura('nombre','varchar');
 		$this->captura('id_usuario_mod','integer');
 		$this->captura('cuenta','varchar');
+		$this->captura('hora','time');
 		
 		
 		
@@ -222,7 +223,7 @@ class MODRegionEvento extends MODbase{
 		$this->setParametro('cantidad_hermana','cantidad_hermana','int4');
 		$this->setParametro('id_detalle_evento_hermano','id_detalle_evento_hermano','int4');
 		$this->setParametro('id_detalle_evento_hermana','id_detalle_evento_hermana','int4');
-		
+		$this->setParametro('hora','hora','time');
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();
@@ -250,7 +251,7 @@ class MODRegionEvento extends MODbase{
 		$this->setParametro('cantidad_hermana','cantidad_hermana','int4');
 		$this->setParametro('id_detalle_evento_hermano','id_detalle_evento_hermano','int4');
 		$this->setParametro('id_detalle_evento_hermana','id_detalle_evento_hermana','int4');
-		
+		$this->setParametro('hora','hora','time');
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();

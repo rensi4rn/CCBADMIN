@@ -256,6 +256,23 @@ Phx.vista.RegionEventoBSC=Ext.extend(Phx.gridInterfaz,{
 			form:true
 		},
 		{
+			config:{
+				name: 'hora',
+				fieldLabel: 'hora',
+				allowBlank: false,
+				minValue: '8:00 AM',
+                maxValue: '11:00 PM',
+                increment: 30,
+				gwidth: 100,
+				format: 'H:i:s'
+			},
+			type: 'TimeField',
+			filters: { pfiltro:'rege.hora', type:'string' },
+			id_grupo: 1,
+			grid: true,
+			form: true
+		},
+		{
 	       		config:{
 	       			name:'estado',
 	       			fieldLabel:'Estado',
@@ -337,7 +354,8 @@ Phx.vista.RegionEventoBSC=Ext.extend(Phx.gridInterfaz,{
 			    'id_detalle_evento_hermana',
 			    'id_evento',
 			    'codigo',
-			    'nombre'
+			    'nombre',
+			    'hora'
 		
 	],
 	
