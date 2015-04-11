@@ -54,6 +54,7 @@ Phx.vista.RepSaldos=Ext.extend(Phx.frmInterfaz,{
 				name: 'id_lugar',
 				fieldLabel: 'Lugar',
 				allowBlank: true,
+				forceSelection : true,
 				emptyText:'Lugar...',
 				store:new Ext.data.JsonStore(
 				{
@@ -96,6 +97,7 @@ Phx.vista.RepSaldos=Ext.extend(Phx.frmInterfaz,{
 				name: 'id_region',
 				fieldLabel: 'Region',
 				allowBlank: true,
+				forceSelection : true,
 				emptyText:'Region...',
 				store:new Ext.data.JsonStore(
 				{
@@ -138,6 +140,7 @@ Phx.vista.RepSaldos=Ext.extend(Phx.frmInterfaz,{
 				name: 'id_casa_oracion',
                 fieldLabel: 'Casa de Oración',
                 allowBlank: true,
+                forceSelection : true,
                 emptyText:'Casa...',
                 store:new Ext.data.JsonStore(
                 {
@@ -181,6 +184,7 @@ Phx.vista.RepSaldos=Ext.extend(Phx.frmInterfaz,{
                 name: 'id_tipo_movimiento',
                 fieldLabel: 'Colecta de',
                 allowBlank: true,
+                forceSelection : true,
                 emptyText:'Tipo de colecta...',
                 store:new Ext.data.JsonStore(
                 {
@@ -223,6 +227,7 @@ Phx.vista.RepSaldos=Ext.extend(Phx.frmInterfaz,{
                 fieldLabel: 'Obrero',
                 qtip: 'Hermano que lleva la colecta (cuando la entregue al tesorero el estado debe cambiar a entregado)',
                 allowBlank: true,
+                forceSelection : true,
                 emptyText:'Obrero...',
                 store:new Ext.data.JsonStore(
                 {

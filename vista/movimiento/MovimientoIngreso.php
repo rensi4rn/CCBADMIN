@@ -140,6 +140,7 @@ Phx.vista.MovimientoIngreso=Ext.extend(Phx.gridInterfaz,{
                     name: 'tipo',
                     fieldLabel: 'Tipo',
                     allowBlank: false,
+                    forceSelection : true,
                     emptyText:'Tipo...',
                     typeAhead: true,
                     triggerAction: 'all',
@@ -155,6 +156,7 @@ Phx.vista.MovimientoIngreso=Ext.extend(Phx.gridInterfaz,{
 	cmbCasaOracion:new Ext.form.ComboBox({
                 fieldLabel: 'Casa de Oración',
                 allowBlank: false,
+                forceSelection : true,
                 emptyText:'Casa...',
                 store:new Ext.data.JsonStore(
                 {
@@ -189,6 +191,7 @@ Phx.vista.MovimientoIngreso=Ext.extend(Phx.gridInterfaz,{
      cmbGestion:new Ext.form.ComboBox({
                 fieldLabel: 'Gestion',
                 allowBlank: false,
+                forceSelection : true,
                 emptyText:'Gestion...',
                 store:new Ext.data.JsonStore(
                 {
@@ -219,6 +222,7 @@ Phx.vista.MovimientoIngreso=Ext.extend(Phx.gridInterfaz,{
      cmbEstadoPeriodo:new Ext.form.ComboBox({
                 fieldLabel: 'Periodo',
                 allowBlank: false,
+                forceSelection : true,
                 emptyText:'Periodo...',
                 store:new Ext.data.JsonStore(
                 {
@@ -330,6 +334,7 @@ Phx.vista.MovimientoIngreso=Ext.extend(Phx.gridInterfaz,{
                 fieldLabel: 'Obrero',
                 qtip: 'Hermano que lleva la colecta (cuando la entregue al tesorero el estado debe cambiar a entregado)',
                 allowBlank: true,
+                forceSelection : true,
                 emptyText:'Obrero...',
                 store:new Ext.data.JsonStore(
                 {
