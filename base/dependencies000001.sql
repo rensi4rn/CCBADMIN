@@ -825,3 +825,162 @@ AS
         re.tipo_registro::text = 'detalle'::text;
         
 /********************************************F-DEP-RAC-WF-0-21/04/2015*************************************/
+
+
+
+/********************************************I-DEP-RAC-WF-0-01/05/2015*************************************/
+
+CREATE OR REPLACE VIEW ccb.vmovimiento_ingreso_x_colecta(
+    id_movimiento,
+    estado_reg,
+    tipo,
+    id_casa_oracion,
+    concepto,
+    obs,
+    fecha,
+    id_estado_periodo,
+    fecha_reg,
+    id_usuario_reg,
+    fecha_mod,
+    id_usuario_mod,
+    usr_reg,
+    usr_mod,
+    id_tipo_movimiento,
+    id_movimiento_det,
+    monto,
+    id_obrero,
+    desc_obrero,
+    estado,
+    tipo_documento,
+    num_documento,
+    desc_tipo_movimiento,
+    desc_casa_oracion,
+    mes,
+    estado_periodo,
+    id_gestion,
+    gestion,
+    id_region,
+    id_lugar)
+AS
+  SELECT mov.id_movimiento,
+         mov.estado_reg,
+         mov.tipo,
+         mov.id_casa_oracion,
+         mov.concepto,
+         mov.obs,
+         mov.fecha,
+         mov.id_estado_periodo,
+         mov.fecha_reg,
+         mov.id_usuario_reg,
+         mov.fecha_mod,
+         mov.id_usuario_mod,
+         usu1.cuenta AS usr_reg,
+         usu2.cuenta AS usr_mod,
+         tm1.id_tipo_movimiento,
+         md1.id_movimiento_det,
+         md1.monto,
+         mov.id_obrero,
+         o.nombre_completo1 AS desc_obrero,
+         mov.estado,
+         mov.tipo_documento,
+         mov.num_documento,
+         tm1.nombre AS desc_tipo_movimiento,
+         co.nombre AS desc_casa_oracion,
+         ep.mes,
+         ep.estado_periodo,
+         ges.id_gestion,
+         ges.gestion,
+         co.id_region,
+         co.id_lugar
+  FROM ccb.tmovimiento mov
+       JOIN ccb.tcasa_oracion co ON co.id_casa_oracion = mov.id_casa_oracion
+       JOIN ccb.testado_periodo ep ON ep.id_estado_periodo =
+         mov.id_estado_periodo
+       JOIN ccb.tgestion ges ON ges.id_gestion = ep.id_gestion
+       JOIN segu.tusuario usu1 ON usu1.id_usuario = mov.id_usuario_reg
+       JOIN segu.tusuario usu2 ON usu2.id_usuario = mov.id_usuario_mod
+       JOIN ccb.tmovimiento_det md1 ON md1.id_movimiento = mov.id_movimiento
+       JOIN ccb.ttipo_movimiento tm1 ON tm1.id_tipo_movimiento =
+         md1.id_tipo_movimiento
+       LEFT JOIN ccb.vobrero o ON o.id_obrero = mov.id_obrero
+  WHERE mov.tipo::text = 'ingreso'::text;
+  
+ 
+ 
+ CREATE OR REPLACE VIEW ccb.vmovimiento_egreso(
+    id_movimiento,
+    estado_reg,
+    tipo,
+    id_casa_oracion,
+    concepto,
+    obs,
+    fecha,
+    id_estado_periodo,
+    fecha_reg,
+    id_usuario_reg,
+    fecha_mod,
+    id_usuario_mod,
+    usr_reg,
+    usr_mod,
+    id_tipo_movimiento,
+    id_movimiento_det,
+    monto,
+    id_obrero,
+    desc_obrero,
+    estado,
+    tipo_documento,
+    num_documento,
+    desc_tipo_movimiento,
+    desc_casa_oracion,
+    mes,
+    estado_periodo,
+    id_gestion,
+    gestion,
+    id_region,
+    id_lugar)
+AS
+  SELECT mov.id_movimiento,
+         mov.estado_reg,
+         mov.tipo,
+         mov.id_casa_oracion,
+         mov.concepto,
+         mov.obs,
+         mov.fecha,
+         mov.id_estado_periodo,
+         mov.fecha_reg,
+         mov.id_usuario_reg,
+         mov.fecha_mod,
+         mov.id_usuario_mod,
+         usu1.cuenta AS usr_reg,
+         usu2.cuenta AS usr_mod,
+         tm1.id_tipo_movimiento,
+         md1.id_movimiento_det,
+         md1.monto,
+         mov.id_obrero,
+         o.nombre_completo1 AS desc_obrero,
+         mov.estado,
+         mov.tipo_documento,
+         mov.num_documento,
+         tm1.nombre AS desc_tipo_movimiento,
+         co.nombre AS desc_casa_oracion,
+         ep.mes,
+         ep.estado_periodo,
+         ges.id_gestion,
+         ges.gestion,
+         co.id_region,
+         co.id_lugar
+  FROM ccb.tmovimiento mov
+       JOIN ccb.tcasa_oracion co ON co.id_casa_oracion = mov.id_casa_oracion
+       JOIN ccb.testado_periodo ep ON ep.id_estado_periodo =
+         mov.id_estado_periodo
+       JOIN ccb.tgestion ges ON ges.id_gestion = ep.id_gestion
+       JOIN segu.tusuario usu1 ON usu1.id_usuario = mov.id_usuario_reg
+       JOIN segu.tusuario usu2 ON usu2.id_usuario = mov.id_usuario_mod
+       JOIN ccb.tmovimiento_det md1 ON md1.id_movimiento = mov.id_movimiento
+       JOIN ccb.ttipo_movimiento tm1 ON tm1.id_tipo_movimiento =
+         md1.id_tipo_movimiento
+       LEFT JOIN ccb.vobrero o ON o.id_obrero = mov.id_obrero
+  WHERE mov.tipo::text = 'egreso'::text;
+  
+   
+/********************************************F-DEP-RAC-WF-0-01/05/2015*************************************/

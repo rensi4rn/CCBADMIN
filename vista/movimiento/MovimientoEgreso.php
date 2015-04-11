@@ -43,6 +43,11 @@ Phx.vista.MovimientoEgreso=Ext.extend(Phx.gridInterfaz,{
 		    
 		},this);
 		
+		
+		
+		
+		
+		
 		this.cmbCasaOracion.on('select',function(cm,dat,num){
 		    this.cmbGestion.enable();
 		    this.cmbEstadoPeriodo.reset();
@@ -67,8 +72,58 @@ Phx.vista.MovimientoEgreso=Ext.extend(Phx.gridInterfaz,{
            this.fecha_min = dat.data.fecha_ini;
            this.fecha_max = dat.data.fecha_fin;
          },this);
+         
+         
+         this.Cmp.concepto.on('select',function(cm,dat,num){
+         	this.Cmp.tipo_documento.reset();
+         	
+		    if(dat.data.variable == 'contra_rendicion'){
+		      this.Cmp.tipo_documento.store.loadData(this.documentoContraRendicion)
+		    }
+		    if(dat.data.variable == 'egreso_traspaso'){
+		        
+		        this.Cmp.tipo_documento.store.loadData(this.documentoTrapaso)
+		    }
+		    if(dat.data.variable == 'operacion'){
+		        
+		        this.Cmp.tipo_documento.store.loadData(this.documentoEgreso)
+		    }
+		  
+		    
+		},this);
 		
 	},
+	dataIngreso : [
+                ['colecta_adultos', 'Colecta de Adultos'],
+                ['colecta_jovenes', 'Colecta de Jovenes'],
+                ['colecta_especial', 'Colecta Especial'],
+                ['saldo_inicial', 'Saldo Inicial'],
+                ['ingreso_trapaso', 'Ingreso por Trapaso']
+        
+        ] ,
+    dataEgreso : [
+                ['operacion', 'Operacion '],
+                ['egreso_traspaso', 'Egreso por Traspaso'],
+                ['contra_rendicion', 'Contra rendición'],
+                ['egreso_inicial_por_rendir', 'Saldo por Rendir (año pasado)']
+        
+        ],
+    
+     documentoEgreso: [
+                ['factura', 'Factura '],
+                ['recibo_bien', 'Recibo con retención de bienes'],
+                ['recibo_servicio', 'Recibo con retención de servicios'],
+                ['recibo_sin_retencion', 'Recibo sin retención']
+      ],
+	documentoContraRendicion: [
+                ['recibo_piedad', 'Recibo de Piedad'],
+                ['recibo', 'Recibo Especial']
+      ],
+	documentoTrapaso: [
+                ['recibo', 'Recibo de trapaso']
+     ],
+      
+      
 	validarFiltros:function(){
 	    if(this.cmbEstadoPeriodo.isValid()&& this.cmbCasaOracion.isValid()&& this.cmbGestion.isValid() && this.cmbTipo.isValid() ){
 	        return true;
@@ -83,6 +138,7 @@ Phx.vista.MovimientoEgreso=Ext.extend(Phx.gridInterfaz,{
 	    this.store.baseParams.tipo=this.cmbTipo.getValue();
 	    this.store.baseParams.id_casa_oracion=this.cmbCasaOracion.getValue();
         this.store.baseParams.id_estado_periodo=this.cmbEstadoPeriodo.getValue();
+         this.store.baseParams.tipo_concepto='egreso';
         this.store.load({params:{start:0, limit:this.tam_pag}}); 
             
         
@@ -346,7 +402,7 @@ Phx.vista.MovimientoEgreso=Ext.extend(Phx.gridInterfaz,{
                 name: 'id_tipo_movimiento',
                 fieldLabel: 'Colecta de',
                 allowBlank: false,
-                emptyText:'Lugar...',
+                emptyText:'Colecta de ...',
                 store:new Ext.data.JsonStore(
                 {
                     url: '../../sis_admin/control/TipoMovimiento/listarTipoMovimiento',
@@ -494,15 +550,21 @@ Phx.vista.MovimientoEgreso=Ext.extend(Phx.gridInterfaz,{
 				allowBlank: false,
 				anchor: '80%',
 				gwidth: 100,
-				store: ['factura','recibo'],
-				lazyRender: true,
-				mode: 'local',
-				maxLength:500
+				store:new Ext.data.ArrayStore({
+                            fields: ['variable', 'valor'],
+                            data : []}),
+				
+				maxLength:500,				
+				typeAhead: true,
+                triggerAction: 'all',
+                lazyRender:true,
+                displayField:'valor',
+                valueField:'variable',
+                mode: 'local'
 			},
 			type:'ComboBox',
 			filters:{pfiltro:'mov.tipo_documento',type:'string'},
 			bottom_filter: true,
-			valorInicial: 'factura',
 			id_grupo:1,
 			grid:true,
 			form:true
@@ -681,21 +743,6 @@ Phx.vista.MovimientoEgreso=Ext.extend(Phx.gridInterfaz,{
 	
 	arrayDefaultColumHidden:['fecha_reg','fecha_mod','usr_reg','estado_reg'],
 
-	dataIngreso : [
-                ['colecta_adultos', 'Colecta de Adultos'],
-                ['colecta_jovenes', 'Colecta de Jovenes'],
-                ['colecta_especial', 'Colecta Especial'],
-                ['saldo_inicial', 'Saldo Inicial'],
-                ['ingreso_trapaso', 'Ingreso por Trapaso']
-        
-        ] ,
-    dataEgreso : [
-                ['operacion', 'Operacion '],
-                ['egreso_traspaso', 'Egreso por Traspaso']
-        
-        ],
-    
-    
 	
 	sortInfo:{
 		field: 'id_movimiento',

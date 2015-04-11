@@ -136,6 +136,13 @@ class ACTMovimiento extends ACTbase{
          }
         
 		
+		if($this->objParam->getParametro('tipo_concepto')=='egreso'){
+                $this->objParam->addFiltro("mov.concepto  in (''operacion'',''egreso_traspaso'',''contra_rendicion'')");   
+        }
+		else{
+			    $this->objParam->addFiltro("mov.concepto  in (''rendicion'')");
+		}
+		
 		if($this->objParam->getParametro('tipoReporte')=='excel_grid' || $this->objParam->getParametro('tipoReporte')=='pdf_grid'){
 			$this->objReporte = new Reporte($this->objParam,$this);
 			$this->res = $this->objReporte->generarReporteListado('MODMovimiento','listarMovimientoEgreso');
@@ -202,6 +209,12 @@ class ACTMovimiento extends ACTbase{
 		} else{			
 			$this->res=$this->objFunc->modificarMovimientoEgreso($this->objParam);
 		}
+		$this->res->imprimirRespuesta($this->res->generarJson());
+	}
+	
+	function calcularSaldos(){
+		$this->objFunc=$this->create('MODMovimiento');	
+		$this->res=$this->objFunc->calcularSaldos($this->objParam);
 		$this->res->imprimirRespuesta($this->res->generarJson());
 	}
 	

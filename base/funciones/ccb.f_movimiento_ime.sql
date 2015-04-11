@@ -37,6 +37,20 @@ DECLARE
     v_monto 				numeric;
     v_id_estado_periodo		integer;
     v_estado_periodo        varchar;
+    v_id_gestion			integer;
+    v_ingreso_colectas     			numeric;
+    v_ingreso_traspasos    			numeric;
+    v_ingreso_inicial    			numeric;
+    v_ingreso_total    				numeric;
+    v_egreso_operacion    			numeric;
+    v_egreso_traspaso    			numeric;
+    v_egresos_contra_rendicion   	numeric;
+    v_egresos_rendidos    			numeric;
+    v_egreso_inicial_por_rendir   	numeric;
+    v_egreso_efectivo    			numeric;
+    v_saldo_efectivo    			numeric;
+    v_saldo_adm    					numeric;
+    v_sado_x_rendir    				numeric;
 			    
 BEGIN
 
@@ -155,7 +169,7 @@ BEGIN
               END IF;
         	
             
-            
+            --TODO si el concepto es saldo inicial verifica que solo exista uno por gestion para la casa de oración
             
             
             
@@ -252,6 +266,8 @@ BEGIN
 	elsif(p_transaccion='CCB_MOVEGRE_INS')then
 					
         begin
+              --TODO si el concepto es egreso_inicial_por_rendir   verificar que solo exista uno por gestion para la casa de oración
+            
             
                select 
                 ep.estado_periodo,
@@ -553,7 +569,159 @@ BEGIN
             return v_resp;
 
 		end;
-         
+    /*********************************    
+ 	#TRANSACCION:  'CCB_CALSALDO_IME'
+ 	#DESCRIPCION:	Calcular saldo a la fecha indicada
+ 	#AUTOR:		admin	
+ 	#FECHA:		16-03-2013 00:22:36
+	***********************************/
+
+	elsif(p_transaccion='CCB_CALSALDO_IME')then
+
+		begin
+            
+        
+            --obtenemos la gestion a partir  de la fecha
+            select 
+              g.id_gestion
+            into
+              v_id_gestion
+            from ccb.tgestion g  
+            where  v_parametros.fecha::date BETWEEN  ('01/01/'||g.gestion)::date and ('31/12/'||g.gestion)::date;
+            
+            
+            IF v_id_gestion is NULL THEN
+              raise exception 'No se encontro una gestión registrada para la fecha %',v_parametros.fecha; 
+            END IF;
+            
+            
+            
+            -- determinar el ingreso por traspasos     (v_ingreso_traspasos)
+            v_ingreso_traspasos =  ccb.f_determina_balance('ingreso_traspasos', 
+                                                                         v_id_gestion, 
+                                                                         v_parametros.fecha, 
+                                                                         v_parametros.id_lugar, 
+                                                                         v_parametros.id_casa_oracion, 
+                                                                         v_parametros.id_region, 
+                                                                         v_parametros.id_obrero, 
+                                                                         v_parametros.id_tipo_movimiento);
+             
+            -- determinar el ingreso po colectas       (v_ingreso_colectas)
+            v_ingreso_colectas =  ccb.f_determina_balance('ingreso_colectas', 
+                                                                         v_id_gestion, 
+                                                                         v_parametros.fecha, 
+                                                                         v_parametros.id_lugar, 
+                                                                         v_parametros.id_casa_oracion, 
+                                                                         v_parametros.id_region, 
+                                                                         v_parametros.id_obrero, 
+                                                                         v_parametros.id_tipo_movimiento);
+            
+            -- determinar el ingreso por salo inicial  (v_ingreso_inicial)
+             v_ingreso_inicial = ccb.f_determina_balance('ingreso_inicial', 
+                                                                         v_id_gestion, 
+                                                                         v_parametros.fecha, 
+                                                                         v_parametros.id_lugar, 
+                                                                         v_parametros.id_casa_oracion, 
+                                                                         v_parametros.id_region, 
+                                                                         v_parametros.id_obrero, 
+                                                                         v_parametros.id_tipo_movimiento);
+                                                                         
+                                                                         
+            -- determinar el total ingreso  (v_ingreso_total =  v_ingreso_traspasos + v_ingreso_colectas + v_ingreso_inicial )
+            
+            v_ingreso_total =  v_ingreso_traspasos + v_ingreso_colectas + v_ingreso_inicial;
+            
+            
+            
+            -- deterimnar egresos por operacion  (v_egreso_operacion)
+            v_egreso_operacion =  ccb.f_determina_balance('egreso_operacion', 
+                                                                         v_id_gestion, 
+                                                                         v_parametros.fecha, 
+                                                                         v_parametros.id_lugar, 
+                                                                         v_parametros.id_casa_oracion, 
+                                                                         v_parametros.id_region, 
+                                                                         v_parametros.id_obrero, 
+                                                                         v_parametros.id_tipo_movimiento);
+                                                                         
+            -- determina egresos por traspaso     (v_egreso_traspaso)
+            v_egreso_traspaso =  ccb.f_determina_balance('egreso_traspaso', 
+                                                                         v_id_gestion, 
+                                                                         v_parametros.fecha, 
+                                                                         v_parametros.id_lugar, 
+                                                                         v_parametros.id_casa_oracion, 
+                                                                         v_parametros.id_region, 
+                                                                         v_parametros.id_obrero, 
+                                                                         v_parametros.id_tipo_movimiento);
+                                                                         
+            -- determinar egresos contra rendicion (v_egresos_contra_rendicion)
+            v_egresos_contra_rendicion = ccb.f_determina_balance('egresos_contra_rendicion', 
+                                                                         v_id_gestion, 
+                                                                         v_parametros.fecha, 
+                                                                         v_parametros.id_lugar, 
+                                                                         v_parametros.id_casa_oracion, 
+                                                                         v_parametros.id_region, 
+                                                                         v_parametros.id_obrero, 
+                                                                         v_parametros.id_tipo_movimiento);
+            
+            -- determinar egresos rendidos  (v_egresos_rendidos)
+            v_egresos_rendidos =  ccb.f_determina_balance('egresos_rendidos', 
+                                                                         v_id_gestion, 
+                                                                         v_parametros.fecha, 
+                                                                         v_parametros.id_lugar, 
+                                                                         v_parametros.id_casa_oracion, 
+                                                                         v_parametros.id_region, 
+                                                                         v_parametros.id_obrero, 
+                                                                         v_parametros.id_tipo_movimiento);
+            
+            -- determinar egresos por saldo  contra rendicion  (v_egreso_inicial_por_rendir)
+            v_egreso_inicial_por_rendir = ccb.f_determina_balance('egreso_inicial_por_rendir', 
+                                                                         v_id_gestion, 
+                                                                         v_parametros.fecha, 
+                                                                         v_parametros.id_lugar, 
+                                                                         v_parametros.id_casa_oracion, 
+                                                                         v_parametros.id_region, 
+                                                                         v_parametros.id_obrero, 
+                                                                         v_parametros.id_tipo_movimiento);
+            
+            
+            
+            -- determinar total egresos efectivo  (v_egreso_efectivo = v_egreso_operacion + v_egresos_rendidos)
+            v_egreso_efectivo = v_egreso_operacion + v_egresos_rendidos;
+           
+            -- determinar saldo efectivo (v_saldo_efectivo =  v_ingreso_total - v_egreso_efectivo - v_egreso_traspaso)
+            v_saldo_efectivo =  v_ingreso_total - v_egreso_efectivo - v_egreso_traspaso;
+            
+            -- determinar saldo administracion (v_saldo_adm =  v_ingreso_total  - v_egreso_traspaso - v_egreso_operacion - v_egresos_contra_rendicion)
+            v_saldo_adm =  v_ingreso_total  - v_egreso_traspaso - v_egreso_operacion - v_egresos_contra_rendicion;
+            
+            -- determinar saldo que falta por rendir  (v_sado_x_rendir =  v_egreso_inicial_por_rendir + v_egresos_contra_rendicion  - v_egresos_rendidos )
+            v_sado_x_rendir =  v_egreso_inicial_por_rendir + v_egresos_contra_rendicion  - v_egresos_rendidos;
+            
+            
+            
+            --Definicion de la respuesta
+            v_resp = pxp.f_agrega_clave(v_resp,'mensaje','saldos calculados'); 
+            v_resp = pxp.f_agrega_clave(v_resp,'v_ingreso_colectas',v_ingreso_colectas::varchar);
+            v_resp = pxp.f_agrega_clave(v_resp,'v_ingreso_traspasos',v_ingreso_traspasos::varchar);
+            v_resp = pxp.f_agrega_clave(v_resp,'v_ingreso_inicial',v_ingreso_inicial::varchar);
+            v_resp = pxp.f_agrega_clave(v_resp,'v_ingreso_total',v_ingreso_total::varchar);
+            v_resp = pxp.f_agrega_clave(v_resp,'v_egreso_operacion',v_egreso_operacion::varchar);
+            v_resp = pxp.f_agrega_clave(v_resp,'v_egreso_traspaso',v_egreso_traspaso::varchar);
+            v_resp = pxp.f_agrega_clave(v_resp,'v_egresos_contra_rendicion',v_egresos_contra_rendicion::varchar);
+            v_resp = pxp.f_agrega_clave(v_resp,'v_egresos_rendidos',v_egresos_rendidos::varchar);
+            v_resp = pxp.f_agrega_clave(v_resp,'v_egreso_inicial_por_rendir',v_egreso_inicial_por_rendir::varchar);
+            v_resp = pxp.f_agrega_clave(v_resp,'v_egreso_efectivo',v_egreso_efectivo::varchar);
+            v_resp = pxp.f_agrega_clave(v_resp,'v_saldo_efectivo',v_saldo_efectivo::varchar);
+            v_resp = pxp.f_agrega_clave(v_resp,'v_saldo_adm',v_saldo_adm::varchar);
+            v_resp = pxp.f_agrega_clave(v_resp,'v_sado_x_rendir',v_sado_x_rendir::varchar);
+            
+            
+            
+              
+            --Devuelve la respuesta
+            return v_resp;
+
+		end;     
 	else
      
     	raise exception 'Transaccion inexistente: %',p_transaccion;

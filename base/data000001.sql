@@ -597,3 +597,12 @@ select pxp.f_insert_testructura_gui ('MOVEGRE', 'MOVECO');
 /********************************************F-DAT-RAC-CCB-0-04/04/2015********************************************/
 
 
+/********************************************I-DAT-RAC-CCB-0-01/05/2015********************************************/
+
+select pxp.f_insert_tgui ('Rendición', 'Rendición de dinero', 'MOVREN', 'si', 5, 'sis_admin/vista/movimiento/MovimientoRendicion.php', 3, '', 'MovimientoRendicion', 'CCB');
+select pxp.f_insert_tgui ('Reporte de Saldos', 'Reporte de Saldos', 'REPSAL', 'si', 6, 'sis_admin/vista/movimiento/RepSaldos.php', 3, '', 'RepSaldos', 'CCB');
+select pxp.f_insert_testructura_gui ('MOVREN', 'MOVECO');
+select pxp.f_insert_testructura_gui ('REPSAL', 'MOVECO');
+
+/********************************************F-DAT-RAC-CCB-0-01/05/2015********************************************/
+

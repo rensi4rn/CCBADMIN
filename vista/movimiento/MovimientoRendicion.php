@@ -10,16 +10,16 @@
 header("content-type: text/javascript; charset=UTF-8");
 ?>
 <script>
-Phx.vista.MovimientoEgreso=Ext.extend(Phx.gridInterfaz,{
+Phx.vista.MovimientoRendicion=Ext.extend(Phx.gridInterfaz,{
 
 	constructor:function(config){
 	    
 		this.maestro=config.maestro;
 		this.initButtons=[this.cmbTipo,this.cmbCasaOracion,this.cmbGestion,this.cmbEstadoPeriodo];
     	//llama al constructor de la clase padre
-		Phx.vista.MovimientoEgreso.superclass.constructor.call(this,config);
+		Phx.vista.MovimientoRendicion.superclass.constructor.call(this,config);
 		
-		this.getComponente('concepto').store.loadData(this.dataIngreso);
+		this.getComponente('concepto').store.loadData(this.dataEgreso);
 		this.cmbEstadoPeriodo.disable();
 		this.cmbGestion.disable();
 	
@@ -42,6 +42,11 @@ Phx.vista.MovimientoEgreso=Ext.extend(Phx.gridInterfaz,{
 		    
 		    
 		},this);
+		
+		
+		
+		
+		
 		
 		this.cmbCasaOracion.on('select',function(cm,dat,num){
 		    this.cmbGestion.enable();
@@ -67,8 +72,38 @@ Phx.vista.MovimientoEgreso=Ext.extend(Phx.gridInterfaz,{
            this.fecha_min = dat.data.fecha_ini;
            this.fecha_max = dat.data.fecha_fin;
          },this);
+         
+         
+         this.Cmp.concepto.on('select',function(cm,dat,num){
+         	this.Cmp.tipo_documento.reset();
+         	
+		    if(dat.data.variable == 'rendicion'){
+		        
+		        this.Cmp.tipo_documento.store.loadData(this.documentoEgreso)
+		    }
+		  
+		    
+		},this);
 		
 	},
+	dataIngreso : [] ,
+    dataEgreso : [['rendicion', 'Rendición']],
+    
+     documentoEgreso: [
+                ['factura', 'Factura '],
+                ['recibo_bien', 'Recibo con retención de bienes'],
+                ['recibo_servicio', 'Recibo con retención de servicios'],
+                ['recibo_sin_retencion', 'Recibo sin retención']
+      ],
+	documentoContraRendicion: [
+                ['recibo_piedad', 'Recibo de Piedad'],
+                ['recibo', 'Recibo Especial']
+      ],
+	documentoTrapaso: [
+                ['recibo', 'Recibo de trapaso']
+     ],
+      
+      
 	validarFiltros:function(){
 	    if(this.cmbEstadoPeriodo.isValid()&& this.cmbCasaOracion.isValid()&& this.cmbGestion.isValid() && this.cmbTipo.isValid() ){
 	        return true;
@@ -83,6 +118,7 @@ Phx.vista.MovimientoEgreso=Ext.extend(Phx.gridInterfaz,{
 	    this.store.baseParams.tipo=this.cmbTipo.getValue();
 	    this.store.baseParams.id_casa_oracion=this.cmbCasaOracion.getValue();
         this.store.baseParams.id_estado_periodo=this.cmbEstadoPeriodo.getValue();
+        this.store.baseParams.tipo_concepto='rendicion';
         this.store.load({params:{start:0, limit:this.tam_pag}}); 
             
         
@@ -95,7 +131,7 @@ Phx.vista.MovimientoEgreso=Ext.extend(Phx.gridInterfaz,{
             this.store.baseParams.tipo=this.cmbTipo.getValue();
             this.store.baseParams.id_casa_oracion=this.cmbCasaOracion.getValue();
             this.store.baseParams.id_estado_periodo=this.cmbEstadoPeriodo.getValue();
-            Phx.vista.MovimientoEgreso.superclass.onButtonAct.call(this);
+            Phx.vista.MovimientoRendicion.superclass.onButtonAct.call(this);
         }
     },
     
@@ -106,7 +142,7 @@ Phx.vista.MovimientoEgreso=Ext.extend(Phx.gridInterfaz,{
              alert('Especifique los filtros antes');
         }
          else{
-              Phx.vista.MovimientoEgreso.superclass.onButtonNew.call(this);
+              Phx.vista.MovimientoRendicion.superclass.onButtonNew.call(this);
               this.getComponente('fecha').setMinValue(this.fecha_min);
                this.getComponente('fecha').setMaxValue(this.fecha_max);
          }
@@ -119,7 +155,7 @@ Phx.vista.MovimientoEgreso=Ext.extend(Phx.gridInterfaz,{
              alert('Especifique los filtros antes');
         }
          else{
-              Phx.vista.MovimientoEgreso.superclass.onButtonEdit.call(this);
+              Phx.vista.MovimientoRendicion.superclass.onButtonEdit.call(this);
               this.getComponente('fecha').setMinValue(this.fecha_min);
               this.getComponente('fecha').setMaxValue(this.fecha_max);
          }
@@ -128,7 +164,7 @@ Phx.vista.MovimientoEgreso=Ext.extend(Phx.gridInterfaz,{
     
      loadValoresIniciales:function()
     {
-        Phx.vista.MovimientoEgreso.superclass.loadValoresIniciales.call(this);
+        Phx.vista.MovimientoRendicion.superclass.loadValoresIniciales.call(this);
         this.getComponente('tipo').setValue(this.cmbTipo.getValue());
         this.getComponente('id_casa_oracion').setValue(this.cmbCasaOracion.getValue());  
         this.getComponente('id_estado_periodo').setValue(this.cmbEstadoPeriodo.getValue());   
@@ -286,6 +322,23 @@ Phx.vista.MovimientoEgreso=Ext.extend(Phx.gridInterfaz,{
             form:true
         },
         {
+			config:{
+				name: 'fecha',
+				fieldLabel: 'fecha',
+				allowBlank: true,
+				anchor: '80%',
+				gwidth: 100,
+						format: 'd/m/Y', 
+						renderer:function (value,p,record){return value?value.dateFormat('d/m/Y'):''}
+			},
+			type:'DateField',
+			filters:{pfiltro:'mov.fecha',type:'date'},
+			bottom_filter: true,
+			id_grupo:1,
+			grid:true,
+			form:true
+		},
+        {
                 config:{
                     name:'concepto',
                     fieldLabel:'Concepto',
@@ -300,22 +353,26 @@ Phx.vista.MovimientoEgreso=Ext.extend(Phx.gridInterfaz,{
                     gwidth: 100,
                     renderer:function (value, p, record){
                         var dato='';
+                        dato = (dato==''&&value=='colecta_adultos')?'Colecta de Adultos':dato;
+                        dato = (dato==''&&value=='colecta_jovenes')?'Colecta de Jovenes':dato;
+                        dato = (dato==''&&value=='colecta_especial')?'Colecta Especial':dato;
+                        dato = (dato==''&&value=='colecta_especial')?'Colecta Especial':dato;
+                        dato = (dato==''&&value=='saldo_inicial')?'Saldo Inicial':dato;
+                        dato = (dato==''&&value=='ingreso_trapaso')?'Ingreso por Trapaso':dato;
                         dato = (dato==''&&value=='operacion')?'Operacion':dato;
                         dato = (dato==''&&value=='egreso_traspaso')?'Egreso por Traspaso':dato;
+                        dato = (dato==''&&value=='rendicion')?'Rendición':dato;
                         return String.format('{0}', dato);
                     },
             
-                    store: new Ext.data.ArrayStore({
+                    store:new Ext.data.ArrayStore({
                             fields: ['variable', 'valor'],
-                            data : [
-                                 ['operacion', 'Operacion '],
-                                 ['egreso_traspaso', 'Egreso por Traspaso']
-					        
-					        ]})
+                            data : []})
                 },
                 type:'ComboBox',
                 bottom_filter: true,
                 id_grupo:0,
+                valorInicial: 'rendicion',
                 filters:{   
                          type: 'string',
                          pfiltro:'mov.concepto' 
@@ -353,8 +410,8 @@ Phx.vista.MovimientoEgreso=Ext.extend(Phx.gridInterfaz,{
                 pageSize:50,
                 queryDelay:500,
                 listWidth:'280',
-                width:210,
-                gwidth:220,
+                width:200,
+                gwidth:120,
                 minChars:2
             },
             type:'ComboBox',
@@ -367,9 +424,9 @@ Phx.vista.MovimientoEgreso=Ext.extend(Phx.gridInterfaz,{
             config:{
                 name: 'id_obrero',
                 fieldLabel: 'Obrero',
-                qtip: 'Hermano resposable de hacer el pago',
-                allowBlank: false,
-                emptyText:'Lugar...',
+                qtip: 'Hermano que lleva la colecta (cuando la entregue al tesorero el estado debe cambiar a entregado)',
+                allowBlank: true,
+                emptyText:'Obrero...',
                 store:new Ext.data.JsonStore(
                 {
                     url: '../../sis_admin/control/Obrero/listarObrero',
@@ -400,7 +457,7 @@ Phx.vista.MovimientoEgreso=Ext.extend(Phx.gridInterfaz,{
                 queryDelay:500,
                 listWidth:'280',
                 width:210,
-                gwidth:220,
+                gwidth:160,
                 minChars:2
             },
             type:'ComboBox',
@@ -410,18 +467,17 @@ Phx.vista.MovimientoEgreso=Ext.extend(Phx.gridInterfaz,{
             grid:true,
             form:true
         },
-		{
+        {
 			config:{
-				name: 'fecha',
-				fieldLabel: 'fecha',
+				name: 'obs',
+				fieldLabel: 'obs',
 				allowBlank: true,
 				anchor: '80%',
-				gwidth: 100,
-						format: 'd/m/Y', 
-						renderer:function (value,p,record){return value?value.dateFormat('d/m/Y'):''}
+				gwidth: 230,
+				maxLength:500
 			},
-			type:'DateField',
-			filters:{pfiltro:'mov.fecha',type:'date'},
+			type:'TextArea',
+			filters:{pfiltro:'mov.obs',type:'string'},
 			bottom_filter: true,
 			id_grupo:1,
 			grid:true,
@@ -438,21 +494,12 @@ Phx.vista.MovimientoEgreso=Ext.extend(Phx.gridInterfaz,{
 			type:'Field',
 			form:true 
 		},
-		{
-			//configuracion del componente
-			config:{
-					labelSeparator:'',
-					inputType:'hidden',
-					name: 'id_tipo_movimiento'
-			},
-			type:'Field',
-			form:true 
-		},
+		
 		{
 			config:{
 				name: 'monto',
 				fieldLabel: 'Monto',
-				allowBlank: true,
+				allowBlank: false,
 				anchor: '80%',
 				gwidth: 100,
 				minValue :0,
@@ -469,6 +516,7 @@ Phx.vista.MovimientoEgreso=Ext.extend(Phx.gridInterfaz,{
 				
 			},
 			type:'NumberField',
+			valorInicial: 0,
 			bottom_filter: true,
 			filters:{pfiltro:'mov.monto',type:'numeric'},
 			id_grupo:1,
@@ -476,12 +524,61 @@ Phx.vista.MovimientoEgreso=Ext.extend(Phx.gridInterfaz,{
 			egrid:true,
 			form:true
 		},
-		
 		{
+			config:{
+				name: 'tipo_documento',
+				fieldLabel: 'Documento',
+				qtip: 'Documento de respaldo factura o recibo',
+				allowBlank: false,
+				anchor: '80%',
+				gwidth: 100,
+				store:new Ext.data.ArrayStore({
+                            fields: ['variable', 'valor'],
+                            data : [['factura', 'Factura '],
+                ['recibo_bien', 'Recibo con retención de bienes'],
+                ['recibo_servicio', 'Recibo con retención de servicios'],
+                ['recibo_sin_retencion', 'Recibo sin retención']]}),
+				
+				maxLength:500,				
+				typeAhead: true,
+                triggerAction: 'all',
+                lazyRender:true,
+                displayField:'valor',
+                valueField:'variable',
+                mode: 'local'
+			},
+			type:'ComboBox',
+			filters:{pfiltro:'mov.tipo_documento',type:'string'},
+			bottom_filter: true,
+			id_grupo:1,
+			grid:true,
+			form:true
+		},
+        
+		{
+			config:{
+				name: 'num_documento',
+				fieldLabel: 'Numero',
+				qtip: 'número del documento de respaldo o número de factura',
+				allowBlank: true,
+				anchor: '80%',
+				gwidth: 100,
+				maxLength:500
+			},
+			type:'TextField',
+			filters:{pfiltro:'mov.num_documento',type:'string'},
+			bottom_filter: true,
+			id_grupo:1,
+			grid:true,
+			form:true
+		},
+        
+       
+        {
 			config:{
 				name: 'estado',
 				fieldLabel: 'Estado',
-				qtip: 'Si el egeso ya esta repaldo con un recibo, pendiente si esta en la mano de algun hermano responsable y todavia no entrego el recibo o factura',
+				qtip: 'si la colecta fue entregado al tesorero el estado será entregado en caso contrario pendiente',
 				allowBlank: false,
 				anchor: '80%',
 				gwidth: 100,
@@ -498,63 +595,8 @@ Phx.vista.MovimientoEgreso=Ext.extend(Phx.gridInterfaz,{
 			grid:true,
 			form:true
 		},
+        
 		
-		{
-			config:{
-				name: 'tipo_documento',
-				fieldLabel: 'Documento',
-				qtip: 'Documento de respaldo factura o recibo',
-				allowBlank: false,
-				anchor: '80%',
-				gwidth: 100,
-				store: ['factura','recibo'],
-				lazyRender: true,
-				mode: 'local',
-				maxLength:500
-			},
-			type:'ComboBox',
-			filters:{pfiltro:'mov.tipo_documento',type:'string'},
-			bottom_filter: true,
-			valorInicial: 'factura',
-			id_grupo:1,
-			grid:true,
-			form:true
-		},
-        
-		{
-			config:{
-				name: 'num_documento',
-				fieldLabel: 'Numero',
-				qtip: 'número del documento de respaldo o número de factura',
-				allowBlank: true,
-				anchor: '80%',
-				gwidth: 100,
-				maxLength:500
-			},
-			type:'TextArea',
-			filters:{pfiltro:'mov.num_documento',type:'string'},
-			bottom_filter: true,
-			id_grupo:1,
-			grid:true,
-			form:true
-		},
-        
-		{
-			config:{
-				name: 'obs',
-				fieldLabel: 'obs',
-				allowBlank: true,
-				anchor: '80%',
-				gwidth: 100,
-				maxLength:500
-			},
-			type:'TextArea',
-			filters:{pfiltro:'mov.obs',type:'string'},
-			bottom_filter: true,
-			id_grupo:1,
-			grid:true,
-			form:true
-		},
 		
 		{
 			config:{
@@ -636,7 +678,7 @@ Phx.vista.MovimientoEgreso=Ext.extend(Phx.gridInterfaz,{
 	],
 	
 	title:'Movimientos',
-	ActSave:'../../sis_admin/control/Movimiento/insertarMovimientoEgeso',
+	ActSave:'../../sis_admin/control/Movimiento/insertarMovimientoEgreso',
 	ActDel:'../../sis_admin/control/Movimiento/eliminarMovimiento',
 	ActList:'../../sis_admin/control/Movimiento/listarMovimientoEgreso',
 	id_store:'id_movimiento',
@@ -661,7 +703,7 @@ Phx.vista.MovimientoEgreso=Ext.extend(Phx.gridInterfaz,{
         'total_monto','tipo_reg','tipo_documento','num_documento',
         'id_obrero',
 	    'desc_obrero',
-	    'estado'
+	    'estado','desc_tipo_movimiento'
 		
 		
 	],
@@ -669,9 +711,9 @@ Phx.vista.MovimientoEgreso=Ext.extend(Phx.gridInterfaz,{
 	preparaMenu:function(n){
           var data = this.getSelectedData();
           var tb =this.tbar;
-          Phx.vista.MovimientoEgreso.superclass.preparaMenu.call(this,n);
+          Phx.vista.MovimientoRendicion.superclass.preparaMenu.call(this,n);
           console.log('data....' ,data)
-          if(data.tipo_reg == 'summary'){
+          if(data.tipo_reg=='summary'){
                 this.getBoton('del').disable();
                 this.getBoton('edit').disable();
           }
@@ -686,9 +728,6 @@ Phx.vista.MovimientoEgreso=Ext.extend(Phx.gridInterfaz,{
 	
 	arrayDefaultColumHidden:['fecha_reg','fecha_mod','usr_reg','estado_reg'],
 
-	
-    
-    
 	
 	sortInfo:{
 		field: 'id_movimiento',

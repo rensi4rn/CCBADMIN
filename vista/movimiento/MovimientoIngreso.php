@@ -289,11 +289,11 @@ Phx.vista.MovimientoIngreso=Ext.extend(Phx.gridInterfaz,{
                 config:{
                     name:'concepto',
                     fieldLabel:'Concepto',
-                    allowBlank:false,
+                    allowBlank: false,
                     emptyText:'Tipo...',
                     typeAhead: true,
                     triggerAction: 'all',
-                    lazyRender:true,
+                    lazyRender: true,
                     displayField:'valor',
                     valueField:'variable',
                     mode: 'local',
@@ -302,7 +302,6 @@ Phx.vista.MovimientoIngreso=Ext.extend(Phx.gridInterfaz,{
                         var dato='';
                         dato = (dato==''&&value=='colecta_adultos')?'Colecta de Adultos':dato;
                         dato = (dato==''&&value=='colecta_jovenes')?'Colecta de Jovenes':dato;
-                        dato = (dato==''&&value=='colecta_especial')?'Colecta Especial':dato;
                         dato = (dato==''&&value=='colecta_especial')?'Colecta Especial':dato;
                         dato = (dato==''&&value=='saldo_inicial')?'Saldo Inicial':dato;
                         dato = (dato==''&&value=='ingreso_trapaso')?'Ingreso por Trapaso':dato;
@@ -331,7 +330,7 @@ Phx.vista.MovimientoIngreso=Ext.extend(Phx.gridInterfaz,{
                 fieldLabel: 'Obrero',
                 qtip: 'Hermano que lleva la colecta (cuando la entregue al tesorero el estado debe cambiar a entregado)',
                 allowBlank: true,
-                emptyText:'Lugar...',
+                emptyText:'Obrero...',
                 store:new Ext.data.JsonStore(
                 {
                     url: '../../sis_admin/control/Obrero/listarObrero',

@@ -401,6 +401,30 @@ class MODMovimiento extends MODbase{
 		//Devuelve la respuesta
 		return $this->respuesta;
 	}
+
+    function calcularSaldos(){
+		//Definicion de variables para ejecucion del procedimiento
+		$this->procedimiento='ccb.f_movimiento_ime';
+		$this->transaccion='CCB_CALSALDO_IME';
+		$this->tipo_procedimiento='IME';
+				
+		//Define los parametros para la funcion
+		$this->setParametro('fecha','fecha','date');
+		$this->setParametro('id_obrero','id_obrero','int4');
+		$this->setParametro('id_region','id_region','int4');
+		$this->setParametro('id_tipo_movimiento','id_tipo_movimiento','int4');
+		$this->setParametro('id_casa_oracion','id_casa_oracion','int4');
+		$this->setParametro('id_lugar','id_lugar','int4');
+		
+		
+
+		//Ejecuta la instruccion
+		$this->armarConsulta();
+		$this->ejecutarConsulta();
+
+		//Devuelve la respuesta
+		return $this->respuesta;
+	}
 		
 			
 }
