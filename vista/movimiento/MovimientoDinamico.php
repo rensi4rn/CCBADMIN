@@ -159,6 +159,7 @@ Phx.vista.MovimientoDinamico=Ext.extend(Phx.gridInterfaz,{
                                                 dato = (dato==''&&value=='saldo_inicial')?'Saldo Inicial':dato;
                                                 dato = (dato==''&&value=='ingreso_trapaso')?'Ingreso por Trapaso':dato;
                                                 dato = (dato==''&&value=='operacion')?'Operacion':dato;
+                                                dato = (dato==''&&value=='rendicion')?'Rendición':dato;
                                                 dato = (dato==''&&value=='egreso_traspaso')?'Egreso por Traspaso':dato;
                                                 
                                                 if(record.data.concepto=='Total'){

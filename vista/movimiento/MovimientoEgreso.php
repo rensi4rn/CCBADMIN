@@ -88,6 +88,12 @@ Phx.vista.MovimientoEgreso=Ext.extend(Phx.gridInterfaz,{
 		        
 		        this.Cmp.tipo_documento.store.loadData(this.documentoEgreso)
 		    }
+		    if(dat.data.variable == 'egreso_inicial_por_rendir'){
+		        
+		        this.Cmp.tipo_documento.store.loadData(this.documentoContraRendicion)
+		    }
+		    
+		    
 		  
 		    
 		},this);
@@ -100,7 +106,7 @@ Phx.vista.MovimientoEgreso=Ext.extend(Phx.gridInterfaz,{
                 ['saldo_inicial', 'Saldo Inicial'],
                 ['ingreso_trapaso', 'Ingreso por Trapaso']
         
-        ] ,
+        ] , 
     dataEgreso : [
                 ['operacion', 'Operacion '],
                 ['egreso_traspaso', 'Egreso por Traspaso'],
