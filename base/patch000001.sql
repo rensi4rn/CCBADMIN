@@ -425,6 +425,7 @@ ALTER TABLE ccb.tregion_evento
 
 ALTER TABLE ccb.tmovimiento
   ADD COLUMN id_ot INTEGER;
+  
 
 --------------- SQL ---------------
 
@@ -433,3 +434,9 @@ ALTER TABLE ccb.tmovimiento_det
   
 /***********************************F-SCP-RAC-CCB-2-16/05/2015****************************************/
 
+/***********************************I-SCP-RAC-CCB-2-20/05/2015****************************************/
+
+ALTER TABLE ccb.tmovimiento
+  ADD COLUMN id_tipo_movimiento_ot INTEGER;
+
+/***********************************F-SCP-RAC-CCB-2-20/05/2015****************************************/
