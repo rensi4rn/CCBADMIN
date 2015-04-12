@@ -84,7 +84,7 @@ Phx.vista.MovimientoRendicion=Ext.extend(Phx.gridInterfaz,{
 		  
 		    
 		},this);
-		
+		this.iniciarEventos();
 	},
 	dataIngreso : [] ,
     dataEgreso : [['rendicion', 'Rendición']],
@@ -134,7 +134,28 @@ Phx.vista.MovimientoRendicion=Ext.extend(Phx.gridInterfaz,{
             Phx.vista.MovimientoRendicion.superclass.onButtonAct.call(this);
         }
     },
-    
+     iniciarEventos:function(){
+		
+		//Eventos
+		
+		this.Cmp.concepto.on('change', 
+		   function(cmb){
+		   	console.log('valor ..', cmb.getValue())
+		   	  if(cmb.getValue() == 'rendicion'){
+		   	  	this.mostrarComponente(this.Cmp.id_concepto_ingas)
+		   	  	this.Cmp.id_concepto_ingas.allowBlank = false;
+		   	  }
+		   	  else{
+		   	  	this.ocultarComponente(this.Cmp.id_concepto_ingas)
+		   	  	this.Cmp.id_concepto_ingas.allowBlank = true;
+		   	  	this.Cmp.id_concepto_ingas.reset();
+		   	  }
+		   	
+		   },this);	
+		
+		
+		
+	},
     onButtonNew:function(){
         
         
@@ -144,7 +165,9 @@ Phx.vista.MovimientoRendicion=Ext.extend(Phx.gridInterfaz,{
          else{
               Phx.vista.MovimientoRendicion.superclass.onButtonNew.call(this);
               this.getComponente('fecha').setMinValue(this.fecha_min);
-               this.getComponente('fecha').setMaxValue(this.fecha_max);
+              this.getComponente('fecha').setMaxValue(this.fecha_max);
+              this.mostrarComponente(this.Cmp.id_concepto_ingas)
+		   	  this.Cmp.id_concepto_ingas.allowBlank = false;
          }
         
     },
@@ -158,6 +181,15 @@ Phx.vista.MovimientoRendicion=Ext.extend(Phx.gridInterfaz,{
               Phx.vista.MovimientoRendicion.superclass.onButtonEdit.call(this);
               this.getComponente('fecha').setMinValue(this.fecha_min);
               this.getComponente('fecha').setMaxValue(this.fecha_max);
+              if(this.Cmp.id_concepto_ingas.getValue() == 'rendicion'){
+		   	  	this.mostrarComponente(this.Cmp.id_concepto_ingas)
+		   	  	this.Cmp.id_concepto_ingas.allowBlank = false;
+		   	  }
+		   	  else{
+		   	  	 this.ocultarComponente(this.Cmp.id_concepto_ingas)
+		   	  	 this.Cmp.id_concepto_ingas.allowBlank = true;
+		   	  	 this.Cmp.id_concepto_ingas.reset();
+		   	  }
          }
         
     },
@@ -429,7 +461,7 @@ Phx.vista.MovimientoRendicion=Ext.extend(Phx.gridInterfaz,{
                 name: 'id_obrero',
                 fieldLabel: 'Obrero',
                 qtip: 'Hermano que lleva la colecta (cuando la entregue al tesorero el estado debe cambiar a entregado)',
-                allowBlank: true,
+                allowBlank: false,
                 forceSelection : true,
                 emptyText:'Obrero...',
                 store:new Ext.data.JsonStore(
@@ -469,6 +501,54 @@ Phx.vista.MovimientoRendicion=Ext.extend(Phx.gridInterfaz,{
             bottom_filter: true,
             filters:{pfiltro:'mov.desc_obrero',type:'string'},
             id_grupo:1,
+            grid:true,
+            form:true
+        },
+                           
+        {
+            config:{
+                name: 'id_concepto_ingas',
+                fieldLabel: 'Concepto Gasto',
+                allowBlank: true,
+                emptyText: 'Concepto Ingreso Gasto...',
+                store: new Ext.data.JsonStore({
+                         url: '../../sis_parametros/control/ConceptoIngas/listarConceptoIngas',
+                         id: 'id_concepto_ingas',
+                         root: 'datos',
+                         sortInfo:{
+                            field: 'desc_ingas',
+                            direction: 'ASC'
+                    },
+                    totalProperty: 'total',
+                    fields: ['id_concepto_ingas','tipo','desc_ingas','movimiento','desc_partida','id_grupo_ots','filtro_ot','requiere_ot'],
+                    // turn on remote sorting
+                    remoteSort: true,
+                    baseParams:{par_filtro:'desc_ingas',movimiento:'gasto'}
+                    }),
+                valueField: 'id_concepto_ingas',
+                displayField: 'desc_ingas',
+                gdisplayField:'nombre_ingas',
+                tpl:'<tpl for="."><div class="x-combo-list-item"><p><b>{desc_ingas}</b></p><p>TIPO: {tipo}</p></div></tpl>',
+                hiddenName: 'id_concepto_ingas',
+                forceSelection:true,
+                typeAhead: false,
+                triggerAction: 'all',
+                lazyRender:true,
+                mode:'remote',
+                pageSize: 20,
+                queryDelay:1000,
+                listWidth:600,
+                resizable:true,
+                anchor:'80%', 
+                gwidth: 200,      
+                renderer:function(value, p, record){return String.format('{0}', record.data['desc_ingas']);}
+            },
+            type:'ComboBox',
+            id_grupo:0,
+            filters:{   
+                        pfiltro:'desc_ingas',
+                        type:'string'
+                    },
             grid:true,
             form:true
         },
@@ -583,12 +663,16 @@ Phx.vista.MovimientoRendicion=Ext.extend(Phx.gridInterfaz,{
 			config:{
 				name: 'estado',
 				fieldLabel: 'Estado',
-				qtip: 'si la colecta fue entregado al tesorero el estado será entregado en caso contrario pendiente',
+				qtip: 'Pendiente si todavia no fue entregado el recibo o factura al terorero, os egresos solamente validaods cuando se entrega la factura o recibo originales',
 				allowBlank: false,
 				anchor: '80%',
 				gwidth: 100,
 				store: ['pendiente','entregado'],
-				lazyRender: true,
+				allowBlank: false,
+				typeAhead: true,
+	       		triggerAction: 'all',
+	       		lazyRender:true,
+	       		forceSelection : true,
 				mode: 'local',
 				maxLength:500
 			},
@@ -600,7 +684,26 @@ Phx.vista.MovimientoRendicion=Ext.extend(Phx.gridInterfaz,{
 			grid:true,
 			form:true
 		},
-        
+        {
+            config:{
+                    name:'id_ot',
+                    fieldLabel: 'Objetivo (OT)',
+                    qtip: 'Si las colecta tiene un objetivo es especifico',
+                    sysorigen:'sis_contabilidad',
+	       		    origen:'OT',
+                    allowBlank:true,
+                    gwidth:200,
+                    anchor: '80%',
+   				    listWidth: 350,
+                    renderer:function(value, p, record){return String.format('{0}', record.data['desc_orden']);}
+            
+            },
+            type:'ComboRec',
+            id_grupo:0,
+            filters:{pfiltro:'mov.desc_orden',type:'string'},
+            grid:true,
+            form:true
+        },
 		
 		
 		{
@@ -708,7 +811,7 @@ Phx.vista.MovimientoRendicion=Ext.extend(Phx.gridInterfaz,{
         'total_monto','tipo_reg','tipo_documento','num_documento',
         'id_obrero',
 	    'desc_obrero',
-	    'estado','desc_tipo_movimiento'
+	    'estado','desc_tipo_movimiento','id_ot','desc_orden','id_concepto_ingas','desc_ingas'
 		
 		
 	],

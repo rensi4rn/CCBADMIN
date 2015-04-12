@@ -269,6 +269,26 @@ Phx.vista.RepSaldos=Ext.extend(Phx.frmInterfaz,{
             grid:true,
             form:true
         },
+        {
+            config:{
+                    name:'id_ot',
+                    fieldLabel: 'Objetivo (OT)',
+                    qtip: 'Si las colecta tiene un objetivo es especifico',
+                    sysorigen:'sis_contabilidad',
+	       		    origen:'OT',
+                    allowBlank:true,
+                    gwidth:200,
+                     width:210,
+   				    listWidth: 350,
+                    renderer:function(value, p, record){return String.format('{0}', record.data['desc_orden']);}
+            
+            },
+            type:'ComboRec',
+            id_grupo:0,
+            filters:{pfiltro:'mov.desc_orden',type:'string'},
+            grid:true,
+            form:true
+        },
 		  
 
     ],

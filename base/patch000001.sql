@@ -418,3 +418,18 @@ ALTER TABLE ccb.tregion_evento
 /***********************************F-SCP-RAC-CCB-2-20/04/2015****************************************/
 
  
+/***********************************I-SCP-RAC-CCB-2-16/05/2015****************************************/
+
+ 
+ --------------- SQL ---------------
+
+ALTER TABLE ccb.tmovimiento
+  ADD COLUMN id_ot INTEGER;
+
+--------------- SQL ---------------
+
+ALTER TABLE ccb.tmovimiento_det
+  ADD COLUMN id_concepto_ingas INTEGER;
+  
+/***********************************F-SCP-RAC-CCB-2-16/05/2015****************************************/
+

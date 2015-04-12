@@ -187,7 +187,9 @@ BEGIN
 			fecha_mod,
 			id_usuario_mod,
             id_obrero,
-            estado
+            estado,
+            id_ot,
+            id_tipo_movimiento_ot
           	) values(
 			'activo',
 			v_parametros.tipo,
@@ -201,7 +203,9 @@ BEGIN
 			now(),
 			p_id_usuario,
             v_parametros.id_obrero,
-            v_parametros.estado
+            v_parametros.estado,
+            v_parametros.id_ot,
+            v_parametros.id_tipo_movimiento_ot
 							
 			)RETURNING id_movimiento into v_id_movimiento;
             
@@ -301,7 +305,8 @@ BEGIN
                 id_obrero,
                 estado,
                 tipo_documento,
-                num_documento
+                num_documento,
+                id_ot
           	) values(
 				'activo',
                 v_parametros.tipo,
@@ -317,7 +322,8 @@ BEGIN
                 v_parametros.id_obrero,
                 v_parametros.estado,
                 v_parametros.tipo_documento,
-                v_parametros.num_documento
+                v_parametros.num_documento,
+                v_parametros.id_ot
 							
 			)RETURNING id_movimiento into v_id_movimiento;
             
@@ -329,7 +335,8 @@ BEGIN
                 estado_reg,
                 id_tipo_movimiento,
                 id_movimiento,
-                monto
+                monto,
+                id_concepto_ingas
               ) 
               VALUES (
                 p_id_usuario,
@@ -337,7 +344,8 @@ BEGIN
                 'activo',
                 v_parametros.id_tipo_movimiento,
                 v_id_movimiento,
-                COALESCE(v_parametros.monto,0)
+                COALESCE(v_parametros.monto,0),
+                v_parametros.id_concepto_ingas
                );
              
            
@@ -422,7 +430,9 @@ BEGIN
               fecha_mod = now(),
               id_usuario_mod = p_id_usuario,
              id_obrero = v_parametros.id_obrero,
-             estado = v_parametros.estado
+             estado = v_parametros.estado,
+             id_ot = v_parametros.id_ot,
+             id_tipo_movimiento_ot = v_parametros.id_tipo_movimiento_ot
 			where id_movimiento=v_parametros.id_movimiento;
             
             
@@ -508,14 +518,16 @@ BEGIN
              id_obrero = v_parametros.id_obrero,
              estado = v_parametros.estado,
              tipo_documento = v_parametros.tipo_documento,
-             num_documento = v_parametros.num_documento
+             num_documento = v_parametros.num_documento,
+             id_ot = v_parametros.id_ot
 			where id_movimiento=v_parametros.id_movimiento;
             
             
             update ccb.tmovimiento_det set
 			 monto = COALESCE(v_parametros.monto,0),
 			 fecha_mod = now(),
-			 id_usuario_mod = p_id_usuario
+			 id_usuario_mod = p_id_usuario,
+             id_concepto_ingas = v_parametros.id_concepto_ingas
 			where id_movimiento_det=v_parametros.id_movimiento_det;
             
             
@@ -604,7 +616,8 @@ BEGIN
                                                                          v_parametros.id_casa_oracion, 
                                                                          v_parametros.id_region, 
                                                                          v_parametros.id_obrero, 
-                                                                         v_parametros.id_tipo_movimiento);
+                                                                         v_parametros.id_tipo_movimiento, 
+                                                                         v_parametros.id_ot);
              
             -- determinar el ingreso po colectas       (v_ingreso_colectas)
             v_ingreso_colectas =  ccb.f_determina_balance('ingreso_colectas', 
@@ -614,7 +627,8 @@ BEGIN
                                                                          v_parametros.id_casa_oracion, 
                                                                          v_parametros.id_region, 
                                                                          v_parametros.id_obrero, 
-                                                                         v_parametros.id_tipo_movimiento);
+                                                                         v_parametros.id_tipo_movimiento, 
+                                                                         v_parametros.id_ot);
             
             -- determinar el ingreso por salo inicial  (v_ingreso_inicial)
              v_ingreso_inicial = ccb.f_determina_balance('ingreso_inicial', 
@@ -624,7 +638,8 @@ BEGIN
                                                                          v_parametros.id_casa_oracion, 
                                                                          v_parametros.id_region, 
                                                                          v_parametros.id_obrero, 
-                                                                         v_parametros.id_tipo_movimiento);
+                                                                         v_parametros.id_tipo_movimiento, 
+                                                                         v_parametros.id_ot);
                                                                          
                                                                          
             -- determinar el total ingreso  (v_ingreso_total =  v_ingreso_traspasos + v_ingreso_colectas + v_ingreso_inicial )
@@ -641,7 +656,8 @@ BEGIN
                                                                          v_parametros.id_casa_oracion, 
                                                                          v_parametros.id_region, 
                                                                          v_parametros.id_obrero, 
-                                                                         v_parametros.id_tipo_movimiento);
+                                                                         v_parametros.id_tipo_movimiento, 
+                                                                         v_parametros.id_ot);
                                                                          
             -- determina egresos por traspaso     (v_egreso_traspaso)
             v_egreso_traspaso =  ccb.f_determina_balance('egreso_traspaso', 
@@ -651,7 +667,8 @@ BEGIN
                                                                          v_parametros.id_casa_oracion, 
                                                                          v_parametros.id_region, 
                                                                          v_parametros.id_obrero, 
-                                                                         v_parametros.id_tipo_movimiento);
+                                                                         v_parametros.id_tipo_movimiento, 
+                                                                         v_parametros.id_ot);
                                                                          
             -- determinar egresos contra rendicion (v_egresos_contra_rendicion)
             v_egresos_contra_rendicion = ccb.f_determina_balance('egresos_contra_rendicion', 
@@ -661,7 +678,8 @@ BEGIN
                                                                          v_parametros.id_casa_oracion, 
                                                                          v_parametros.id_region, 
                                                                          v_parametros.id_obrero, 
-                                                                         v_parametros.id_tipo_movimiento);
+                                                                         v_parametros.id_tipo_movimiento, 
+                                                                         v_parametros.id_ot);
             
             -- determinar egresos rendidos  (v_egresos_rendidos)
             v_egresos_rendidos =  ccb.f_determina_balance('egresos_rendidos', 
@@ -671,7 +689,8 @@ BEGIN
                                                                          v_parametros.id_casa_oracion, 
                                                                          v_parametros.id_region, 
                                                                          v_parametros.id_obrero, 
-                                                                         v_parametros.id_tipo_movimiento);
+                                                                         v_parametros.id_tipo_movimiento, 
+                                                                         v_parametros.id_ot);
             
             -- determinar egresos por saldo  contra rendicion  (v_egreso_inicial_por_rendir)
             v_egreso_inicial_por_rendir = ccb.f_determina_balance('egreso_inicial_por_rendir', 
@@ -681,7 +700,8 @@ BEGIN
                                                                          v_parametros.id_casa_oracion, 
                                                                          v_parametros.id_region, 
                                                                          v_parametros.id_obrero, 
-                                                                         v_parametros.id_tipo_movimiento);
+                                                                         v_parametros.id_tipo_movimiento, 
+                                                                         v_parametros.id_ot);
             
             
             

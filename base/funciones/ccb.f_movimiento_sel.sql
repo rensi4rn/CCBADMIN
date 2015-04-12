@@ -161,7 +161,11 @@ BEGIN
                             mov.mes,
                             mov.estado_periodo,
                             mov.id_gestion,
-                            mov.gestion
+                            mov.gestion,
+                            mov.id_ot,
+                            COALESCE(mov.desc_orden,'''') as desc_orden,
+                            mov.id_tipo_movimiento_ot,
+                            COALESCE(mov.nombre_tipo_mov_ot,'''') as nombre_tipo_mov_ot
                           FROM 
                             ccb.vmovimiento_ingreso mov
                           WHERE ';
@@ -172,6 +176,8 @@ BEGIN
             --raise exception '>>  %  <<<', v_consulta;
 			--Devuelve la respuesta
 			return v_consulta;
+            
+            
 						
 		end;
 
@@ -245,7 +251,11 @@ BEGIN
                               mov.mes,
                               mov.estado_periodo,
                               mov.id_gestion,
-                              mov.gestion
+                              mov.gestion,
+                              mov.id_ot,
+                              COALESCE(mov.desc_orden,'''') as desc_orden,
+                              mov.id_concepto_ingas,
+                              COALESCE(mov.desc_ingas,'''') as desc_ingas
                             FROM 
                               ccb.vmovimiento_egreso  mov
                           WHERE ';

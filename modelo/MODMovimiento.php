@@ -99,6 +99,11 @@ class MODMovimiento extends MODbase{
 		$this->captura('estado_periodo','varchar');
 		$this->captura('id_gestion','int4');
 		$this->captura('gestion','varchar');
+		$this->captura('id_ot','integer');
+		$this->captura('desc_orden','varchar');
+		$this->captura('id_tipo_movimiento_ot','integer');
+		$this->captura('nombre_tipo_mov_ot','varchar');
+		
 		
 		
 		
@@ -154,6 +159,10 @@ class MODMovimiento extends MODbase{
 		$this->captura('estado_periodo','varchar');
 		$this->captura('id_gestion','int4');
 		$this->captura('gestion','varchar');
+		$this->captura('id_ot','integer');
+		$this->captura('desc_orden','varchar');
+		$this->captura('id_concepto_ingas','integer');
+		$this->captura('desc_ingas','varchar');
 		
 		//Ejecuta la instruccion
 		$this->armarConsulta();
@@ -274,17 +283,17 @@ class MODMovimiento extends MODbase{
 		$this->setParametro('concepto','concepto','varchar');
 		$this->setParametro('obs','obs','text');
 		$this->setParametro('fecha','fecha','date');
-		$this->setParametro('id_estado_periodo','id_estado_periodo','int4');
-		
-		
+		$this->setParametro('id_estado_periodo','id_estado_periodo','int4');		
 		$this->setParametro('monto_mantenimiento','monto_mantenimiento','numeric');
 		$this->setParametro('monto_piedad','monto_piedad','numeric');
 		$this->setParametro('monto_construccion','monto_construccion','numeric');
 		$this->setParametro('monto_viaje','monto_viaje','numeric');
-		$this->setParametro('monto_especial','monto_especial','numeric');
-		
+		$this->setParametro('monto_especial','monto_especial','numeric');		
 		$this->setParametro('id_obrero','id_obrero','int4');
 		$this->setParametro('estado','estado','varchar');
+		$this->setParametro('id_ot','id_ot','int4');
+		$this->setParametro('id_tipo_movimiento_ot','id_tipo_movimiento_ot','int4');
+		
 		
 
 		//Ejecuta la instruccion
@@ -309,8 +318,7 @@ class MODMovimiento extends MODbase{
 		$this->setParametro('concepto','concepto','varchar');
 		$this->setParametro('obs','obs','text');
 		$this->setParametro('fecha','fecha','date');
-		$this->setParametro('id_estado_periodo','id_estado_periodo','int4');
-		
+		$this->setParametro('id_estado_periodo','id_estado_periodo','int4');		
 		$this->setParametro('id_movimiento_det_mantenimiento','id_movimiento_det_mantenimiento','int4');
 		$this->setParametro('monto_mantenimiento','monto_mantenimiento','numeric');
 		$this->setParametro('id_movimiento_det_piedad','id_movimiento_det_piedad','int4');
@@ -320,10 +328,12 @@ class MODMovimiento extends MODbase{
 		$this->setParametro('id_movimiento_det_viaje','id_movimiento_det_viaje','int4');
 		$this->setParametro('monto_viaje','monto_viaje','numeric');
 		$this->setParametro('id_movimiento_det_especial','id_movimiento_det_especial','int4');
-		$this->setParametro('monto_especial','monto_especial','numeric');
-		
+		$this->setParametro('monto_especial','monto_especial','numeric');		
 		$this->setParametro('id_obrero','id_obrero','int4');
 		$this->setParametro('estado','estado','varchar');
+		$this->setParametro('id_ot','id_ot','int4');
+		$this->setParametro('id_tipo_movimiento_ot','id_tipo_movimiento_ot','int4');
+		
 		
 
 		//Ejecuta la instruccion
@@ -360,6 +370,8 @@ class MODMovimiento extends MODbase{
 		
 		$this->setParametro('id_obrero','id_obrero','int4');
 		$this->setParametro('estado','estado','varchar');
+		$this->setParametro('id_ot','id_ot','int4');
+		$this->setParametro('id_concepto_ingas','id_concepto_ingas','int4');
 		
 
 		//Ejecuta la instruccion
@@ -392,6 +404,8 @@ class MODMovimiento extends MODbase{
 		$this->setParametro('num_documento','num_documento','varchar');
 		$this->setParametro('id_obrero','id_obrero','int4');
 		$this->setParametro('estado','estado','varchar');
+		$this->setParametro('id_ot','id_ot','int4');
+		$this->setParametro('id_concepto_ingas','id_concepto_ingas','int4');
 		
 
 		//Ejecuta la instruccion
@@ -415,6 +429,7 @@ class MODMovimiento extends MODbase{
 		$this->setParametro('id_tipo_movimiento','id_tipo_movimiento','int4');
 		$this->setParametro('id_casa_oracion','id_casa_oracion','int4');
 		$this->setParametro('id_lugar','id_lugar','int4');
+		$this->setParametro('id_ot','id_ot','int4');
 		
 		
 

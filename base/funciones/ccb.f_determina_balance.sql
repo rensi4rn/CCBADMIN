@@ -8,7 +8,8 @@ CREATE OR REPLACE FUNCTION ccb.f_determina_balance (
   p_id_casa_oracion integer,
   p_id_region integer,
   p_id_obrero integer,
-  p_id_tipo_movimiento integer
+  p_id_tipo_movimiento integer,
+  p_id_ot integer
 )
 RETURNS numeric AS
 $body$
@@ -73,6 +74,18 @@ BEGIN
              v_filtro = v_filtro||'  AND mov.id_obrero = '||p_id_obrero::varchar||' ';
           ELSE
              v_filtro = '  mov.id_obrero = '||p_id_obrero::varchar||' ';
+          END IF;
+          
+           v_sw = TRUE;
+    
+    END IF;
+    
+     IF p_id_ot is not NULL THEN
+          
+          IF v_sw THEN
+             v_filtro = v_filtro||'  AND mov.id_ot = '||p_id_ot::varchar||' ';
+          ELSE
+             v_filtro = '  mov.id_ot = '||p_id_ot::varchar||' ';
           END IF;
           
            v_sw = TRUE;

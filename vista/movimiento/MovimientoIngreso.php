@@ -67,6 +67,8 @@ Phx.vista.MovimientoIngreso=Ext.extend(Phx.gridInterfaz,{
            this.fecha_min = dat.data.fecha_ini;
            this.fecha_max = dat.data.fecha_fin;
          },this);
+         
+         this.iniciarEventos();
 		
 	},
 	validarFiltros:function(){
@@ -99,6 +101,28 @@ Phx.vista.MovimientoIngreso=Ext.extend(Phx.gridInterfaz,{
         }
     },
     
+    iniciarEventos:function(){
+		
+		//Eventos
+		
+		this.Cmp.id_ot.on('change', 
+		   function(cmb){
+		   	  if(cmb.getValue()){
+		   	  	this.mostrarComponente(this.Cmp.id_tipo_movimiento_ot)
+		   	  	this.Cmp.id_tipo_movimiento_ot.allowBlank = false;
+		   	  }
+		   	  else{
+		   	  	this.ocultarComponente(this.Cmp.id_tipo_movimiento_ot)
+		   	  	this.Cmp.id_tipo_movimiento_ot.allowBlank = true;
+		   	  	this.Cmp.id_tipo_movimiento_ot.reset();
+		   	  }
+		   	
+		   },this);	
+		
+		
+		
+	},
+    
     onButtonNew:function(){
         
         
@@ -108,7 +132,8 @@ Phx.vista.MovimientoIngreso=Ext.extend(Phx.gridInterfaz,{
          else{
               Phx.vista.MovimientoIngreso.superclass.onButtonNew.call(this);
               this.getComponente('fecha').setMinValue(this.fecha_min);
-               this.getComponente('fecha').setMaxValue(this.fecha_max);
+              this.getComponente('fecha').setMaxValue(this.fecha_max);
+              this.ocultarComponente(this.Cmp.id_tipo_movimiento_ot)
          }
         
     },
@@ -122,6 +147,18 @@ Phx.vista.MovimientoIngreso=Ext.extend(Phx.gridInterfaz,{
               Phx.vista.MovimientoIngreso.superclass.onButtonEdit.call(this);
               this.getComponente('fecha').setMinValue(this.fecha_min);
               this.getComponente('fecha').setMaxValue(this.fecha_max);
+             
+		   	  if(this.Cmp.id_ot.getValue()){
+		   	  	this.mostrarComponente(this.Cmp.id_tipo_movimiento_ot)
+		   	  	this.Cmp.id_tipo_movimiento_ot.allowBlank = false;
+		   	  }
+		   	  else{
+		   	  	 this.ocultarComponente(this.Cmp.id_tipo_movimiento_ot)
+		   	  	 this.Cmp.id_tipo_movimiento_ot.allowBlank = true;
+		   	  	 this.Cmp.id_tipo_movimiento_ot.reset();
+		   	  }
+		   	
+		   
          }
         
     },
@@ -306,6 +343,7 @@ Phx.vista.MovimientoIngreso=Ext.extend(Phx.gridInterfaz,{
                         var dato='';
                         dato = (dato==''&&value=='colecta_adultos')?'Colecta de Adultos':dato;
                         dato = (dato==''&&value=='colecta_jovenes')?'Colecta de Jovenes':dato;
+                        dato = (dato==''&&value=='reunion_juventud')?'Reunión de Juventud':dato;
                         dato = (dato==''&&value=='colecta_especial')?'Colecta Especial':dato;
                         dato = (dato==''&&value=='saldo_inicial')?'Saldo Inicial':dato;
                         dato = (dato==''&&value=='ingreso_trapaso')?'Ingreso por Trapaso':dato;
@@ -333,7 +371,7 @@ Phx.vista.MovimientoIngreso=Ext.extend(Phx.gridInterfaz,{
                 name: 'id_obrero',
                 fieldLabel: 'Obrero',
                 qtip: 'Hermano que lleva la colecta (cuando la entregue al tesorero el estado debe cambiar a entregado)',
-                allowBlank: true,
+                allowBlank: false,
                 forceSelection : true,
                 emptyText:'Obrero...',
                 store:new Ext.data.JsonStore(
@@ -380,7 +418,7 @@ Phx.vista.MovimientoIngreso=Ext.extend(Phx.gridInterfaz,{
 			config:{
 				name: 'fecha',
 				fieldLabel: 'fecha',
-				allowBlank: true,
+				allowBlank: false,
 				anchor: '80%',
 				gwidth: 100,
 						format: 'd/m/Y', 
@@ -660,10 +698,13 @@ Phx.vista.MovimientoIngreso=Ext.extend(Phx.gridInterfaz,{
 				fieldLabel: 'Estado',
 				qtip: 'si la colecta fue entregado al tesorero el estado será entregado en caso contrario pendiente',
 				allowBlank: false,
-				anchor: '80%',
+				typeAhead: true,
+	       		triggerAction: 'all',
+	       		lazyRender:true,
+	       		forceSelection : true,
+	       		anchor: '80%',
 				gwidth: 100,
-				store: ['pendiente','entregado'],
-				lazyRender: true,
+				store: ['pendiente','entregado'],				
 				mode: 'local',
 				maxLength:500
 			},
@@ -692,6 +733,68 @@ Phx.vista.MovimientoIngreso=Ext.extend(Phx.gridInterfaz,{
 			grid:true,
 			form:true
 		},
+        {
+            config:{
+                    name:'id_ot',
+                    fieldLabel: 'Objetivo (OT)',
+                    qtip: 'Si las colecta tiene un objetivo es especifico',
+                    sysorigen:'sis_contabilidad',
+	       		    origen:'OT',
+                    allowBlank:true,
+                    gwidth:200,
+                    anchor: '80%',
+   				    listWidth: 350,
+                    renderer:function(value, p, record){return String.format('{0}', record.data['desc_orden']);}
+            
+            },
+            type:'ComboRec',
+            id_grupo:0,
+            filters:{pfiltro:'mov.desc_orden',type:'string'},
+            grid:true,
+            form:true
+        },{
+            config:{
+                name: 'id_tipo_movimiento_ot',
+                fieldLabel: 'Colecta para Objetivo',
+                qtip: 'que colecta se utiliza para cubrir el objetivo',
+                allowBlank: false,
+                forceSelection : true,
+                emptyText:'Colecta de ...',
+                store:new Ext.data.JsonStore(
+                {
+                    url: '../../sis_admin/control/TipoMovimiento/listarTipoMovimiento',
+                    id: 'id_tipo_movimiento',
+                    root: 'datos',
+                    sortInfo:{
+                        field: 'codigo',
+                        direction: 'ASC'
+                    },
+                    totalProperty: 'total',
+                    fields: ['id_tipo_movimiento','codigo','nombre'],
+                    // turn on remote sorting
+                    remoteSort: true,
+                    baseParams:{par_filtro:'nombre'}
+                }),
+                valueField: 'id_tipo_movimiento',
+                displayField: 'nombre',
+                gdisplayField:'nombre_tipo_mov_ot',
+                hiddenName: 'id_tipo_movimiento',
+                triggerAction: 'all',
+                lazyRender:true,
+                mode:'remote',
+                pageSize:50,
+                queryDelay:500,
+                listWidth:'280',
+                width:200,
+                gwidth:120,
+                minChars:2
+            },
+            type:'ComboBox',
+            filters:{pfiltro:'mov.nombre_tipo_mov_ot',type:'string'},
+            id_grupo:1,
+            grid:true,
+            form:true
+        },
 		
 		{
 			config:{
@@ -810,7 +913,7 @@ Phx.vista.MovimientoIngreso=Ext.extend(Phx.gridInterfaz,{
         'total_mantenimiento','total_construccion','total_viaje','total_especial','total_dia','total_piedad',
         'id_obrero',
 	    'desc_obrero',
-	    'estado'
+	    'estado','id_ot','desc_orden','nombre_tipo_mov_ot','id_tipo_movimiento_ot'
 		
 		
 	],
@@ -838,6 +941,7 @@ Phx.vista.MovimientoIngreso=Ext.extend(Phx.gridInterfaz,{
 	dataIngreso : [
                 ['colecta_adultos', 'Colecta de Adultos'],
                 ['colecta_jovenes', 'Colecta de Jovenes'],
+                ['reunion_juventud', 'Reunión de Juventud'],
                 ['colecta_especial', 'Colecta Especial'],
                 ['saldo_inicial', 'Saldo Inicial'],
                 ['ingreso_trapaso', 'Ingreso por Trapaso']
@@ -855,6 +959,8 @@ Phx.vista.MovimientoIngreso=Ext.extend(Phx.gridInterfaz,{
 		field: 'id_movimiento',
 		direction: 'ASC'
 	},
+	fheight:500,
+    fwidth: 400,
 	bdel:true,
 	bsave:true
 	}
