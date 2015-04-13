@@ -13,7 +13,7 @@
 	<tr> 
 		<td>
 		   <b><font size="14">CONGREGACION CRISTIANA EN BOLIVIA <br>
-		   Comprobante de Ofrendeas, Colectas y Transferencias<br>
+		   Comprobante de Ofrendeas, Egresos y Transferencias<br>
 		   <?php  echo $datos['v_mes'].' de '.$datos['v_gestion'].',  '.$datos['v_casa_oracion'].' ('.$datos['v_codigo'].') - '.$datos['v_region']?> </font></b>
 	     </td>
 	</tr>	
