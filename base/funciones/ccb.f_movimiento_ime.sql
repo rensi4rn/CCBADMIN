@@ -31,9 +31,9 @@ DECLARE
 	v_resp		            varchar;
 	v_nombre_funcion        text;
 	v_mensaje_error         text;
-	v_id_movimiento			integer;
-    
+	v_id_movimiento			integer;    
     v_registros 			record;
+    v_registros_2			record;
     v_monto 				numeric;
     v_id_estado_periodo		integer;
     v_estado_periodo        varchar;
@@ -51,6 +51,89 @@ DECLARE
     v_saldo_efectivo    			numeric;
     v_saldo_adm    					numeric;
     v_sado_x_rendir    				numeric;
+    v_fecha_ini						date;
+    v_fecha_ultimo_anterior			date;
+    v_estado_periodo_ant			varchar;
+    v_id_estado_periodo_ant			integer;    
+    
+    
+    v_id_tm_mantenimiento   		integer;        
+    v_saldo_adm_mantenimiento		numeric;
+    v_id_tm_piedad					integer;
+    v_saldo_adm_piedad				numeric;
+    v_id_tm_especial				integer;
+    v_saldo_adm_especial			numeric;
+    v_id_tm_viaje					integer;
+    v_saldo_adm_viaje				numeric;
+    v_id_tm_construccion			integer;
+    v_saldo_adm_construccion		numeric;
+    v_cadena						varchar;
+    v_id_gestion_ant				integer;    
+    v_total_colecta 				numeric;
+    v_colecta_contruccion 			numeric;
+    v_colecta_piedad 				numeric; 
+    v_colecta_viaje 				numeric; 
+    v_colecta_especial 				numeric; 
+    v_colecta_mantenimiento			numeric;
+    
+    v_total_ing_traspasos 			numeric;
+    v_ing_traspasos_contruccion 	numeric; 
+    v_ing_traspasos_piedad  		numeric; 
+    v_ing_traspasos_viaje 			numeric; 
+    v_ing_traspasos_especial 		numeric; 
+    v_ing_traspasos_mantenimiento	numeric;
+    
+    v_total_egre_traspasos 			numeric; 
+    v_egre_traspasos_contruccion 	numeric; 
+    v_egre_traspasos_piedad  		numeric; 
+    v_egre_traspasos_viaje 			numeric; 
+    v_egre_traspasos_especial 		numeric; 
+    v_egre_traspasos_mantenimiento	numeric;
+    
+    v_total_egreso_operacion 	numeric; 
+    v_egreso_operacion_contruccion 	numeric; 
+    v_egreso_operacion_piedad  		numeric; 
+    v_egreso_operacion_viaje 		numeric; 
+    v_egreso_operacion_especial 	numeric; 
+    v_egreso_operacion_mantenimiento	numeric;
+    v_total_egreso_contra_rendicion 	numeric;    
+    v_egreso_contra_rendicion_contruccion 	numeric;
+    v_egreso_contra_rendicion_piedad  	numeric;
+    v_egreso_contra_rendicion_viaje 	numeric; 
+    v_egreso_contra_rendicion_especial 	numeric;
+    v_egreso_contra_rendicion_mantenimiento	numeric;
+    
+    v_total_egresos_adm 				numeric;           
+    v_total_egresos_adm_contruccion 	numeric;
+    v_total_egresos_adm_piedad			numeric;
+    v_total_egresos_adm_viaje			numeric;
+    v_total_egresos_adm_especial		numeric;     
+    v_total_egresos_adm_mantenimiento 	numeric;
+    
+    v_total_egresos_adm_tmp 				numeric;           
+    v_total_egresos_adm_contruccion_tmp 	numeric;
+    v_total_egresos_adm_piedad_tmp			numeric;
+    v_total_egresos_adm_viaje_tmp			numeric;
+    v_total_egresos_adm_especial_tmp		numeric;     
+    v_total_egresos_adm_mantenimiento_tmp 	numeric;
+    
+    
+    
+    v_total_saldo_mes 					numeric;
+    v_saldo_mes_mantenimiento 			numeric; 
+    v_saldo_mes_piedad 					numeric;
+    v_saldo_mes_construccion 			numeric; 
+    v_saldo_mes_especial 				numeric; 
+    v_saldo_mes_viaje					numeric;
+    
+    v_total_saldo_adm					numeric;
+    v_mes 								varchar;
+    v_gestion 							varchar;
+            
+           
+            
+            
+            
 			    
 BEGIN
 
@@ -69,29 +152,29 @@ BEGIN
         begin
         	--Sentencia de la insercion
         	insert into ccb.tmovimiento(
-			estado_reg,
-			tipo,
-			id_casa_oracion,
-			concepto,
-			obs,
-			fecha,
-			id_estado_periodo,
-			fecha_reg,
-			id_usuario_reg,
-			fecha_mod,
-			id_usuario_mod
+              estado_reg,
+              tipo,
+              id_casa_oracion,
+              concepto,
+              obs,
+              fecha,
+              id_estado_periodo,
+              fecha_reg,
+              id_usuario_reg,
+              fecha_mod,
+              id_usuario_mod
           	) values(
-			'activo',
-			v_parametros.tipo,
-			v_parametros.id_casa_oracion,
-			v_parametros.concepto,
-			v_parametros.obs,
-			v_parametros.fecha,
-			v_parametros.id_estado_periodo,
-			now(),
-			p_id_usuario,
-			now(),
-			p_id_usuario
+              'activo',
+              v_parametros.tipo,
+              v_parametros.id_casa_oracion,
+              v_parametros.concepto,
+              v_parametros.obs,
+              v_parametros.fecha,
+              v_parametros.id_estado_periodo,
+              now(),
+              p_id_usuario,
+              now(),
+              p_id_usuario
 							
 			)RETURNING id_movimiento into v_id_movimiento;
             
@@ -167,6 +250,10 @@ BEGIN
               IF v_estado_periodo = 'cerrado' THEN
                   raise exception 'el periodo correspondiente se encuentra cerrado';
               END IF;
+              
+            -- obtiene datos de la casa de oración 
+              
+              
         	
             
             --TODO si el concepto es saldo inicial verifica que solo exista uno por gestion para la casa de oración
@@ -607,133 +694,15 @@ BEGIN
             END IF;
             
             
-            
-            -- determinar el ingreso por traspasos     (v_ingreso_traspasos)
-            v_ingreso_traspasos =  ccb.f_determina_balance('ingreso_traspasos', 
-                                                                         v_id_gestion, 
-                                                                         v_parametros.fecha, 
-                                                                         v_parametros.id_lugar, 
-                                                                         v_parametros.id_casa_oracion, 
-                                                                         v_parametros.id_region, 
-                                                                         v_parametros.id_obrero, 
-                                                                         v_parametros.id_tipo_movimiento, 
-                                                                         v_parametros.id_ot);
-             
-            -- determinar el ingreso po colectas       (v_ingreso_colectas)
-            v_ingreso_colectas =  ccb.f_determina_balance('ingreso_colectas', 
-                                                                         v_id_gestion, 
-                                                                         v_parametros.fecha, 
-                                                                         v_parametros.id_lugar, 
-                                                                         v_parametros.id_casa_oracion, 
-                                                                         v_parametros.id_region, 
-                                                                         v_parametros.id_obrero, 
-                                                                         v_parametros.id_tipo_movimiento, 
-                                                                         v_parametros.id_ot);
-            
-            -- determinar el ingreso por salo inicial  (v_ingreso_inicial)
-             v_ingreso_inicial = ccb.f_determina_balance('ingreso_inicial', 
-                                                                         v_id_gestion, 
-                                                                         v_parametros.fecha, 
-                                                                         v_parametros.id_lugar, 
-                                                                         v_parametros.id_casa_oracion, 
-                                                                         v_parametros.id_region, 
-                                                                         v_parametros.id_obrero, 
-                                                                         v_parametros.id_tipo_movimiento, 
-                                                                         v_parametros.id_ot);
-                                                                         
-                                                                         
-            -- determinar el total ingreso  (v_ingreso_total =  v_ingreso_traspasos + v_ingreso_colectas + v_ingreso_inicial )
-            
-            v_ingreso_total =  v_ingreso_traspasos + v_ingreso_colectas + v_ingreso_inicial;
-            
-            
-            
-            -- deterimnar egresos por operacion  (v_egreso_operacion)
-            v_egreso_operacion =  ccb.f_determina_balance('egreso_operacion', 
-                                                                         v_id_gestion, 
-                                                                         v_parametros.fecha, 
-                                                                         v_parametros.id_lugar, 
-                                                                         v_parametros.id_casa_oracion, 
-                                                                         v_parametros.id_region, 
-                                                                         v_parametros.id_obrero, 
-                                                                         v_parametros.id_tipo_movimiento, 
-                                                                         v_parametros.id_ot);
-                                                                         
-            -- determina egresos por traspaso     (v_egreso_traspaso)
-            v_egreso_traspaso =  ccb.f_determina_balance('egreso_traspaso', 
-                                                                         v_id_gestion, 
-                                                                         v_parametros.fecha, 
-                                                                         v_parametros.id_lugar, 
-                                                                         v_parametros.id_casa_oracion, 
-                                                                         v_parametros.id_region, 
-                                                                         v_parametros.id_obrero, 
-                                                                         v_parametros.id_tipo_movimiento, 
-                                                                         v_parametros.id_ot);
-                                                                         
-            -- determinar egresos contra rendicion (v_egresos_contra_rendicion)
-            v_egresos_contra_rendicion = ccb.f_determina_balance('egresos_contra_rendicion', 
-                                                                         v_id_gestion, 
-                                                                         v_parametros.fecha, 
-                                                                         v_parametros.id_lugar, 
-                                                                         v_parametros.id_casa_oracion, 
-                                                                         v_parametros.id_region, 
-                                                                         v_parametros.id_obrero, 
-                                                                         v_parametros.id_tipo_movimiento, 
-                                                                         v_parametros.id_ot);
-            
-            -- determinar egresos rendidos  (v_egresos_rendidos)
-            v_egresos_rendidos =  ccb.f_determina_balance('egresos_rendidos', 
-                                                                         v_id_gestion, 
-                                                                         v_parametros.fecha, 
-                                                                         v_parametros.id_lugar, 
-                                                                         v_parametros.id_casa_oracion, 
-                                                                         v_parametros.id_region, 
-                                                                         v_parametros.id_obrero, 
-                                                                         v_parametros.id_tipo_movimiento, 
-                                                                         v_parametros.id_ot);
-            
-            -- determinar egresos por saldo  contra rendicion  (v_egreso_inicial_por_rendir)
-            v_egreso_inicial_por_rendir = ccb.f_determina_balance('egreso_inicial_por_rendir', 
-                                                                         v_id_gestion, 
-                                                                         v_parametros.fecha, 
-                                                                         v_parametros.id_lugar, 
-                                                                         v_parametros.id_casa_oracion, 
-                                                                         v_parametros.id_region, 
-                                                                         v_parametros.id_obrero, 
-                                                                         v_parametros.id_tipo_movimiento, 
-                                                                         v_parametros.id_ot);
-            
-            
-            
-            -- determinar total egresos efectivo  (v_egreso_efectivo = v_egreso_operacion + v_egresos_rendidos)
-            v_egreso_efectivo = v_egreso_operacion + v_egresos_rendidos;
-           
-            -- determinar saldo efectivo (v_saldo_efectivo =  v_ingreso_total - v_egreso_efectivo - v_egreso_traspaso)
-            v_saldo_efectivo =  v_ingreso_total - v_egreso_efectivo - v_egreso_traspaso;
-            
-            -- determinar saldo administracion (v_saldo_adm =  v_ingreso_total  - v_egreso_traspaso - v_egreso_operacion - v_egresos_contra_rendicion)
-            v_saldo_adm =  v_ingreso_total  - v_egreso_traspaso - v_egreso_operacion - v_egresos_contra_rendicion;
-            
-            -- determinar saldo que falta por rendir  (v_sado_x_rendir =  v_egreso_inicial_por_rendir + v_egresos_contra_rendicion  - v_egresos_rendidos )
-            v_sado_x_rendir =  v_egreso_inicial_por_rendir + v_egresos_contra_rendicion  - v_egresos_rendidos;
-            
-            
-            
             --Definicion de la respuesta
-            v_resp = pxp.f_agrega_clave(v_resp,'mensaje','saldos calculados'); 
-            v_resp = pxp.f_agrega_clave(v_resp,'v_ingreso_colectas',v_ingreso_colectas::varchar);
-            v_resp = pxp.f_agrega_clave(v_resp,'v_ingreso_traspasos',v_ingreso_traspasos::varchar);
-            v_resp = pxp.f_agrega_clave(v_resp,'v_ingreso_inicial',v_ingreso_inicial::varchar);
-            v_resp = pxp.f_agrega_clave(v_resp,'v_ingreso_total',v_ingreso_total::varchar);
-            v_resp = pxp.f_agrega_clave(v_resp,'v_egreso_operacion',v_egreso_operacion::varchar);
-            v_resp = pxp.f_agrega_clave(v_resp,'v_egreso_traspaso',v_egreso_traspaso::varchar);
-            v_resp = pxp.f_agrega_clave(v_resp,'v_egresos_contra_rendicion',v_egresos_contra_rendicion::varchar);
-            v_resp = pxp.f_agrega_clave(v_resp,'v_egresos_rendidos',v_egresos_rendidos::varchar);
-            v_resp = pxp.f_agrega_clave(v_resp,'v_egreso_inicial_por_rendir',v_egreso_inicial_por_rendir::varchar);
-            v_resp = pxp.f_agrega_clave(v_resp,'v_egreso_efectivo',v_egreso_efectivo::varchar);
-            v_resp = pxp.f_agrega_clave(v_resp,'v_saldo_efectivo',v_saldo_efectivo::varchar);
-            v_resp = pxp.f_agrega_clave(v_resp,'v_saldo_adm',v_saldo_adm::varchar);
-            v_resp = pxp.f_agrega_clave(v_resp,'v_sado_x_rendir',v_sado_x_rendir::varchar);
+            v_resp = ccb.f_calculo_saldos(v_id_gestion, 
+                                         v_parametros.fecha, 
+                                         v_parametros.id_lugar, 
+                                         v_parametros.id_casa_oracion, 
+                                         v_parametros.id_region, 
+                                         v_parametros.id_obrero, 
+                                         v_parametros.id_tipo_movimiento, 
+                                         v_parametros.id_ot);
             
             
             
@@ -742,7 +711,574 @@ BEGIN
             return v_resp;
 
 		end;     
-	else
+	/*********************************    
+ 	#TRANSACCION:  'CCB_CBTEOFRE_IME'
+ 	#DESCRIPCION:	comprobante de ofrendeas, colectas y transferencias ocurridas
+ 	#AUTOR:		admin	
+ 	#FECHA:		16-03-2013 00:22:36
+	***********************************/
+
+	elsif(p_transaccion='CCB_CBTEOFRE_IME')then
+
+		begin
+        
+        
+        
+             /*
+                 I)   determinar SALDOS
+                 II)  determinar INGESOS
+                 III) determinar ingreso por trapasos
+                 IV)  determinar egresos por trapasos
+                 V)   determinar egresos de la adminsitracion 
+                 VI)  determinar saldos del mes en la administracion
+             */
+            
+            --determinar el mes del reporte
+            
+           
+            select 
+                ep.estado_periodo,
+                ep.id_estado_periodo,
+                ep.fecha_ini,
+                ges.id_gestion,
+                ep.mes,
+                ges.gestion
+              into
+                v_estado_periodo,
+                v_id_estado_periodo,
+                v_fecha_ini,
+                v_id_gestion,
+                v_mes,
+                v_gestion
+              from ccb.testado_periodo ep 
+              inner join ccb.tgestion ges on ges.id_gestion = ep.id_gestion
+              where ep.id_casa_oracion = v_parametros.id_casa_oracion
+                   and  v_parametros.fecha::date BETWEEN  ep.fecha_ini::date and ep.fecha_fin::dATE;
+                   
+            IF v_estado_periodo is NULL THEN
+              raise exception 'No se encontro un periodo para la fecha indicada %',v_parametros.fecha; 
+            END IF;
+            
+            
+            SELECT 
+              co.nombre,
+              co.codigo,
+              reg.nombre as region
+            into
+             v_registros_2
+            FROM ccb.tcasa_oracion co 
+            inner join ccb.tregion reg on reg.id_region = co.id_region
+            where  co.id_casa_oracion =   v_parametros.id_casa_oracion;
+            
+            --determinar el mes anterior para calcula el saldo del mes
+            
+            v_fecha_ultimo_anterior =  v_fecha_ini - interval '1 day';      
+            
+            --determinar gestion del la ultima fecha (podra ser enero de 2015 y la fecha ulitma seria 31 de diciembre de 2014)
+            
+            select 
+                ep.estado_periodo,
+                ep.id_estado_periodo,
+                ges.id_gestion
+              into
+                v_estado_periodo_ant,
+                v_id_estado_periodo_ant,
+                v_id_gestion_ant
+              from ccb.testado_periodo ep 
+              inner join ccb.tgestion ges on ges.id_gestion = ep.id_gestion
+              where ep.id_casa_oracion = v_parametros.id_casa_oracion
+                   and  v_fecha_ultimo_anterior::date BETWEEN  ep.fecha_ini::date and ep.fecha_fin::dATE;
+                   
+                   
+            
+            IF v_estado_periodo_ant is NULL THEN
+              raise exception 'No se encontro periodo precedente para la fecha: %',v_fecha_ultimo_anterior; 
+            END IF;
+            
+            IF v_id_gestion_ant is NULL THEN
+              raise exception 'No se encontro gestion de la fecha anterior %',v_fecha_ultimo_anterior; 
+            END IF;
+           
+            
+            /********************************************           
+            --  I)  DETERMINAR SALDO DEL PERIODO ANTERIOR
+            *********************************************/
+            
+           
+            --determinar id de los tipos de movimientos ...
+           
+            v_saldo_adm_mantenimiento = 0;         
+            v_saldo_adm_piedad = 0;          
+            v_saldo_adm_especial = 0;           
+            v_saldo_adm_viaje = 0;           
+            v_saldo_adm_construccion = 0;
+            
+             FOR v_registros in (
+                             select
+                              tm.id_tipo_movimiento,
+                              tm.codigo
+                             from ccb.ttipo_movimiento tm where tm.estado_reg='activo' ) LOOP
+             
+                   v_monto = 0;
+                   
+                   -- raise exception 'yyyyyyyyyyyy % - %  - % - %',v_id_gestion_ant, v_fecha_ultimo_anterior , v_parametros.id_casa_oracion, v_registros.id_tipo_movimiento   ;
+                   
+                   -- determinar administrativo del mes anterior anterior
+                    v_cadena = ccb.f_calculo_saldos(v_id_gestion_ant, 
+                                                     v_fecha_ultimo_anterior, 
+                                                     NULL, --.id_lugar, 
+                                                     v_parametros.id_casa_oracion, 
+                                                     NULL, --.id_region, 
+                                                     NULL, --id_obrero, 
+                                                     v_registros.id_tipo_movimiento, --id_tipo_movimiento, 
+                                                     NULL);
+                   
+                   IF v_registros.codigo = 'mantenimiento' THEN
+                     v_id_tm_mantenimiento =  v_registros.id_tipo_movimiento;
+                     v_saldo_adm_mantenimiento = COALESCE(((pxp.f_recupera_clave(v_cadena, 'v_saldo_adm'))[1])::numeric,0);
+                     
+                   ELSIF  v_registros.codigo = 'piedad' THEN
+                     v_id_tm_piedad =  v_registros.id_tipo_movimiento;
+                     v_saldo_adm_piedad =  COALESCE(((pxp.f_recupera_clave(v_cadena, 'v_saldo_adm'))[1])::numeric,0);
+                     
+                   ELSIF  v_registros.codigo = 'especial' THEN
+                     v_id_tm_especial =  v_registros.id_tipo_movimiento;
+                     v_saldo_adm_especial =  COALESCE(((pxp.f_recupera_clave(v_cadena, 'v_saldo_adm'))[1])::numeric,0);
+                     
+                   ELSIF  v_registros.codigo = 'viaje' THEN
+                     v_id_tm_viaje =  v_registros.id_tipo_movimiento;
+                     v_saldo_adm_viaje =  COALESCE(((pxp.f_recupera_clave(v_cadena, 'v_saldo_adm'))[1])::numeric,0);
+                   ELSIF  v_registros.codigo = 'construccion' THEN
+                     v_id_tm_construccion =  v_registros.id_tipo_movimiento;
+                     v_saldo_adm_construccion =  COALESCE(((pxp.f_recupera_clave(v_cadena, 'v_saldo_adm'))[1])::numeric,0);
+                   END IF ;
+             
+            
+            
+            END LOOP;
+            
+            
+             
+            v_total_saldo_adm = v_saldo_adm_construccion + v_saldo_adm_viaje +  v_saldo_adm_especial + v_saldo_adm_piedad + v_saldo_adm_mantenimiento;
+            
+            
+           -- raise exception 'ssss';
+            /********************************************           
+            --  II)  DETERMINAR INGRESOS DEL PERIODO
+            *********************************************/
+            
+            
+            -- determinar colecta de contruccion v_colecta_contruccion
+            v_colecta_contruccion = ccb.f_determina_balance_periodo('ingreso_colectas',
+            												v_id_estado_periodo, 
+                                                            NULL, --.id_lugar, 
+                                                            v_parametros.id_casa_oracion, 
+                                                            NULL, --.id_region, 
+                                                            NULL, --id_obrero, 
+                                                            v_id_tm_construccion, --id_tipo_movimiento, 
+                                                            NULL);   --p_id_ot
+            -- determinar colecta de piedad v_colecta_piedad 
+            v_colecta_piedad = ccb.f_determina_balance_periodo('ingreso_colectas',
+            												v_id_estado_periodo, 
+                                                            NULL, --.id_lugar, 
+                                                            v_parametros.id_casa_oracion, 
+                                                            NULL, --.id_region, 
+                                                            NULL, --id_obrero, 
+                                                            v_id_tm_piedad, --id_tipo_movimiento, 
+                                                            NULL);   --p_id_ot
+            
+            -- determinar colecta de viajes v_colecta_viaje
+            v_colecta_viaje = ccb.f_determina_balance_periodo('ingreso_colectas',
+            												v_id_estado_periodo, 
+                                                            NULL, --.id_lugar, 
+                                                            v_parametros.id_casa_oracion, 
+                                                            NULL, --.id_region, 
+                                                            NULL, --id_obrero, 
+                                                            v_id_tm_viaje, --id_tipo_movimiento, 
+                                                            NULL);   --p_id_ot
+            
+            -- determinar colecta especiales v_colecta_especial
+             v_colecta_especial = ccb.f_determina_balance_periodo('ingreso_colectas',
+            												v_id_estado_periodo, 
+                                                            NULL, --.id_lugar, 
+                                                            v_parametros.id_casa_oracion, 
+                                                            NULL, --.id_region, 
+                                                            NULL, --id_obrero, 
+                                                            v_id_tm_especial, --id_tipo_movimiento, 
+                                                            NULL);   --p_id_ot
+            
+            -- determinar colecta de mantenimiento v_colecta_mantenimiento
+            v_colecta_mantenimiento = ccb.f_determina_balance_periodo('ingreso_colectas',
+            												v_id_estado_periodo, 
+                                                            NULL, --.id_lugar, 
+                                                            v_parametros.id_casa_oracion, 
+                                                            NULL, --.id_region, 
+                                                            NULL, --id_obrero, 
+                                                            v_id_tm_mantenimiento, --id_tipo_movimiento, 
+                                                            NULL);   --p_id_ot
+            
+            -- determinar el total de colectas   v_total_colecta
+            -- v_total_colecta = v_colecta_contruccion + v_colecta_piedad + v_colecta_piedad_juvenud_piedad + v_colecta_viaje + v_colecta_especial + v_colecta_mantenimiento
+            v_total_colecta = v_colecta_contruccion + v_colecta_piedad  + v_colecta_viaje + v_colecta_especial + v_colecta_mantenimiento;
+            
+            
+            /********************************************           
+            --  III)  DETERMINAR INGRESOS POR TRASPASO
+            *********************************************/
+            
+             -- determinar raspasos de contruccion v_colecta_contruccion
+            v_ing_traspasos_contruccion = ccb.f_determina_balance_periodo('ingreso_traspasos',
+            												v_id_estado_periodo, 
+                                                            NULL, --.id_lugar, 
+                                                            v_parametros.id_casa_oracion, 
+                                                            NULL, --.id_region, 
+                                                            NULL, --id_obrero, 
+                                                            v_id_tm_construccion, --id_tipo_movimiento, 
+                                                            NULL);   --p_id_ot
+            -- determinar colecta de piedad v_colecta_piedad 
+            v_ing_traspasos_piedad = ccb.f_determina_balance_periodo('ingreso_traspasos',
+            												v_id_estado_periodo, 
+                                                            NULL, --.id_lugar, 
+                                                            v_parametros.id_casa_oracion, 
+                                                            NULL, --.id_region, 
+                                                            NULL, --id_obrero, 
+                                                            v_id_tm_piedad, --id_tipo_movimiento, 
+                                                            NULL);   --p_id_ot
+            
+            -- determinar colecta de viajes v_colecta_viaje
+            v_ing_traspasos_viaje = ccb.f_determina_balance_periodo('ingreso_traspasos',
+            												v_id_estado_periodo, 
+                                                            NULL, --.id_lugar, 
+                                                            v_parametros.id_casa_oracion, 
+                                                            NULL, --.id_region, 
+                                                            NULL, --id_obrero, 
+                                                            v_id_tm_viaje, --id_tipo_movimiento, 
+                                                            NULL);   --p_id_ot
+            
+            -- determinar colecta especiales v_colecta_especial
+             v_ing_traspasos_especial = ccb.f_determina_balance_periodo('ingreso_traspasos',
+            												v_id_estado_periodo, 
+                                                            NULL, --.id_lugar, 
+                                                            v_parametros.id_casa_oracion, 
+                                                            NULL, --.id_region, 
+                                                            NULL, --id_obrero, 
+                                                            v_id_tm_especial, --id_tipo_movimiento, 
+                                                            NULL);   --p_id_ot
+            
+            -- determinar colecta de mantenimiento v_colecta_mantenimiento
+            v_ing_traspasos_mantenimiento = ccb.f_determina_balance_periodo('ingreso_traspasos',
+            												v_id_estado_periodo, 
+                                                            NULL, --.id_lugar, 
+                                                            v_parametros.id_casa_oracion, 
+                                                            NULL, --.id_region, 
+                                                            NULL, --id_obrero, 
+                                                            v_id_tm_mantenimiento, --id_tipo_movimiento, 
+                                                            NULL);   --p_id_ot
+            
+            -- determinar el total de colectas   v_total_colecta
+           v_total_ing_traspasos = v_ing_traspasos_contruccion + v_ing_traspasos_piedad  + v_ing_traspasos_viaje + v_ing_traspasos_especial + v_ing_traspasos_mantenimiento;
+            
+            
+            
+            /********************************************           
+            --  IV)  DETERMINAR EGRESOS POR TRASPASO
+            *********************************************/
+            
+             -- determinar raspasos de contruccion v_colecta_contruccion
+            v_egre_traspasos_contruccion = ccb.f_determina_balance_periodo('egreso_traspaso',
+            												v_id_estado_periodo, 
+                                                            NULL, --.id_lugar, 
+                                                            v_parametros.id_casa_oracion, 
+                                                            NULL, --.id_region, 
+                                                            NULL, --id_obrero, 
+                                                            v_id_tm_construccion, --id_tipo_movimiento, 
+                                                            NULL);   --p_id_ot
+            -- determinar colecta de piedad v_colecta_piedad 
+            v_egre_traspasos_piedad = ccb.f_determina_balance_periodo('egreso_traspaso',
+            												v_id_estado_periodo, 
+                                                            NULL, --.id_lugar, 
+                                                            v_parametros.id_casa_oracion, 
+                                                            NULL, --.id_region, 
+                                                            NULL, --id_obrero, 
+                                                            v_id_tm_piedad, --id_tipo_movimiento, 
+                                                            NULL);   --p_id_ot
+            
+            -- determinar colecta de viajes v_colecta_viaje
+            v_egre_traspasos_viaje = ccb.f_determina_balance_periodo('egreso_traspaso',
+            												v_id_estado_periodo, 
+                                                            NULL, --.id_lugar, 
+                                                            v_parametros.id_casa_oracion, 
+                                                            NULL, --.id_region, 
+                                                            NULL, --id_obrero, 
+                                                            v_id_tm_viaje, --id_tipo_movimiento, 
+                                                            NULL);   --p_id_ot
+            
+            -- determinar colecta especiales v_colecta_especial
+             v_egre_traspasos_especial = ccb.f_determina_balance_periodo('egreso_traspaso',
+            												v_id_estado_periodo, 
+                                                            NULL, --.id_lugar, 
+                                                            v_parametros.id_casa_oracion, 
+                                                            NULL, --.id_region, 
+                                                            NULL, --id_obrero, 
+                                                            v_id_tm_especial, --id_tipo_movimiento, 
+                                                            NULL);   --p_id_ot
+            
+            -- determinar colecta de mantenimiento v_colecta_mantenimiento
+            v_egre_traspasos_mantenimiento = ccb.f_determina_balance_periodo('egreso_traspaso',
+            												v_id_estado_periodo, 
+                                                            NULL, --.id_lugar, 
+                                                            v_parametros.id_casa_oracion, 
+                                                            NULL, --.id_region, 
+                                                            NULL, --id_obrero, 
+                                                            v_id_tm_mantenimiento, --id_tipo_movimiento, 
+                                                            NULL);   --p_id_ot
+            
+            -- determinar el total de colectas   v_total_colecta
+           v_total_egre_traspasos = v_egre_traspasos_contruccion + v_egre_traspasos_piedad  + v_egre_traspasos_viaje + v_egre_traspasos_especial + v_egre_traspasos_mantenimiento;
+            
+           
+            /********************************************           
+            --  IV)  DETERMIANR EGESOS DE LA ADMINISTRACION
+            *********************************************/
+            
+             --DETERMINAR LOS EGESOS POR OPERACION
+            
+             -- determinar raspasos de contruccion v_colecta_contruccion
+            v_egreso_operacion_contruccion = ccb.f_determina_balance_periodo('egreso_operacion',
+            												v_id_estado_periodo, 
+                                                            NULL, --.id_lugar, 
+                                                            v_parametros.id_casa_oracion, 
+                                                            NULL, --.id_region, 
+                                                            NULL, --id_obrero, 
+                                                            v_id_tm_construccion, --id_tipo_movimiento, 
+                                                            NULL);   --p_id_ot
+            -- determinar colecta de piedad v_colecta_piedad 
+            v_egreso_operacion_piedad = ccb.f_determina_balance_periodo('egreso_operacion',
+            												v_id_estado_periodo, 
+                                                            NULL, --.id_lugar, 
+                                                            v_parametros.id_casa_oracion, 
+                                                            NULL, --.id_region, 
+                                                            NULL, --id_obrero, 
+                                                            v_id_tm_piedad, --id_tipo_movimiento, 
+                                                            NULL);   --p_id_ot
+            
+            -- determinar colecta de viajes v_colecta_viaje
+            v_egreso_operacion_viaje = ccb.f_determina_balance_periodo('egreso_operacion',
+            												v_id_estado_periodo, 
+                                                            NULL, --.id_lugar, 
+                                                            v_parametros.id_casa_oracion, 
+                                                            NULL, --.id_region, 
+                                                            NULL, --id_obrero, 
+                                                            v_id_tm_viaje, --id_tipo_movimiento, 
+                                                            NULL);   --p_id_ot
+            
+            -- determinar colecta especiales v_colecta_especial
+             v_egreso_operacion_especial = ccb.f_determina_balance_periodo('egreso_operacion',
+            												v_id_estado_periodo, 
+                                                            NULL, --.id_lugar, 
+                                                            v_parametros.id_casa_oracion, 
+                                                            NULL, --.id_region, 
+                                                            NULL, --id_obrero, 
+                                                            v_id_tm_especial, --id_tipo_movimiento, 
+                                                            NULL);   --p_id_ot
+            
+            -- determinar colecta de mantenimiento v_colecta_mantenimiento
+            v_egreso_operacion_mantenimiento = ccb.f_determina_balance_periodo('egreso_operacion',
+            												v_id_estado_periodo, 
+                                                            NULL, --.id_lugar, 
+                                                            v_parametros.id_casa_oracion, 
+                                                            NULL, --.id_region, 
+                                                            NULL, --id_obrero, 
+                                                            v_id_tm_mantenimiento, --id_tipo_movimiento, 
+                                                            NULL);   --p_id_ot
+            
+            -- determinar el total de egresos por operacion
+           v_total_egreso_operacion = v_egreso_operacion_contruccion + v_egreso_operacion_piedad  + v_egreso_operacion_viaje + v_egreso_operacion_especial + v_egreso_operacion_mantenimiento;
+            
+            
+           -- DETERMINAR LOS EGRESOS CONTRA RENDICION
+            
+             -- determinar raspasos de contruccion v_colecta_contruccion
+            v_egreso_contra_rendicion_contruccion = ccb.f_determina_balance_periodo('egresos_contra_rendicion',
+            												v_id_estado_periodo, 
+                                                            NULL, --.id_lugar, 
+                                                            v_parametros.id_casa_oracion, 
+                                                            NULL, --.id_region, 
+                                                            NULL, --id_obrero, 
+                                                            v_id_tm_construccion, --id_tipo_movimiento, 
+                                                            NULL);   --p_id_ot
+            -- determinar colecta de piedad v_colecta_piedad 
+            v_egreso_contra_rendicion_piedad = ccb.f_determina_balance_periodo('egresos_contra_rendicion',
+            												v_id_estado_periodo, 
+                                                            NULL, --.id_lugar, 
+                                                            v_parametros.id_casa_oracion, 
+                                                            NULL, --.id_region, 
+                                                            NULL, --id_obrero, 
+                                                            v_id_tm_piedad, --id_tipo_movimiento, 
+                                                            NULL);   --p_id_ot
+            
+            -- determinar colecta de viajes v_colecta_viaje
+            v_egreso_contra_rendicion_viaje = ccb.f_determina_balance_periodo('egresos_contra_rendicion',
+            												v_id_estado_periodo, 
+                                                            NULL, --.id_lugar, 
+                                                            v_parametros.id_casa_oracion, 
+                                                            NULL, --.id_region, 
+                                                            NULL, --id_obrero, 
+                                                            v_id_tm_viaje, --id_tipo_movimiento, 
+                                                            NULL);   --p_id_ot
+            
+            -- determinar colecta especiales v_colecta_especial
+             v_egreso_contra_rendicion_especial = ccb.f_determina_balance_periodo('egresos_contra_rendicion',
+            												v_id_estado_periodo, 
+                                                            NULL, --.id_lugar, 
+                                                            v_parametros.id_casa_oracion, 
+                                                            NULL, --.id_region, 
+                                                            NULL, --id_obrero, 
+                                                            v_id_tm_especial, --id_tipo_movimiento, 
+                                                            NULL);   --p_id_ot
+            
+            -- determinar colecta de mantenimiento v_colecta_mantenimiento
+            v_egreso_contra_rendicion_mantenimiento = ccb.f_determina_balance_periodo('egresos_contra_rendicion',
+            												v_id_estado_periodo, 
+                                                            NULL, --.id_lugar, 
+                                                            v_parametros.id_casa_oracion, 
+                                                            NULL, --.id_region, 
+                                                            NULL, --id_obrero, 
+                                                            v_id_tm_mantenimiento, --id_tipo_movimiento, 
+                                                            NULL);   --p_id_ot
+            
+            -- determinar el total de egresos por operacion
+           v_total_egreso_contra_rendicion = v_egreso_contra_rendicion_contruccion + v_egreso_contra_rendicion_piedad  + v_egreso_contra_rendicion_viaje + v_egreso_contra_rendicion_especial + v_egreso_contra_rendicion_mantenimiento;
+            
+            
+            --total egresos de la administracion
+           v_total_egresos_adm =  v_total_egreso_contra_rendicion + v_total_egreso_operacion + v_total_egre_traspasos;
+           
+            
+           
+           --total egresos de la adminsitracion por colecta ( egresospor operacion + egresos contra rendicion + egresos por traspasos)
+           
+           v_total_egresos_adm_contruccion = v_egreso_contra_rendicion_contruccion + v_egreso_operacion_contruccion + v_egre_traspasos_contruccion;
+           v_total_egresos_adm_piedad = v_egreso_contra_rendicion_piedad  + v_egreso_operacion_piedad + v_egre_traspasos_piedad;
+           v_total_egresos_adm_viaje = v_egreso_contra_rendicion_viaje + v_egreso_operacion_viaje + v_egre_traspasos_viaje;
+           v_total_egresos_adm_especial = v_egreso_contra_rendicion_especial +     v_egreso_operacion_especial + v_egre_traspasos_especial;      
+           v_total_egresos_adm_mantenimiento = v_egreso_contra_rendicion_mantenimiento + v_egreso_operacion_mantenimiento + v_egre_traspasos_mantenimiento;
+           
+             
+           v_total_egresos_adm_contruccion_tmp = v_egreso_contra_rendicion_contruccion + v_egreso_operacion_contruccion ;
+           v_total_egresos_adm_piedad_tmp = v_egreso_contra_rendicion_piedad  + v_egreso_operacion_piedad ;
+           v_total_egresos_adm_viaje_tmp = v_egreso_contra_rendicion_viaje + v_egreso_operacion_viaje ;
+           v_total_egresos_adm_especial_tmp  = v_egreso_contra_rendicion_especial +     v_egreso_operacion_especial ;      
+           v_total_egresos_adm_mantenimiento_tmp = v_egreso_contra_rendicion_mantenimiento + v_egreso_operacion_mantenimiento ;
+           
+           v_total_egresos_adm_tmp =  v_total_egreso_contra_rendicion + v_total_egreso_operacion;
+           
+             
+         
+            /******************************************************           
+            --  IV)  DETERMINAR SALDO DEL MES EN LA ADMINISTRACION
+            *******************************************************/
+            
+            
+            
+            --v_ingreso_total  - v_egreso_traspaso - v_egreso_operacion - v_egresos_contra_rendicion;
+            
+            v_saldo_mes_mantenimiento = v_saldo_adm_mantenimiento + v_colecta_mantenimiento + v_ing_traspasos_mantenimiento  - v_total_egresos_adm_mantenimiento; 
+            v_saldo_mes_piedad	 =      v_saldo_adm_piedad +        v_colecta_piedad +        v_ing_traspasos_piedad -         v_total_egresos_adm_piedad;
+            v_saldo_mes_construccion =  v_saldo_adm_construccion +  v_colecta_contruccion  +  v_ing_traspasos_contruccion -    v_total_egresos_adm_contruccion;
+            v_saldo_mes_especial =      v_saldo_adm_especial +      v_colecta_especial +      v_ing_traspasos_especial -       v_total_egresos_adm_especial;
+            v_saldo_mes_viaje =         v_saldo_adm_viaje +         v_colecta_viaje +         v_ing_traspasos_viaje -          v_total_egresos_adm_viaje;
+            
+            v_total_saldo_mes = v_saldo_mes_mantenimiento + v_saldo_mes_piedad + v_saldo_mes_construccion + v_saldo_mes_especial + v_saldo_mes_viaje;
+           
+            
+            -- determnar el total general v_total_general = v_total_colecta + v_saldo_mantenimiento
+            
+            
+            --Definicion de la respuesta
+            v_resp = pxp.f_agrega_clave(v_resp,'mensaje','saldos del mes');
+            
+            v_resp = pxp.f_agrega_clave(v_resp,'v_mes',v_mes);
+            v_resp = pxp.f_agrega_clave(v_resp,'v_gestion',v_gestion);
+            
+            
+            v_resp = pxp.f_agrega_clave(v_resp,'v_total_saldo_adm',v_total_saldo_adm::varchar);
+            v_resp = pxp.f_agrega_clave(v_resp,'v_saldo_adm_construccion',v_saldo_adm_construccion::varchar);
+            v_resp = pxp.f_agrega_clave(v_resp,'v_saldo_adm_viaje',v_saldo_adm_viaje::varchar);
+            v_resp = pxp.f_agrega_clave(v_resp,'v_saldo_adm_especial',v_saldo_adm_especial::varchar);
+            v_resp = pxp.f_agrega_clave(v_resp,'v_saldo_adm_piedad',v_saldo_adm_piedad::varchar);
+            v_resp = pxp.f_agrega_clave(v_resp,'v_saldo_adm_mantenimiento',v_saldo_adm_mantenimiento::varchar);
+           
+            v_resp = pxp.f_agrega_clave(v_resp,'v_total_colecta',v_total_colecta::varchar);
+            v_resp = pxp.f_agrega_clave(v_resp,'v_colecta_contruccion',v_colecta_contruccion::varchar);
+            v_resp = pxp.f_agrega_clave(v_resp,'v_colecta_piedad',v_colecta_piedad::varchar);
+            v_resp = pxp.f_agrega_clave(v_resp,'v_colecta_viaje',v_colecta_viaje::varchar);
+            v_resp = pxp.f_agrega_clave(v_resp,'v_colecta_especial',v_colecta_especial::varchar);
+            v_resp = pxp.f_agrega_clave(v_resp,'v_colecta_mantenimiento',v_colecta_mantenimiento::varchar);
+           
+            v_resp = pxp.f_agrega_clave(v_resp,'v_total_ing_traspasos',v_total_ing_traspasos::varchar);
+            v_resp = pxp.f_agrega_clave(v_resp,'v_ing_traspasos_contruccion',v_ing_traspasos_contruccion::varchar);
+            v_resp = pxp.f_agrega_clave(v_resp,'v_ing_traspasos_piedad',v_ing_traspasos_piedad::varchar);
+            v_resp = pxp.f_agrega_clave(v_resp,'v_ing_traspasos_viaje',v_ing_traspasos_viaje::varchar);
+            v_resp = pxp.f_agrega_clave(v_resp,'v_ing_traspasos_especial',v_ing_traspasos_especial::varchar);
+            v_resp = pxp.f_agrega_clave(v_resp,'v_ing_traspasos_mantenimiento',v_ing_traspasos_mantenimiento::varchar);
+           
+            v_resp = pxp.f_agrega_clave(v_resp,'v_egre_traspasos_contruccion',v_egre_traspasos_contruccion::varchar);
+            v_resp = pxp.f_agrega_clave(v_resp,'v_egre_traspasos_piedad',v_egre_traspasos_piedad::varchar);
+            v_resp = pxp.f_agrega_clave(v_resp,'v_egre_traspasos_viaje',v_egre_traspasos_viaje::varchar);
+            v_resp = pxp.f_agrega_clave(v_resp,'v_egre_traspasos_especial',v_egre_traspasos_especial::varchar);
+            v_resp = pxp.f_agrega_clave(v_resp,'v_egre_traspasos_mantenimiento',v_egre_traspasos_mantenimiento::varchar);        
+           
+            v_resp = pxp.f_agrega_clave(v_resp,'v_egreso_operacion_contruccion',v_egreso_operacion_contruccion::varchar);
+            v_resp = pxp.f_agrega_clave(v_resp,'v_egreso_operacion_piedad',v_egreso_operacion_piedad::varchar);
+            v_resp = pxp.f_agrega_clave(v_resp,'v_egreso_operacion_viaje',v_egreso_operacion_viaje::varchar);
+            v_resp = pxp.f_agrega_clave(v_resp,'v_egreso_operacion_especial',v_egreso_operacion_especial::varchar);
+            v_resp = pxp.f_agrega_clave(v_resp,'v_egreso_operacion_mantenimiento',v_egreso_operacion_mantenimiento::varchar);
+           
+            v_resp = pxp.f_agrega_clave(v_resp,'v_egreso_contra_rendicion_contruccion',v_egreso_contra_rendicion_contruccion::varchar);
+            v_resp = pxp.f_agrega_clave(v_resp,'v_egreso_contra_rendicion_piedad',v_egreso_contra_rendicion_piedad::varchar);
+            v_resp = pxp.f_agrega_clave(v_resp,'v_egreso_contra_rendicion_viaje',v_egreso_contra_rendicion_viaje::varchar);
+            v_resp = pxp.f_agrega_clave(v_resp,'v_egreso_contra_rendicion_especial',v_egreso_contra_rendicion_especial::varchar);
+            v_resp = pxp.f_agrega_clave(v_resp,'v_egreso_contra_rendicion_mantenimiento',v_egreso_contra_rendicion_mantenimiento::varchar);
+           
+           
+            v_resp = pxp.f_agrega_clave(v_resp,'v_total_egresos_adm_tmp',v_total_egresos_adm_tmp::varchar);
+            v_resp = pxp.f_agrega_clave(v_resp,'v_total_egresos_adm_contruccion_tmp',v_total_egresos_adm_contruccion_tmp::varchar);
+            v_resp = pxp.f_agrega_clave(v_resp,'v_total_egresos_adm_piedad_tmp',v_total_egresos_adm_piedad_tmp::varchar);
+            v_resp = pxp.f_agrega_clave(v_resp,'v_total_egresos_adm_viaje_tmp',v_total_egresos_adm_viaje_tmp::varchar);
+            v_resp = pxp.f_agrega_clave(v_resp,'v_total_egresos_adm_especial_tmp',v_total_egresos_adm_especial_tmp::varchar);
+            v_resp = pxp.f_agrega_clave(v_resp,'v_total_egresos_adm_mantenimiento_tmp',v_total_egresos_adm_mantenimiento_tmp::varchar);
+           
+           
+           
+           
+           
+            v_resp = pxp.f_agrega_clave(v_resp,'v_total_egresos_adm',v_total_egresos_adm::varchar);
+            v_resp = pxp.f_agrega_clave(v_resp,'v_total_egreso_contra_rendicion',v_total_egreso_contra_rendicion::varchar);
+            v_resp = pxp.f_agrega_clave(v_resp,'v_total_egreso_operacion',v_total_egreso_operacion::varchar);
+            v_resp = pxp.f_agrega_clave(v_resp,'v_total_egre_traspasos',v_total_egre_traspasos::varchar);
+            
+            v_resp = pxp.f_agrega_clave(v_resp,'v_total_saldo_mes',v_total_saldo_mes::varchar);
+            v_resp = pxp.f_agrega_clave(v_resp,'v_saldo_mes_mantenimiento',v_saldo_mes_mantenimiento::varchar);
+            v_resp = pxp.f_agrega_clave(v_resp,'v_saldo_mes_piedad',v_saldo_mes_piedad::varchar);
+            v_resp = pxp.f_agrega_clave(v_resp,'v_saldo_mes_construccion',v_saldo_mes_construccion::varchar);
+            v_resp = pxp.f_agrega_clave(v_resp,'v_saldo_mes_especial',v_saldo_mes_especial::varchar);
+            v_resp = pxp.f_agrega_clave(v_resp,'v_saldo_mes_viaje',v_saldo_mes_viaje::varchar);
+            
+            
+            v_resp = pxp.f_agrega_clave(v_resp,'v_casa_oracion',v_registros_2.nombre::varchar);
+            v_resp = pxp.f_agrega_clave(v_resp,'v_codigo',v_registros_2.codigo::varchar);
+            v_resp = pxp.f_agrega_clave(v_resp,'v_region',v_registros_2.region::varchar);
+            
+            
+            
+             --Devuelve la respuesta
+            return v_resp;
+
+		end;
+    
+    
+    else
      
     	raise exception 'Transaccion inexistente: %',p_transaccion;
 

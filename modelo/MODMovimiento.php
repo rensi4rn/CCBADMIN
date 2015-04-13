@@ -440,6 +440,26 @@ class MODMovimiento extends MODbase{
 		//Devuelve la respuesta
 		return $this->respuesta;
 	}
+	
+	 function comprobanteOfrendas(){
+		//Definicion de variables para ejecucion del procedimiento
+		$this->procedimiento='ccb.f_movimiento_ime';
+		$this->transaccion='CCB_CBTEOFRE_IME';
+		$this->tipo_procedimiento='IME';
+				
+		//Define los parametros para la funcion
+		$this->setParametro('fecha','fecha','date');
+		$this->setParametro('id_region','id_region','int4');
+		$this->setParametro('id_casa_oracion','id_casa_oracion','int4');
+		
+
+		//Ejecuta la instruccion
+		$this->armarConsulta();
+		$this->ejecutarConsulta();
+
+		//Devuelve la respuesta
+		return $this->respuesta;
+	}
 		
 			
 }
