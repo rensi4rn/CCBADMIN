@@ -53,6 +53,50 @@ class MODObrero extends MODbase{
 		//Devuelve la respuesta
 		return $this->respuesta;
 	}
+
+   
+   
+   function listarObreroTodos(){
+		//Definicion de variables para ejecucion del procedimientp
+		$this->procedimiento='ccb.f_obrero_sel';
+		$this->transaccion='CCB_OBRTO_SEL';
+		$this->tipo_procedimiento='SEL';//tipo de transaccion
+		$this-> setCount(false);
+				
+		//Definicion de la lista del resultado del query
+		$this->captura('id_obrero','int4');
+		$this->captura('estado_reg','varchar');
+		$this->captura('id_region','int4');
+		$this->captura('fecha_fin','date');
+		$this->captura('fecha_ini','date');
+		$this->captura('obs','text');
+		$this->captura('id_tipo_ministerio','int4');
+		$this->captura('id_persona','int4');
+		$this->captura('fecha_reg','timestamp');
+		$this->captura('id_usuario_reg','int4');
+		$this->captura('fecha_mod','timestamp');
+		$this->captura('id_usuario_mod','int4');
+		$this->captura('usr_reg','varchar');
+		$this->captura('usr_mod','varchar');
+		$this->captura('desc_persona','text');
+		$this->captura('desc_tipo_ministerio','varchar');
+		
+		$this->captura('desc_casa_oracion','varchar');
+		$this->captura('id_casa_oracion','int4');		
+		$this->captura('desc_region','varchar');
+		$this->captura('telefono1','varchar');
+		$this->captura('telefono2','varchar');
+		$this->captura('celular1','varchar');
+		$this->captura('correo','varchar');
+		
+		
+		//Ejecuta la instruccion
+		$this->armarConsulta();
+		$this->ejecutarConsulta();
+		
+		//Devuelve la respuesta
+		return $this->respuesta;
+	}
 			
 	function insertarObrero(){
 		//Definicion de variables para ejecucion del procedimiento

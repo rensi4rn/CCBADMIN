@@ -16,12 +16,35 @@ Phx.vista.Obrero=Ext.extend(Phx.gridInterfaz,{
 		this.maestro=config.maestro;
     	//llama al constructor de la clase padre
 		Phx.vista.Obrero.superclass.constructor.call(this,config);
+		this.addButton('btnImprimir',
+			{
+				text: 'Imprimir',
+				iconCls: 'bprint',
+				disabled: false,
+				handler: this.imprimirObrero,
+				tooltip: '<b>Imprimir Comprobante</b><br/>Imprime el Comprobante en el formato oficial'
+			}
+		);
+		
 		this.init();
 		this.iniciarEventos();
 		this.load({params:{start:0, limit:50}});	
 		
 	},
-			
+	imprimirObrero: function(){
+		Phx.CP.loadingShow(); 
+		Ext.Ajax.request({
+						//url : '../../sis_contabilidad/control/IntComprobante/reporteComprobante',
+						url : '../../sis_admin/control/Obrero/reporteObreros',
+						params : {
+							'listado' : 'listado'
+						},
+						success : this.successExport,
+						failure : this.conexionFailure,
+						timeout : this.timeout,
+						scope : this
+					});
+	},		
 	Atributos:[
 		{
 			//configuracion del componente
@@ -183,14 +206,14 @@ Phx.vista.Obrero=Ext.extend(Phx.gridInterfaz,{
                 gwidth:200,
    				valueField: 'id_persona',
    			    gdisplayField: 'desc_persona',
-      			renderer:function(value, p, record){return String.format('{0}', record.data['desc_persona']);}
+      			renderer: function(value, p, record){return String.format('{0}', record.data['desc_persona']);}
        	     },
-   			type:'ComboRec',//ComboRec
-   			id_grupo:0,
-   			filters:{pfiltro:'per.nombre_completo1',type:'string'},
+   			type: 'ComboRec',//ComboRec
+   			id_grupo: 0,
+   			filters: { pfiltro: 'per.nombre_completo1', type: 'string' },
    			bottom_filter: true,
-   		    grid:true,
-   			form:true
+   		    grid: true,
+   			form: true
 		 },
 		{
 			config:{
@@ -201,7 +224,7 @@ Phx.vista.Obrero=Ext.extend(Phx.gridInterfaz,{
 				anchor: '80%',
 				gwidth: 100,
 				format: 'd/m/Y', 
-				renderer:function (value,p,record){return value?value.dateFormat('d/m/Y'):''}
+				renderer: function (value,p,record){ return value?value.dateFormat('d/m/Y'):''}
 			},
 			type:'DateField',
 			filters:{pfiltro:'obr.fecha_ini',type:'date'},
