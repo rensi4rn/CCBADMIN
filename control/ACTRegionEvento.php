@@ -103,6 +103,23 @@ class ACTRegionEvento extends ACTbase{
 		$this->res=$this->objFunc->generarResumen($this->objParam);
 		$this->res->imprimirRespuesta($this->res->generarJson());
 	}
+	
+	function listarCalendario(){
+		$this->objParam->defecto('ordenacion','id_region_evento');
+		
+		$this->objParam->defecto('dir_ordenacion','asc');
+		if($this->objParam->getParametro('tipoReporte')=='excel_grid' || $this->objParam->getParametro('tipoReporte')=='pdf_grid'){
+			$this->objReporte = new Reporte($this->objParam,$this);
+			$this->res = $this->objReporte->generarReporteListado('MODRegionEvento','listarCalendario');
+		} else{
+			$this->objFunc=$this->create('MODRegionEvento');
+			
+			$this->res=$this->objFunc->listarCalendario($this->objParam);
+		}
+		$this->res->imprimirRespuesta($this->res->generarJson());
+	}
+	
+	
 		
 }
 ?>

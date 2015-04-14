@@ -612,3 +612,10 @@ select pxp.f_insert_tgui ('Comprobante de Ofrendas', 'Comprobante de Ofrendas', 
 select pxp.f_insert_testructura_gui ('COMOFR', 'MOVECO');
 /********************************************F-DAT-RAC-CCB-0-23/05/2015********************************************/
 
+
+/********************************************I-DAT-RAC-CCB-0-06/06/2015********************************************/
+
+select pxp.f_insert_tgui ('Calendario', 'Calendario', 'CALEVE', 'no', 1, 'sis_admin/vista/region_evento/RegionEventoDet.php', 3, '', 'RegionEventoDet', 'CCB');
+select pxp.f_insert_testructura_gui ('CALEVE', 'CAREVE');
+
+/********************************************F-DAT-RAC-CCB-0-06/06/2015********************************************/

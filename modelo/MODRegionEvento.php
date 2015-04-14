@@ -260,6 +260,44 @@ class MODRegionEvento extends MODbase{
 		//Devuelve la respuesta
 		return $this->respuesta;
 	}
+
+   function listarCalendario(){
+		//Definicion de variables para ejecucion del procedimientp
+		$this->procedimiento='ccb.f_region_evento_sel';
+		$this->transaccion='CCB_CALEN_SEL';
+		$this->tipo_procedimiento='SEL';//tipo de transaccion
+		$this->setCount(false);	
+		$this->setParametro('id_lugar','id_lugar','int4');
+		$this->setParametro('fecha_ini','fecha_ini','date');	
+		$this->setParametro('fecha_fin','fecha_fin','date');			
+			
+		//Definicion de la lista del resultado del query
+		$this->captura('event','VARCHAR');
+		$this->captura('title','text');
+		$this->captura('start','TIMESTAMP');
+		$this->captura('"end"','TIMESTAMP');
+		$this->captura('desc_evento','varchar');
+		$this->captura('desc_region','varchar');
+		$this->captura('desc_casa_oracion','varchar');
+		$this->captura('tipo_registro','varchar');
+		$this->captura('desc_lugar','varchar');
+		$this->captura('hora','varchar');
+		$this->captura('id_lugar','int4');
+		$this->captura('fecha_programada','date');
+		$this->captura('css','text');
+		$this->captura('id_region_evento','int4');
+		
+		
+		
+		
+	//Ejecuta la instruccion
+		$this->armarConsulta();
+		$this->ejecutarConsulta();
+		//echo $this->getConsulta();
+		//exit;
+		//Devuelve la respuesta
+		return $this->respuesta;
+	}
 			
 }
 ?>

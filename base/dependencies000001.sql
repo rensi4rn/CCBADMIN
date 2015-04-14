@@ -1261,3 +1261,62 @@ AS
         LEFT JOIN conta.torden_trabajo ot ON ot.id_orden_trabajo = mov.id_ot
   WHERE mov.tipo::text = 'ingreso'::text; 
 /********************************************F-DEP-RAC-ADMIN-0-20/05/2015*************************************/
+
+
+/********************************************I-DEP-RAC-ADMIN-0-06/06/2015*************************************/
+
+CREATE OR REPLACE VIEW ccb.vcalendario(
+    event,
+    title,
+    start,
+    "end",
+    desc_evento,
+    desc_region,
+    desc_casa_oracion,
+    tipo_registro,
+    desc_lugar,
+    hora,
+    id_lugar,
+    fecha_programada,
+    css,
+    id_region_evento)
+AS
+  SELECT (rege.id_region_evento::character varying::text || ' - '::text) ||
+    COALESCE(rege.hora::character varying, '19:00:00'::character varying)::text
+    AS event,
+         ((((eve.nombre::text || ' - '::text) || co.nombre::text) || ' ('::text)
+           || lug.nombre::text) || ')'::text AS title,
+         ((rege.fecha_programada::character varying::text || ' '::text) ||
+           COALESCE(rege.hora, '19:00:00'::time without time zone))::timestamp
+           without time zone AS start,
+         (((rege.fecha_programada::character varying::text || ' '::text) ||
+           COALESCE(rege.hora, '19:00:00'::time without time zone))::timestamp
+           without time zone) + '02:00:00'::interval hour AS "end",
+         eve.nombre AS desc_evento,
+         reg.nombre AS desc_region,
+         co.nombre AS desc_casa_oracion,
+         rege.tipo_registro,
+         lug.nombre AS desc_lugar,
+         COALESCE(rege.hora, '19:00:00'::time without time zone) AS hora,
+         lug.id_lugar,
+         rege.fecha_programada,
+         CASE
+           WHEN eve.codigo::text = 'bautico'::text THEN 'green'::text
+           WHEN eve.codigo::text = 'santacena'::text THEN 'blue'::text
+           WHEN eve.codigo::text = 'reuniondejuventud'::text THEN 'purple'::text
+           WHEN eve.codigo::text = 'reunmiloc'::text THEN 'orange'::text
+           WHEN eve.codigo::text = 'ensayoreg'::text THEN 'brown'::text
+           WHEN eve.codigo::text = 'reunmireg'::text THEN 'red'::text
+           ELSE 'grey'::text
+         END AS css,
+         rege.id_region_evento
+  FROM ccb.tregion_evento rege
+       JOIN ccb.tgestion ges ON ges.id_gestion = rege.id_gestion
+       JOIN ccb.tregion reg ON reg.id_region = rege.id_region
+       JOIN ccb.tevento eve ON eve.id_evento = rege.id_evento
+       JOIN ccb.tcasa_oracion co ON co.id_casa_oracion = rege.id_casa_oracion
+       JOIN segu.tusuario usu1 ON usu1.id_usuario = rege.id_usuario_reg
+       JOIN param.tlugar lug ON lug.id_lugar = co.id_lugar
+  WHERE rege.tipo_registro::text = 'detalle'::text;
+
+/********************************************F-DEP-RAC-ADMIN-0-06/06/2015*************************************/

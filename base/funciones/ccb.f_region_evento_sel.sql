@@ -32,6 +32,8 @@ DECLARE
     v_inner				varchar;
     v_lugares	        varchar;
     v_filtro_lugares    varchar;
+    v_fecha_ini			date;
+    v_fecha_fin			date;
 			    
 BEGIN
 
@@ -283,6 +285,82 @@ BEGIN
 			--Devuelve la respuesta
 			return v_consulta;
 
+		end;
+    /*********************************    
+ 	#TRANSACCION:  'CCB_CALEN_SEL'
+ 	#DESCRIPCION:	consulta de eventos para el calendario
+ 	#AUTOR:		admin	
+ 	#FECHA:		06-06-2015 14:31:26
+	***********************************/
+
+	elsif(p_transaccion='CCB_CALEN_SEL')then
+     				
+    	begin
+    		
+            v_inner = '';
+            v_lugares = '0';
+            v_filtro_lugares = '0=0 ';
+            
+           -- raise exception '%',  pxp.f_existe_parametro(p_tabla,'id_lugar');
+            IF  pxp.f_existe_parametro(p_tabla,'id_lugar')  THEN
+            
+                  WITH RECURSIVE lugar_rec (id_lugar, id_lugar_fk, nombre) AS (
+                    SELECT lug.id_lugar, id_lugar_fk, nombre
+                    FROM param.tlugar lug
+                    WHERE lug.id_lugar = v_parametros.id_lugar and lug.estado_reg = 'activo'
+                  UNION ALL
+                    SELECT lug2.id_lugar, lug2.id_lugar_fk, lug2.nombre
+                    FROM lugar_rec lrec 
+                    INNER JOIN param.tlugar lug2 ON lrec.id_lugar = lug2.id_lugar_fk
+                    where lug2.estado_reg = 'activo'
+                  )
+                SELECT  pxp.list(id_lugar::varchar) 
+                  into 
+                    v_lugares
+                FROM lugar_rec;
+                
+                v_filtro_lugares = ' lug.id_lugar in ('||v_lugares||') ';
+           END IF; 
+           
+           v_fecha_ini = now() - interval '1' MONTH;
+           v_fecha_fin = now() + interval '2' MONTH;
+           
+           IF  pxp.f_existe_parametro(p_tabla,'fecha_ini')  THEN
+             v_fecha_ini = v_parametros.fecha_ini::date - interval '2' MONTH;
+           END IF;
+           
+           IF  pxp.f_existe_parametro(p_tabla,'fecha_fin')  THEN
+             v_fecha_fin = v_parametros.fecha_fin::date + interval '2' MONTH;
+           END IF;
+           
+          
+            --Sentencia de la consulta
+			v_consulta:='SELECT 
+                            "event"::varchar,
+                            "title",
+                            "start"::TIMESTAMP,
+                            "end"::TIMESTAMP,
+                            desc_evento,
+                            desc_region,
+                            desc_casa_oracion,
+                            tipo_registro,
+                            desc_lugar,
+                            hora::varchar as hora,
+                            id_lugar,
+                            fecha_programada,
+                            css,
+                            id_region_evento
+                          FROM 
+                            ccb.vcalendario
+                        where   (fecha_programada  BETWEEN  '''||v_fecha_ini::varchar||'''::date and '''||v_fecha_fin::varchar||'''::date)  
+                                and '||v_filtro_lugares;
+			
+			--Definicion de la respuesta
+			
+			raise notice '%',v_consulta;
+			--Devuelve la respuesta
+			return v_consulta;
+						
 		end;
     
     else
