@@ -50,31 +50,37 @@ BEGIN
         begin
         	--Sentencia de la insercion
         	insert into ccb.tcasa_oracion(
-			estado_reg,
-			fecha_cierre,
-			codigo,
-			id_region,
-			id_lugar,
-			direccion,
-			nombre,
-			fecha_apertura,
-			fecha_reg,
-			id_usuario_reg,
-			fecha_mod,
-			id_usuario_mod
+              estado_reg,
+              fecha_cierre,
+              codigo,
+              id_region,
+              id_lugar,
+              direccion,
+              nombre,
+              fecha_apertura,
+              fecha_reg,
+              id_usuario_reg,
+              fecha_mod,
+              id_usuario_mod,
+              latitud,
+              longitud,
+              zoom
           	) values(
-			'activo',
-			v_parametros.fecha_cierre,
-			v_parametros.codigo,
-			v_parametros.id_region,
-			v_parametros.id_lugar,
-			v_parametros.direccion,
-			v_parametros.nombre,
-			v_parametros.fecha_apertura,
-			now(),
-			p_id_usuario,
-			null,
-			null
+              'activo',
+              v_parametros.fecha_cierre,
+              v_parametros.codigo,
+              v_parametros.id_region,
+              v_parametros.id_lugar,
+              v_parametros.direccion,
+              v_parametros.nombre,
+              v_parametros.fecha_apertura,
+              now(),
+              p_id_usuario,
+              null,
+              null,
+              v_parametros.latitud,
+              v_parametros.longitud,
+              v_parametros.zoom
 							
 			)RETURNING id_casa_oracion into v_id_casa_oracion;
 			
@@ -99,15 +105,18 @@ BEGIN
 		begin
 			--Sentencia de la modificacion
 			update ccb.tcasa_oracion set
-			fecha_cierre = v_parametros.fecha_cierre,
-			codigo = v_parametros.codigo,
-			id_region = v_parametros.id_region,
-			id_lugar = v_parametros.id_lugar,
-			direccion = v_parametros.direccion,
-			nombre = v_parametros.nombre,
-			fecha_apertura = v_parametros.fecha_apertura,
-			fecha_mod = now(),
-			id_usuario_mod = p_id_usuario
+              fecha_cierre = v_parametros.fecha_cierre,
+              codigo = v_parametros.codigo,
+              id_region = v_parametros.id_region,
+              id_lugar = v_parametros.id_lugar,
+              direccion = v_parametros.direccion,
+              nombre = v_parametros.nombre,
+              fecha_apertura = v_parametros.fecha_apertura,
+              fecha_mod = now(),
+              id_usuario_mod = p_id_usuario,
+              latitud =  v_parametros.latitud,
+              longitud =  v_parametros.longitud,
+              zoom =   v_parametros.zoom
 			where id_casa_oracion=v_parametros.id_casa_oracion;
                
 			--Definicion de la respuesta

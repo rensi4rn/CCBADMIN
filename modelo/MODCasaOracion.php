@@ -38,6 +38,12 @@ class MODCasaOracion extends MODbase{
 		$this->captura('desc_region','varchar');
 		$this->captura('desc_lugar','varchar');
 		
+		$this->captura('latitud','varchar');
+		$this->captura('longitud','varchar');
+		$this->captura('zoom','varchar');
+		
+		
+		
 		//Ejecuta la instruccion
 		$this->armarConsulta();
 		$this->ejecutarConsulta();
@@ -60,7 +66,10 @@ class MODCasaOracion extends MODbase{
 		$this->setParametro('id_lugar','id_lugar','int4');
 		$this->setParametro('direccion','direccion','text');
 		$this->setParametro('nombre','nombre','varchar');
-		$this->setParametro('fecha_apertura','fecha_apertura','date');
+		$this->setParametro('fecha_apertura','fecha_apertura','date');		
+		$this->setParametro('latitud','latitud','varchar');
+		$this->setParametro('longitud','longitud','varchar');
+		$this->setParametro('zoom','zoom','varchar');
 		
 		//Ejecuta la instruccion
 		$this->armarConsulta();
@@ -86,6 +95,9 @@ class MODCasaOracion extends MODbase{
 		$this->setParametro('direccion','direccion','text');
 		$this->setParametro('nombre','nombre','varchar');
 		$this->setParametro('fecha_apertura','fecha_apertura','date');
+		$this->setParametro('latitud','latitud','varchar');
+		$this->setParametro('longitud','longitud','varchar');
+		$this->setParametro('zoom','zoom','varchar');
 		
 		//Ejecuta la instruccion
 		$this->armarConsulta();

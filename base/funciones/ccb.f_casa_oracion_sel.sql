@@ -69,7 +69,10 @@ BEGIN
 						usu1.cuenta as usr_reg,
 						usu2.cuenta as usr_mod,
                         reg.nombre as desc_region,
-                        lug.nombre as desc_lugar
+                        lug.nombre as desc_lugar,
+                        caor.latitud,
+                        caor.longitud,
+                        caor.zoom
 						from ccb.tcasa_oracion caor
                         inner join ccb.tregion reg on reg.id_region = caor.id_region
                         inner join param.tlugar lug on lug.id_lugar = caor.id_lugar

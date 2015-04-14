@@ -196,6 +196,51 @@ Phx.vista.CasaOracion=Ext.extend(Phx.gridInterfaz,{
 		},
 		{
 			config:{
+				name: 'latitud',
+				fieldLabel: 'LAtitud',
+				allowBlank: true,
+				anchor: '80%',
+				gwidth: 100,
+				maxLength:200
+			},
+			type:'TextField',
+			filters:{pfiltro:'caor.latitud',type:'string'},
+			id_grupo:1,
+			grid:true,
+			form:true
+		},
+		{
+			config:{
+				name: 'longitud',
+				fieldLabel: 'Longitud',
+				allowBlank: true,
+				anchor: '80%',
+				gwidth: 100,
+				maxLength:200
+			},
+			type:'TextField',
+			filters:{pfiltro:'caor.longitud',type:'string'},
+			id_grupo:1,
+			grid:true,
+			form:true
+		},
+		{
+			config:{
+				name: 'zoom',
+				fieldLabel: 'Zoom',
+				allowBlank: true,
+				anchor: '80%',
+				gwidth: 100,
+				maxLength:200
+			},
+			type:'NumberField',
+			filters:{pfiltro:'caor.zoom',type:'string'},
+			id_grupo:1,
+			grid:true,
+			form:true
+		},
+		{
+			config:{
 				name: 'estado_reg',
 				fieldLabel: 'Estado Reg.',
 				allowBlank: true,
@@ -276,6 +321,7 @@ Phx.vista.CasaOracion=Ext.extend(Phx.gridInterfaz,{
 	ActDel:'../../sis_admin/control/CasaOracion/eliminarCasaOracion',
 	ActList:'../../sis_admin/control/CasaOracion/listarCasaOracion',
 	id_store:'id_casa_oracion',
+	winmodal:false,
 	fields: [
 		{name:'id_casa_oracion', type: 'numeric'},
 		{name:'estado_reg', type: 'string'},
@@ -291,14 +337,19 @@ Phx.vista.CasaOracion=Ext.extend(Phx.gridInterfaz,{
 		{name:'fecha_mod', type: 'date', dateFormat:'Y-m-d H:i:s.u'},
 		{name:'id_usuario_mod', type: 'numeric'},
 		{name:'usr_reg', type: 'string'},
-		{name:'usr_mod', type: 'string'},'desc_region','desc_lugar'
+		{name:'usr_mod', type: 'string'},'desc_region','desc_lugar','latitud','longitud','zoom'
 		
 	],
 	sortInfo:{
 		field: 'id_casa_oracion',
 		direction: 'ASC'
 	},
-	
+	east:{
+		  url:'../../../sis_admin/vista/casa_oracion/mapaLocalizacion.php',
+		  title:'Ubicación', 
+		  width:'50%',
+		  cls:'mapaLocalizacion'
+		 },
 	tabsouth:[
 	      {
 		 url:'../../../sis_admin/vista/culto/Culto.php',		  
@@ -314,6 +365,30 @@ Phx.vista.CasaOracion=Ext.extend(Phx.gridInterfaz,{
 		 }
 	
 	   ],
+	   
+	onButtonNew:function(){
+			Phx.vista.CasaOracion.superclass.onButtonNew.call(this);
+			Phx.CP.getPagina(this.idContenedor+'-east').setMarkerDragableOn();
+	 },
+	 
+	 onButtonEdit:function(){
+			Phx.vista.CasaOracion.superclass.onButtonEdit.call(this);
+			Phx.CP.getPagina(this.idContenedor+'-east').setMarkerDragableOn();
+	 },
+	EnableSelect:function(n){
+		
+		var data = this.getSelectedData();
+		console.log('data',data)
+		if(Phx.CP.getPagina(this.idContenedor+'-east')){	
+			 Phx.CP.getPagina(this.idContenedor+'-east').ubicarPos(3,data)
+		}
+		else{
+				    	
+			alert("No hay acceso a internet")
+		}
+		
+		Phx.vista.CasaOracion.superclass.EnableSelect.call(this,n)
+	},
 	bdel:true,
 	bsave:true
 	}

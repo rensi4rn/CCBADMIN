@@ -440,3 +440,27 @@ ALTER TABLE ccb.tmovimiento
   ADD COLUMN id_tipo_movimiento_ot INTEGER;
 
 /***********************************F-SCP-RAC-CCB-2-20/05/2015****************************************/
+
+
+
+
+/***********************************I-SCP-RAC-CCB-2-11/06/2015****************************************/
+
+--------------- SQL ---------------
+
+ALTER TABLE ccb.tcasa_oracion
+  ADD COLUMN longitud VARCHAR;
+  
+--------------- SQL ---------------
+
+ALTER TABLE ccb.tcasa_oracion
+  ADD COLUMN latitud VARCHAR;
+  
+--------------- SQL ---------------
+
+ALTER TABLE ccb.tcasa_oracion
+  ADD COLUMN zoom VARCHAR;
+
+
+/***********************************F-SCP-RAC-CCB-2-11/06/2015****************************************/
+
