@@ -69,7 +69,7 @@ Phx.vista.mapaLocalizacion=Ext.extend(Phx.gmapInterfaz,{
 			
 			console.log('valores....',zoom,n)
 			var myMapa = this.gm.getMap(),
-			    direc = 'Bolivia',
+			    direc = 'Bolivia-'+n.desc_region+'-'+n.desc_lugar,
 			    address = direc,
 			    
 			    lon = n.longitud,
@@ -81,7 +81,7 @@ Phx.vista.mapaLocalizacion=Ext.extend(Phx.gmapInterfaz,{
 		    swFinder=(lon && lat && lon!='' && lat !='')?false:true;
 		    
 		    zoom=zoom>3?zoom*3:zoom*2;
-		    zoom=(coo!='')?coo:zoom;
+		    zoom=(coo&&coo!='')?coo:zoom;
 		    
 		    
 			

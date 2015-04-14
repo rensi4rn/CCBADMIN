@@ -380,7 +380,7 @@ Phx.vista.CasaOracion=Ext.extend(Phx.gridInterfaz,{
 		var data = this.getSelectedData();
 		console.log('data',data)
 		if(Phx.CP.getPagina(this.idContenedor+'-east')){	
-			 Phx.CP.getPagina(this.idContenedor+'-east').ubicarPos(3,data)
+			 Phx.CP.getPagina(this.idContenedor+'-east').ubicarPos(4,data)
 		}
 		else{
 				    	
