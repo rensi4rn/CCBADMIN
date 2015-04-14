@@ -19,7 +19,7 @@ class REgresos extends  ReportePDF {
 	
 	function Header() {
 		//cabecera del reporte
-		$this->Image(dirname(__FILE__).'/../../lib'.$_SESSION['_DIR_LOGO'], $this->ancho_hoja, 5, 30, 10);
+		//$this->Image(dirname(__FILE__).'/../../lib'.$_SESSION['_DIR_LOGO'], $this->ancho_hoja, 5, 30, 10);
 		$this->ln(5);
 		$this->SetFont('','BU',12);
 		
