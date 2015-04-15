@@ -18,7 +18,8 @@ class MODCasaOracion extends MODbase{
 		$this->procedimiento='ccb.f_casa_oracion_sel';
 		$this->transaccion='CCB_CAOR_SEL';
 		$this->tipo_procedimiento='SEL';//tipo de transaccion
-		$this->setParametro('id_lugar','id_lugar','int4');		
+		$this->setParametro('id_lugar','id_lugar','int4');
+		$this->setParametro('verificar','verificar','varchar');				
 				
 		//Definicion de la lista del resultado del query
 		$this->captura('id_casa_oracion','int4');

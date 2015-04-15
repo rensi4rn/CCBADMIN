@@ -32,6 +32,7 @@ DECLARE
     v_inner 			varchar;
     v_filtro_lugares	varchar;
     v_lugares			varchar;
+    v_verificar			varchar;
 			    
 BEGIN
 
@@ -52,7 +53,16 @@ BEGIN
             v_inner = '';
             v_filtro_lugares = '0=0 and';
             
-            IF p_administrador != 1  THEN
+            v_verificar = 'si';
+            
+            
+            
+            
+            IF  pxp.f_existe_parametro(p_tabla,'verificar')  THEN
+                  v_verificar = v_parametros.verificar;
+            END IF;
+            
+            IF (p_administrador != 1 and  v_verificar = 'si') THEN
                v_inner = ' inner join ccb.tusuario_permiso uper on uper.id_usuario_asignado = '||p_id_usuario||'  and (uper.id_region = caor.id_region or  uper.id_casa_oracion = caor.id_casa_oracion) ';
             END IF;
             
@@ -131,7 +141,16 @@ BEGIN
 		begin
             v_inner = '';
             v_filtro_lugares = '0=0 and';
-            IF p_administrador != 1  THEN
+            v_verificar = 'si';
+            
+            
+            
+            
+            IF  pxp.f_existe_parametro(p_tabla,'verificar')  THEN
+                  v_verificar = v_parametros.verificar;
+            END IF;
+            
+            IF p_administrador != 1 and  v_verificar = 'si' THEN
                v_inner = ' inner join ccb.tusuario_permiso uper on uper.id_usuario_asignado = '||p_id_usuario||'  and (uper.id_region = caor.id_region or  uper.id_casa_oracion = caor.id_casa_oracion) ';
             END IF;
             
