@@ -30,6 +30,8 @@ DECLARE
 	v_nombre_funcion   	text;
 	v_resp				varchar;
     v_inner 			varchar;
+    v_filtro_lugares	varchar;
+    v_lugares			varchar;
 			    
 BEGIN
 
@@ -48,9 +50,36 @@ BEGIN
     	begin
         
             v_inner = '';
+            v_filtro_lugares = '0=0 and';
+            
             IF p_administrador != 1  THEN
                v_inner = ' inner join ccb.tusuario_permiso uper on uper.id_usuario_asignado = '||p_id_usuario||'  and (uper.id_region = caor.id_region or  uper.id_casa_oracion = caor.id_casa_oracion) ';
             END IF;
+            
+            IF  pxp.f_existe_parametro(p_tabla,'id_lugar')  THEN
+            
+                  WITH RECURSIVE lugar_rec (id_lugar, id_lugar_fk, nombre) AS (
+                    SELECT lug.id_lugar, id_lugar_fk, nombre
+                    FROM param.tlugar lug
+                    WHERE lug.id_lugar = v_parametros.id_lugar and lug.estado_reg = 'activo'
+                  UNION ALL
+                    SELECT lug2.id_lugar, lug2.id_lugar_fk, lug2.nombre
+                    FROM lugar_rec lrec 
+                    INNER JOIN param.tlugar lug2 ON lrec.id_lugar = lug2.id_lugar_fk
+                    where lug2.estado_reg = 'activo'
+                  )
+                SELECT  pxp.list(id_lugar::varchar) 
+                  into 
+                    v_lugares
+                FROM lugar_rec;
+                
+                
+                
+                v_filtro_lugares = ' lug.id_lugar in ('||v_lugares||') and ';
+           END IF;
+            
+            
+            
     		--Sentencia de la consulta
 			v_consulta:='select
 						caor.id_casa_oracion,
@@ -79,7 +108,7 @@ BEGIN
 						inner join segu.tusuario usu1 on usu1.id_usuario = caor.id_usuario_reg
                         '|| v_inner ||'
 						left join segu.tusuario usu2 on usu2.id_usuario = caor.id_usuario_mod
-				        where  ';
+				        where  '||v_filtro_lugares;
 			
 			--Definicion de la respuesta
 			v_consulta:=v_consulta||v_parametros.filtro;
@@ -101,9 +130,34 @@ BEGIN
 
 		begin
             v_inner = '';
+            v_filtro_lugares = '0=0 and';
             IF p_administrador != 1  THEN
                v_inner = ' inner join ccb.tusuario_permiso uper on uper.id_usuario_asignado = '||p_id_usuario||'  and (uper.id_region = caor.id_region or  uper.id_casa_oracion = caor.id_casa_oracion) ';
             END IF;
+            
+            IF  pxp.f_existe_parametro(p_tabla,'id_lugar')  THEN
+            
+                  WITH RECURSIVE lugar_rec (id_lugar, id_lugar_fk, nombre) AS (
+                    SELECT lug.id_lugar, id_lugar_fk, nombre
+                    FROM param.tlugar lug
+                    WHERE lug.id_lugar = v_parametros.id_lugar and lug.estado_reg = 'activo'
+                  UNION ALL
+                    SELECT lug2.id_lugar, lug2.id_lugar_fk, lug2.nombre
+                    FROM lugar_rec lrec 
+                    INNER JOIN param.tlugar lug2 ON lrec.id_lugar = lug2.id_lugar_fk
+                    where lug2.estado_reg = 'activo'
+                  )
+                SELECT  pxp.list(id_lugar::varchar) 
+                  into 
+                    v_lugares
+                FROM lugar_rec;
+                
+                
+                
+                v_filtro_lugares = ' lug.id_lugar in ('||v_lugares||') and ';
+           END IF;
+           
+           
 			--Sentencia de la consulta de conteo de registros
 			v_consulta:='select count(caor.id_casa_oracion)
 					    from ccb.tcasa_oracion caor
@@ -112,7 +166,7 @@ BEGIN
 						inner join segu.tusuario usu1 on usu1.id_usuario = caor.id_usuario_reg
                         '|| v_inner ||'
 						left join segu.tusuario usu2 on usu2.id_usuario = caor.id_usuario_mod
-					    where ';
+					    where '||v_filtro_lugares;
 			
 			--Definicion de la respuesta		    
 			v_consulta:=v_consulta||v_parametros.filtro;

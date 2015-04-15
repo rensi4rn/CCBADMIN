@@ -11,9 +11,7 @@ class ACTCasaOracion extends ACTbase{
 			
 	function listarCasaOracion(){
 		$this->objParam->defecto('ordenacion','id_casa_oracion');
-
-		$this->objParam->defecto('dir_ordenacion','asc');
-		
+		$this->objParam->defecto('dir_ordenacion','asc');		
 		if($this->objParam->getParametro('id_region')!=''){
 			    	$this->objParam->addFiltro("caor.id_region = ".$this->objParam->getParametro('id_region'));	
 		}
@@ -24,7 +22,6 @@ class ACTCasaOracion extends ACTbase{
 		} else{
 		
 			$this->objFunc=$this->create('MODCasaOracion');
-			
 			$this->res=$this->objFunc->listarCasaOracion($this->objParam);
 		}
 		$this->res->imprimirRespuesta($this->res->generarJson());
