@@ -34,6 +34,7 @@ DECLARE
     v_filtro_lugares    varchar;
     v_fecha_ini			date;
     v_fecha_fin			date;
+    v_tipolist			varchar;
 			    
 BEGIN
 
@@ -55,11 +56,18 @@ BEGIN
             v_inner = '';
             v_lugares = '0';
             v_filtro_lugares = '0=0 and';
-            IF p_administrador != 1  THEN
+            v_tipolist = 'pc';
             
-             -- v_inner = ' inner join ccb.tusuario_permiso uper on uper.id_usuario_asignado = '||p_id_usuario||'  and (uper.id_region = rege.id_region or  uper.id_casa_oracion = rege.id_casa_oracion) ';
             
+            IF  pxp.f_existe_parametro(p_tabla,'tipolist')  THEN            
+               v_tipolist = 'mobile';
             END IF;
+            
+            IF p_administrador != 1   and v_tipolist = 'pc' THEN
+               v_inner = ' inner join ccb.tusuario_permiso uper on uper.id_usuario_asignado = '||p_id_usuario||'  and (uper.id_region = rege.id_region or  uper.id_casa_oracion = rege.id_casa_oracion) ';
+            END IF;
+            
+            
             
            -- raise exception '%',  pxp.f_existe_parametro(p_tabla,'id_lugar');
             IF  pxp.f_existe_parametro(p_tabla,'id_lugar')  THEN
@@ -109,7 +117,9 @@ BEGIN
                         lug.id_lugar,
                         lug.nombre as  desc_lugar,
                         ep.mes,
-                        rege.hora	
+                        rege.hora,
+                        rege.id_obrero,
+                        ob.nombre_completo1	 as desc_obrero
 						from ccb.tregion_evento rege
                         inner join ccb.tgestion ges on ges.id_gestion = rege.id_gestion
                         inner join ccb.tregion reg on reg.id_region = rege.id_region
@@ -121,6 +131,7 @@ BEGIN
                         
                         '|| v_inner ||'
                         left join segu.tusuario usu2 on usu2.id_usuario = rege.id_usuario_mod
+                        left join ccb.vobrero ob on ob.id_obrero = rege.id_obrero
                         where  '||v_filtro_lugares;
 			
 			--Definicion de la respuesta
@@ -145,11 +156,16 @@ BEGIN
             v_inner = '';
             v_lugares = '0';
             v_filtro_lugares = '0=0 and';
+            v_tipolist = 'pc';
             
-            IF p_administrador != 1  THEN
             
-             -- v_inner = ' inner join ccb.tusuario_permiso uper on uper.id_usuario_asignado = '||p_id_usuario||'  and (uper.id_region = rege.id_region or  uper.id_casa_oracion = rege.id_casa_oracion) ';
+            IF  pxp.f_existe_parametro(p_tabla,'tipolist')  THEN            
+               v_tipolist = 'mobile';
+            END IF;
             
+            --filtro de asignaciones
+            IF p_administrador != 1   and v_tipolist = 'pc' THEN
+             v_inner = ' inner join ccb.tusuario_permiso uper on uper.id_usuario_asignado = '||p_id_usuario||'  and (uper.id_region = rege.id_region or  uper.id_casa_oracion = rege.id_casa_oracion) ';
             END IF;
              
              -- raise exception '%',  pxp.f_existe_parametro(p_tabla,'id_lugar');
@@ -187,6 +203,7 @@ BEGIN
                         inner join ccb.testado_periodo ep   on  rege.fecha_programada::date BETWEEN  ep.fecha_ini::date and ep.fecha_fin::dATE  and ep.estado_reg = ''activo'' and ep.id_casa_oracion = co.id_casa_oracion
                         '|| v_inner ||'
                         left join segu.tusuario usu2 on usu2.id_usuario = rege.id_usuario_mod
+                        left join ccb.vobrero ob on ob.id_obrero = rege.id_obrero
                         where  '||v_filtro_lugares;
 			
 			--Definicion de la respuesta		    
@@ -238,7 +255,9 @@ BEGIN
                             eve.nombre,
                             eve.id_usuario_mod,
                             eve.cuenta,
-                            eve.hora
+                            eve.hora,
+                            id_obrero,
+                            desc_obrero
                           FROM 
                             ccb.vevento_bautizo_santa_cena eve
                         '|| v_inner ||'
@@ -349,7 +368,9 @@ BEGIN
                             id_lugar,
                             fecha_programada,
                             css,
-                            id_region_evento
+                            id_region_evento,
+                            id_obrero,
+                            COALESCE(desc_obrero,''n/d'')
                           FROM 
                             ccb.vcalendario
                         where   (fecha_programada  BETWEEN  '''||v_fecha_ini::varchar||'''::date and '''||v_fecha_fin::varchar||'''::date)  

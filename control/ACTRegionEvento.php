@@ -21,6 +21,13 @@ class ACTRegionEvento extends ACTbase{
 			    	$this->objParam->addFiltro("rege.id_gestion = ".$this->objParam->getParametro('id_gestion'));	
 		}
 		
+		if($this->objParam->getParametro('id_obrero')!=''){
+			    	$this->objParam->addFiltro("rege.id_obrero = ".$this->objParam->getParametro('id_obrero'));	
+		}
+		
+		if($this->objParam->getParametro('id_evento')!=''){
+			    	$this->objParam->addFiltro("rege.id_evento = ".$this->objParam->getParametro('id_evento'));	
+		}
 		
 		if($this->objParam->getParametro('tipo_registro')!=''){
 			    	$this->objParam->addFiltro("rege.tipo_registro =''".$this->objParam->getParametro('tipo_registro')."''");	

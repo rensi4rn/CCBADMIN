@@ -19,7 +19,8 @@ class MODRegionEvento extends MODbase{
 		$this->transaccion='CCB_REGE_SEL';
 		$this->tipo_procedimiento='SEL';//tipo de transaccion
 		
-		$this->setParametro('id_lugar','id_lugar','int4');		
+		$this->setParametro('id_lugar','id_lugar','int4');
+		$this->setParametro('tipolist','tipolist','varchar');			
 		//Definicion de la lista del resultado del query
 		$this->captura('id_region_evento','int4');
 		$this->captura('estado_reg','varchar');
@@ -44,6 +45,8 @@ class MODRegionEvento extends MODbase{
 		$this->captura('desc_lugar','varchar');
 		$this->captura('mes','varchar');
 		$this->captura('hora','time');
+		$this->captura('id_obrero','int4');
+		$this->captura('desc_obrero','text');
 		
 		
 		
@@ -75,6 +78,7 @@ class MODRegionEvento extends MODbase{
 		$this->setParametro('id_casa_oracion','id_casa_oracion','integer');
 		$this->setParametro('tipo_registro','tipo_registro','varchar');
 		$this->setParametro('hora','hora','time');
+		$this->setParametro('id_obrero','id_obrero','int4');
 		
 
 		//Ejecuta la instruccion
@@ -102,6 +106,8 @@ class MODRegionEvento extends MODbase{
 		$this->setParametro('id_casa_oracion','id_casa_oracion','integer');
 		$this->setParametro('tipo_registro','tipo_registro','varchar');
 		$this->setParametro('hora','hora','time');
+		$this->setParametro('id_obrero','id_obrero','int4');
+		
 		
 
 		//Ejecuta la instruccion
@@ -191,6 +197,8 @@ class MODRegionEvento extends MODbase{
 		$this->captura('id_usuario_mod','integer');
 		$this->captura('cuenta','varchar');
 		$this->captura('hora','time');
+		$this->captura('id_obrero','int4');
+		$this->captura('desc_obrero','text');
 		
 		
 		
@@ -224,6 +232,9 @@ class MODRegionEvento extends MODbase{
 		$this->setParametro('id_detalle_evento_hermano','id_detalle_evento_hermano','int4');
 		$this->setParametro('id_detalle_evento_hermana','id_detalle_evento_hermana','int4');
 		$this->setParametro('hora','hora','time');
+		$this->setParametro('id_obrero','id_obrero','int4');
+		
+		
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();
@@ -252,6 +263,9 @@ class MODRegionEvento extends MODbase{
 		$this->setParametro('id_detalle_evento_hermano','id_detalle_evento_hermano','int4');
 		$this->setParametro('id_detalle_evento_hermana','id_detalle_evento_hermana','int4');
 		$this->setParametro('hora','hora','time');
+		$this->setParametro('id_obrero','id_obrero','int4');
+		
+		
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();
@@ -286,6 +300,8 @@ class MODRegionEvento extends MODbase{
 		$this->captura('fecha_programada','date');
 		$this->captura('css','text');
 		$this->captura('id_region_evento','int4');
+		$this->captura('id_obrero','int4');
+		$this->captura('desc_obrero','text');
 		
 		
 		

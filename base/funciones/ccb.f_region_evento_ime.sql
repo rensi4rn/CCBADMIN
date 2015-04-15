@@ -107,7 +107,8 @@ BEGIN
               id_usuario_mod,
               id_casa_oracion,
               tipo_registro,
-              hora
+              hora,
+              id_obrero
           	) values(
               'activo',
               v_parametros.id_gestion,
@@ -121,7 +122,8 @@ BEGIN
               p_id_usuario,
               v_parametros.id_casa_oracion,
               v_parametros.tipo_registro,
-              v_parametros.hora    
+              v_parametros.hora ,
+              v_parametros.id_obrero   
 							
 			)RETURNING id_region_evento into v_id_region_evento;
             
@@ -217,7 +219,8 @@ BEGIN
 			id_usuario_mod = p_id_usuario,
             id_casa_oracion =  v_parametros.id_casa_oracion,
             tipo_registro = v_parametros.tipo_registro,
-            hora = v_parametros.hora
+            hora = v_parametros.hora,
+            id_obrero =  v_parametros.id_obrero
 			where id_region_evento=v_parametros.id_region_evento;
                
 			--Definicion de la respuesta
@@ -421,7 +424,8 @@ BEGIN
               id_usuario_mod,
               id_casa_oracion,
               tipo_registro,
-              hora
+              hora,
+              id_obrero
           	) values(
               'activo',
               v_id_gestion,
@@ -435,7 +439,8 @@ BEGIN
               p_id_usuario,
               v_parametros.id_casa_oracion,
              'detalle' ,
-             v_parametros.hora   
+             v_parametros.hora,
+             v_parametros.id_obrero  
 							
 			)RETURNING id_region_evento into v_id_region_evento;
             
@@ -533,15 +538,16 @@ BEGIN
               
 			--Sentencia de la modificacion
 			update ccb.tregion_evento set
-			id_gestion = v_id_gestion,
-			fecha_programada = v_parametros.fecha_programada,
-			id_evento = v_parametros.id_evento,
-			estado = v_parametros.estado,
-			id_region = v_id_region,
-			fecha_mod = now(),
-			id_usuario_mod = p_id_usuario,
-            id_casa_oracion =  v_parametros.id_casa_oracion,
-            hora = v_parametros.hora
+              id_gestion = v_id_gestion,
+              fecha_programada = v_parametros.fecha_programada,
+              id_evento = v_parametros.id_evento,
+              estado = v_parametros.estado,
+              id_region = v_id_region,
+              fecha_mod = now(),
+              id_usuario_mod = p_id_usuario,
+              id_casa_oracion =  v_parametros.id_casa_oracion,
+              hora = v_parametros.hora,
+              id_obrero =  v_parametros.id_obrero
 			where id_region_evento=v_parametros.id_region_evento;
             
             

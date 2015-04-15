@@ -15,9 +15,14 @@ class ACTObrero extends ACTbase{
 		
 		$this->objParam->defecto('ordenacion','id_obrero');
 
-		 if($this->objParam->getParametro('id_region')!=''){
+		if($this->objParam->getParametro('id_region')!=''){
 			    	$this->objParam->addFiltro("obr.id_region = ".$this->objParam->getParametro('id_region'));	
-				}
+		}
+		
+		if($this->objParam->getParametro('codigo_ministerio')!=''){
+			    	$this->objParam->addFiltro("tipmi.codigo in (".$this->objParam->getParametro('codigo_ministerio').")");	
+		}
+		
 		$this->objParam->defecto('dir_ordenacion','asc');
 		if($this->objParam->getParametro('tipoReporte')=='excel_grid' || $this->objParam->getParametro('tipoReporte')=='pdf_grid'){
 			$this->objReporte = new Reporte($this->objParam,$this);

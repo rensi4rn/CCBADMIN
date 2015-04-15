@@ -303,9 +303,54 @@ Phx.vista.RegionEvento=Ext.extend(Phx.gridInterfaz,{
 	       		bottom_filter: true,
 	       		grid:true,
 	       		form:true
-	       },
-		
-		
+	     },
+         {
+            config:{
+                name: 'id_obrero',
+                fieldLabel: 'Atiende',
+                qtip: 'Obrero que atiende el evento',
+                allowBlank: true,
+                forceSelection : true,
+                emptyText:'Atiende ...',
+                store: new Ext.data.JsonStore(
+                {
+                    url: '../../sis_admin/control/Obrero/listarObrero',
+                    id: 'id_obrero',
+                    root: 'datos',
+                    sortInfo:{
+                        field: 'desc_persona',
+                        direction: 'ASC'
+                    },
+                    totalProperty: 'total',
+                    fields: ['id_obrero','desc_persona','desc_tipo_ministerio',
+							'desc_casa_oracion','id_casa_oracion','desc_region',
+							'telefono1','telefono2','celular1','correo'],
+                    // turn on remote sorting
+                    remoteSort: true,
+                    baseParams:{par_filtro:'per.nombre_completo1',codigo_ministerio:"''anciano'',''cooperador'',''diacono''"}
+                }),
+                valueField: 'id_obrero',
+                tpl:'<tpl for="."><div class="x-combo-list-item"><p><b>{desc_persona}</b></p><p>{desc_tipo_ministerio}</p><p>{desc_casa_oracion}</p> </div></tpl>',
+				displayField: 'desc_persona',
+                gdisplayField:'desc_obrero',
+                hiddenName: 'id_obrero',
+                triggerAction: 'all',
+                lazyRender:true,
+                mode:'remote',
+                pageSize:50,
+                queryDelay:500,
+                listWidth:'280',
+                width:210,
+                gwidth:220,
+                minChars:2
+            },
+            type:'ComboBox',
+            bottom_filter: true,
+            filters:{pfiltro:'ob.nombre_completo1',type:'string'},
+            id_grupo:1,
+            grid:true,
+            form:true
+        },
 		
 		{
 			config:{
@@ -405,7 +450,7 @@ Phx.vista.RegionEvento=Ext.extend(Phx.gridInterfaz,{
 		{name:'id_usuario_mod', type: 'numeric'},
 		{name:'usr_reg', type: 'string'},
 		{name:'usr_mod', type: 'string'},'tipo_registro',
-		'hora','desc_gestion','desc_evento','desc_region','desc_casa_oracion','id_casa_oracion'	
+		'hora','desc_gestion','desc_evento','desc_region','desc_casa_oracion','id_casa_oracion','id_obrero','desc_obrero'	
 	],
 	
 	sortInfo:{

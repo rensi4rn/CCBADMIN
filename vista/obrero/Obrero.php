@@ -157,7 +157,7 @@ Phx.vista.Obrero=Ext.extend(Phx.gridInterfaz,{
 			config: {
 				name: 'id_casa_oracion',
                 fieldLabel: 'Casa de Oración',
-                allowBlank: false,
+                allowBlank: true,
                 emptyText:'Casa...',
                 store:new Ext.data.JsonStore(
                 {
@@ -300,7 +300,7 @@ Phx.vista.Obrero=Ext.extend(Phx.gridInterfaz,{
 				allowBlank: true,
 				anchor: '80%',
 				gwidth: 100,
-				maxLength:10
+				maxLength:40
 			},
 			type:'TextField',
 			filters:{pfiltro:'per.correo',type:'string'},

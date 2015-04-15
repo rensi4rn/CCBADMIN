@@ -464,3 +464,142 @@ ALTER TABLE ccb.tcasa_oracion
 
 /***********************************F-SCP-RAC-CCB-2-11/06/2015****************************************/
 
+
+
+
+/***********************************I-SCP-RAC-CCB-2-23/06/2015****************************************/
+
+--------------- SQL ---------------
+
+ALTER TABLE ccb.tregion_evento
+  ADD COLUMN id_obrero INTEGER;
+
+COMMENT ON COLUMN ccb.tregion_evento.id_obrero
+IS 'identifica las los obereos responsalbes por atender';
+
+
+--------------- SQL ---------------
+
+CREATE OR REPLACE VIEW ccb.vevento_bautizo_santa_cena(
+    fecha_programada,
+    estado,
+    id_region_evento,
+    id_casa_oracion,
+    id_region,
+    nombre_region,
+    nombre_co,
+    cantidad_hermano,
+    cantidad_hermana,
+    id_gestion,
+    gestion,
+    id_detalle_evento_hermano,
+    id_detalle_evento_hermana,
+    id_evento,
+    codigo,
+    nombre,
+    id_usuario_mod,
+    cuenta,
+    hora)
+AS
+  SELECT re.fecha_programada,
+         re.estado,
+         re.id_region_evento,
+         re.id_casa_oracion,
+         reg.id_region,
+         reg.nombre AS nombre_region,
+         co.nombre AS nombre_co,
+         deh.cantidad AS cantidad_hermano,
+         dee.cantidad AS cantidad_hermana,
+         ges.id_gestion,
+         ges.gestion,
+         deh.id_detalle_evento AS id_detalle_evento_hermano,
+         dee.id_detalle_evento AS id_detalle_evento_hermana,
+         ev.id_evento,
+         ev.codigo,
+         ev.nombre,
+         re.id_usuario_mod,
+         us.cuenta,
+         re.hora,
+         re.id_obrero,
+         ob.nombre_completo1 as desc_obrero
+  FROM ccb.tregion_evento re
+       JOIN segu.tusuario us ON us.id_usuario = re.id_usuario_mod
+       JOIN ccb.tregion reg ON reg.id_region = re.id_region
+       JOIN ccb.tcasa_oracion co ON co.id_casa_oracion = re.id_casa_oracion
+       JOIN ccb.tdetalle_evento deh ON deh.id_region_evento =
+         re.id_region_evento
+       JOIN ccb.ttipo_ministerio tm ON tm.id_tipo_ministerio =
+         deh.id_tipo_ministerio AND tm.codigo::text = 'hermano'::text
+       JOIN ccb.tdetalle_evento dee ON dee.id_region_evento =
+         re.id_region_evento
+       JOIN ccb.ttipo_ministerio tm2 ON tm2.id_tipo_ministerio =
+         dee.id_tipo_ministerio AND tm2.codigo::text = 'hermana'::text
+       JOIN ccb.tevento ev ON ev.id_evento = re.id_evento
+       JOIN ccb.tgestion ges ON ges.id_gestion = re.id_gestion
+       LEFT JOIN ccb.vobrero ob ON ob.id_obrero = re.id_obrero
+  WHERE (ev.codigo::text = ANY (ARRAY [ 'bautizo'::text, 'santacena'::text ]))
+  AND
+        re.tipo_registro::text = 'detalle'::text;
+
+
+--------------- SQL ---------------
+
+CREATE OR REPLACE VIEW ccb.vcalendario(
+    event,
+    title,
+    start,
+    "end",
+    desc_evento,
+    desc_region,
+    desc_casa_oracion,
+    tipo_registro,
+    desc_lugar,
+    hora,
+    id_lugar,
+    fecha_programada,
+    css,
+    id_region_evento)
+AS
+  SELECT (rege.id_region_evento::character varying::text || ' - '::text) ||
+    COALESCE(rege.hora::character varying, '19:00:00'::character varying)::text
+    AS event,
+         ((((eve.nombre::text || ' - '::text) || co.nombre::text) || ' ('::text)
+           || lug.nombre::text) || ')'::text AS title,
+         ((rege.fecha_programada::character varying::text || ' '::text) ||
+           COALESCE(rege.hora, '19:00:00'::time without time zone))::timestamp
+           without time zone AS start,
+         (((rege.fecha_programada::character varying::text || ' '::text) ||
+           COALESCE(rege.hora, '19:00:00'::time without time zone))::timestamp
+           without time zone) + '02:00:00'::interval hour AS "end",
+         eve.nombre AS desc_evento,
+         reg.nombre AS desc_region,
+         co.nombre AS desc_casa_oracion,
+         rege.tipo_registro,
+         lug.nombre AS desc_lugar,
+         COALESCE(rege.hora, '19:00:00'::time without time zone) AS hora,
+         lug.id_lugar,
+         rege.fecha_programada,
+         CASE
+           WHEN eve.codigo::text = 'bautico'::text THEN 'green'::text
+           WHEN eve.codigo::text = 'santacena'::text THEN 'blue'::text
+           WHEN eve.codigo::text = 'reuniondejuventud'::text THEN 'purple'::text
+           WHEN eve.codigo::text = 'reunmiloc'::text THEN 'orange'::text
+           WHEN eve.codigo::text = 'ensayoreg'::text THEN 'brown'::text
+           WHEN eve.codigo::text = 'reunmireg'::text THEN 'red'::text
+           ELSE 'grey'::text
+         END AS css,
+         rege.id_region_evento,
+         rege.id_obrero,
+         ob.nombre_completo1 as desc_obrero
+  FROM ccb.tregion_evento rege
+       JOIN ccb.tgestion ges ON ges.id_gestion = rege.id_gestion
+       JOIN ccb.tregion reg ON reg.id_region = rege.id_region
+       JOIN ccb.tevento eve ON eve.id_evento = rege.id_evento
+       JOIN ccb.tcasa_oracion co ON co.id_casa_oracion = rege.id_casa_oracion
+       JOIN segu.tusuario usu1 ON usu1.id_usuario = rege.id_usuario_reg
+       JOIN param.tlugar lug ON lug.id_lugar = co.id_lugar
+       LEFT JOIN ccb.vobrero ob ON ob.id_obrero = rege.id_obrero
+  WHERE rege.tipo_registro::text = 'detalle'::text;
+/***********************************F-SCP-RAC-CCB-2-23/06/2015****************************************/
+
+
