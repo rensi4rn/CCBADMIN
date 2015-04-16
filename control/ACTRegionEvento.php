@@ -6,7 +6,8 @@
 *@date 13-01-2013 14:31:26
 *@description Clase que recibe los parametros enviados por la vista para mandar a la capa de Modelo
 */
-
+require_once(dirname(__FILE__).'/../reportes/RAgenda.php');
+require_once(dirname(__FILE__).'/../../pxp/pxpReport/DataSource.php');
 class ACTRegionEvento extends ACTbase{    
 			
 	function listarRegionEvento(){
@@ -127,14 +128,13 @@ class ACTRegionEvento extends ACTbase{
 	}
 	
 	
-	
 	function recuperarDatosReporteAgenda(){
     	
 		$this->objFunc = $this->create('MODRegionEvento');
 		$cbteHeader = $this->objFunc->listarReporteAgenda($this->objParam);
 		if($cbteHeader->getTipo() == 'EXITO'){
 				
-			return $cbteHeader;
+			return $cbteHeader->getDatos();
 		}
         else{
 		    $cbteHeader->imprimirRespuesta($cbteHeader->generarJson());
@@ -142,27 +142,25 @@ class ACTRegionEvento extends ACTbase{
 		}              
 		
     }
-	function reporteAgenda(){
+   
+   function reporteAgenda(){
 			
-		$nombreArchivo = uniqid(md5(session_id()).'Egresos') . '.pdf'; 
+		$nombreArchivo = uniqid(md5(session_id()).'Agenda') . '.pdf'; 
 		$dataSource = $this->recuperarDatosReporteAgenda();	
-		
 		
 		//parametros basicos
 		$tamano = 'LETTER';
 		$orientacion = 'P';
-		$titulo = 'Egresos';
+		$titulo = 'Agenda';
 		
 		$this->objParam->addParametro('orientacion',$orientacion);
 		$this->objParam->addParametro('tamano',$tamano);		
-		$this->objParam->addParametro('titulo_archivo',$titulo);	
-        
+		$this->objParam->addParametro('titulo_archivo',$titulo);        
 		$this->objParam->addParametro('nombre_archivo',$nombreArchivo);
 		//Instancia la clase de pdf
 		
-		$reporte = new REgresos($this->objParam);
-		$reporte->datosHeader($dataSource->getDatos(),  $dataSource->extraData);
-		//$this->objReporteFormato->renderDatos($this->res2->datos);
+		$reporte = new RAgenda($this->objParam);
+		$reporte->datosHeader($dataSource, $this->objParam->getParametro('desde'),$this->objParam->getParametro('hasta'));
 		
 		$reporte->generarReporte();
 		$reporte->output($reporte->url_archivo,'F');

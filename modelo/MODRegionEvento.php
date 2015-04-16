@@ -327,7 +327,7 @@ class MODRegionEvento extends MODbase{
 		$this->setParametro('id_lugar','id_lugar','int4');
 		$this->setParametro('tipo_orden','tipo_orden','varchar');
 		$this->setParametro('id_eventos','id_eventos','varchar');
-		$this->setParametro('id_obrero','id_obrero','int4');
+		$this->setParametro('id_obrero','id_obrero','varchar');
 		$this->setParametro('id_regiones','id_regiones','varchar');
 		$this->setParametro('hasta','hasta','date');
 		$this->setParametro('desde','desde','date');				
@@ -335,7 +335,7 @@ class MODRegionEvento extends MODbase{
 		$this->captura('id_region_evento','int4');
 		$this->captura('estado_reg','varchar');
 		$this->captura('id_gestion','int4');
-		$this->captura('fecha_programada','date');
+		$this->captura('fecha_programada','varchar');
 		$this->captura('id_evento','int4');
 		$this->captura('estado','varchar');
 		$this->captura('id_region','int4');
@@ -354,9 +354,13 @@ class MODRegionEvento extends MODbase{
 		$this->captura('id_lugar','integer');
 		$this->captura('desc_lugar','varchar');
 		$this->captura('mes','varchar');
-		$this->captura('hora','time');
+		$this->captura('hora','varchar');
 		$this->captura('id_obrero','int4');
 		$this->captura('desc_obrero','text');
+		$this->captura('num_dia','varchar');
+		
+		
+		
 		
 		
 		
