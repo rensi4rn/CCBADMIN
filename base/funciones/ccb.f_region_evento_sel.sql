@@ -338,8 +338,22 @@ BEGIN
                     v_lugares
                 FROM lugar_rec;
                 
-                v_filtro_lugares = ' lug.id_lugar in ('||v_lugares||') ';
+                v_filtro_lugares =  v_filtro_lugares||' and  id_lugar in ('||v_lugares||') ';
            END IF; 
+           
+           IF  pxp.f_existe_parametro(p_tabla,'id_obrero')  THEN
+              IF   v_parametros.id_obrero is not null  THEN
+                 v_filtro_lugares =  v_filtro_lugares||' and  id_obrero = '||v_parametros.id_obrero::varchar||' ';
+              END IF;
+           END IF;
+            
+           IF  pxp.f_existe_parametro(p_tabla,'id_evento')  THEN
+              IF   v_parametros.id_evento is not null THEN
+                 v_filtro_lugares =  v_filtro_lugares||' and  id_evento = '||v_parametros.id_evento::varchar||' ';
+              END IF;
+           END IF;
+            
+            
            
            v_fecha_ini = now() - interval '1' MONTH;
            v_fecha_fin = now() + interval '2' MONTH;

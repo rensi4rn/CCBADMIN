@@ -282,6 +282,8 @@ class MODRegionEvento extends MODbase{
 		$this->tipo_procedimiento='SEL';//tipo de transaccion
 		$this->setCount(false);	
 		$this->setParametro('id_lugar','id_lugar','int4');
+		$this->setParametro('id_obrero','id_obrero','int4');
+		$this->setParametro('id_evento','id_evento','int4');
 		$this->setParametro('fecha_ini','fecha_ini','date');	
 		$this->setParametro('fecha_fin','fecha_fin','date');			
 			
