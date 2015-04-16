@@ -214,7 +214,7 @@ Phx.vista.RepAgenda=Ext.extend(Phx.frmInterfaz,{
 					fields: ['id_evento','nombre'],
 					// turn on remote sorting
 					remoteSort: true,
-					baseParams:{par_filtro:'nombre',_adicionar:'todos'}
+					baseParams:{par_filtro:'nombre'}
 				}),
 				valueField: 'id_evento',
 				displayField: 'nombre',
