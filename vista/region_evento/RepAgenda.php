@@ -29,6 +29,8 @@ Phx.vista.RepAgenda=Ext.extend(Phx.frmInterfaz,{
         Phx.vista.RepAgenda.superclass.constructor.call(this,config);
         this.init(); 
         
+        this.Cmp.tipo_orden.setValue('evento');
+        
         
     },
     
@@ -237,6 +239,20 @@ Phx.vista.RepAgenda=Ext.extend(Phx.frmInterfaz,{
 			grid:true,
 			form:true 
 		},
+		
+		{
+			//configuracion del componente
+			config:{
+					labelSeparator:'',
+					inputType:'hidden',
+					name: 'tipo_orden'
+			},
+			type:'Field',
+			valorInicial: 'evento',
+			form:true 
+		}
+		
+		/*
 		{
             config:{
                 name: 'tipo_orden',
@@ -254,7 +270,7 @@ Phx.vista.RepAgenda=Ext.extend(Phx.frmInterfaz,{
             valorInicial: 'fecha',
             id_grupo:1,
             form:true
-        }
+        }*/
 		  
 
     ],
