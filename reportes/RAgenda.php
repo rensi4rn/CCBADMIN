@@ -62,7 +62,7 @@ class RAgenda extends  ReportePDF {
 		$this->Cell($ancho, 0, $pagenumtxt, '', 0, 'C');
 		$this->Cell($ancho, 0, $_SESSION['_REP_NOMBRE_SISTEMA'], '', 0, 'R');
 		
-		$this->Cell(20, 0, '', '', 0, 'R');
+		$this->Cell(15, 0, '', '', 0, 'R');
 		
 		$this->Cell($ancho, 0, 'Usuario: '.$_SESSION['_LOGIN'], '', 0, 'L');
 		$pagenumtxt = 'Página'.' '.$this->getAliasNumPage().' de '.$this->getAliasNbPages();
@@ -74,7 +74,7 @@ class RAgenda extends  ReportePDF {
 		$fecha_rep = date("d-m-Y H:i:s");
 		$this->Cell(($ancho*3), 0, "Fecha : ".$fecha_rep, '', 0, 'L');
 		
-		$this->Cell(10, 0, '', '', 0, 'R');
+		$this->Cell(15, 0, '', '', 0, 'R');
 		
 		$this->Cell($ancho, 0, "Fecha : ".$fecha_rep, '', 0, 'L');
 		$this->Ln($line_width);
