@@ -26,6 +26,23 @@ class ACTEvento extends ACTbase{
 			
 			$this->res=$this->objFunc->listarEvento($this->objParam);
 		}
+		
+		if($this->objParam->getParametro('_adicionar')!=''){
+		    
+			$respuesta = $this->res->getDatos();
+			
+										
+		    array_unshift ( $respuesta, array(  'id_evento'=>'0',
+		                                'estado_reg'=>'Todos',
+									    'nombre'=>'Todos',
+										'id_usuario_reg'=>'Todos',
+										'gestion'=>'Todos',
+										'codigo'=>'Todos') );
+		    //var_dump($respuesta);
+			$this->res->setDatos($respuesta);
+		}
+
+
 		$this->res->imprimirRespuesta($this->res->generarJson());
 	}
 				

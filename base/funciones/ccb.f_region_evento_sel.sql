@@ -35,6 +35,8 @@ DECLARE
     v_fecha_ini			date;
     v_fecha_fin			date;
     v_tipolist			varchar;
+    v_filtro 			varchar;
+    v_order 			varchar;
 			    
 BEGIN
 
@@ -393,6 +395,129 @@ BEGIN
 			--Definicion de la respuesta
 			
 			raise notice '%',v_consulta;
+			--Devuelve la respuesta
+			return v_consulta;
+						
+		end;
+    /*********************************    
+ 	#TRANSACCION:  'CCB_REPAGE_SEL'
+ 	#DESCRIPCION:	consulta de agenda para reporte impreso
+ 	#AUTOR:		admin	
+ 	#FECHA:		13-01-2013 14:31:26
+	***********************************/
+
+	elsif(p_transaccion='CCB_REGE_SEL')then
+     				
+    	begin
+    		
+            v_inner = '';
+            v_lugares = '0';
+            v_filtro = '0=0 and';
+            
+           -- raise exception '%',  pxp.f_existe_parametro(p_tabla,'id_lugar');
+            IF  pxp.f_existe_parametro(p_tabla,'id_lugar')  THEN
+                 
+                 IF v_parametros.id_lugar is not null and v_parametros.id_lugar != '' THEN
+                      WITH RECURSIVE lugar_rec (id_lugar, id_lugar_fk, nombre) AS (
+                          SELECT lug.id_lugar, id_lugar_fk, nombre
+                          FROM param.tlugar lug
+                          WHERE lug.id_lugar = v_parametros.id_lugar and lug.estado_reg = 'activo'
+                        UNION ALL
+                          SELECT lug2.id_lugar, lug2.id_lugar_fk, lug2.nombre
+                          FROM lugar_rec lrec 
+                          INNER JOIN param.tlugar lug2 ON lrec.id_lugar = lug2.id_lugar_fk
+                          where lug2.estado_reg = 'activo'
+                        )
+                      SELECT  pxp.list(id_lugar::varchar) 
+                        into 
+                          v_lugares
+                      FROM lugar_rec;
+                      v_filtro = ' lug.id_lugar in ('||v_lugares||') and ';
+                END IF;
+                
+           END IF; 
+           
+           --filtro de eventos
+           IF  pxp.f_existe_parametro(p_tabla,'id_eventos')  THEN
+             IF v_parametros.id_eventos is not null and v_parametros.id_eventos != '' THEN
+                v_filtro = v_filtro||' rege.id_evento in ('||v_parametros.id_eventos||') and ';
+             END IF;
+           END IF;
+           
+           --filtro de obreros
+           IF  pxp.f_existe_parametro(p_tabla,'id_obrero')  THEN
+             IF v_parametros.id_obrero is not null and v_parametros.id_obrero != '' THEN
+                v_filtro = v_filtro||' rege.id_obrero in ('||v_parametros.id_obrero||') and ';
+             END IF;
+           END IF;
+           
+           --filtro de regiones
+           IF  pxp.f_existe_parametro(p_tabla,'id_regiones')  THEN
+             IF v_parametros.id_regiones is not null and v_parametros.id_regiones != '' THEN
+                v_filtro = v_filtro||' rege.id_region in ('||v_parametros.id_regiones||') and ';
+             END IF;
+           END IF;
+           
+           --filtro de regiones
+           IF  pxp.f_existe_parametro(p_tabla,'id_regiones')  THEN
+             IF v_parametros.id_regiones is not null and v_parametros.id_regiones != '' THEN
+                v_filtro = v_filtro||' rege.id_region in ('||v_parametros.id_regiones||') and ';
+             END IF;
+           END IF;
+           
+           
+          
+           
+           IF v_parametros.tipo_orden = 'fecha'  THEN
+            v_order = 'ep.nun_mes asc , eve.nombre asc, fecha_programada asc';
+           ELSE
+             v_order = 'eve.nombre asc, fecha_programada asc';
+           END IF;
+           
+           
+            
+          
+            --Sentencia de la consulta
+			v_consulta:='select
+						rege.id_region_evento,
+						rege.estado_reg,
+						rege.id_gestion,
+						rege.fecha_programada,
+						rege.id_evento,
+						rege.estado,
+						rege.id_region,
+						rege.fecha_reg,
+						rege.id_usuario_reg,
+						rege.fecha_mod,
+						rege.id_usuario_mod,
+						usu1.cuenta as usr_reg,
+						usu2.cuenta as usr_mod,
+                        ges.gestion as desc_gestion,
+                        eve.nombre as desc_evento,
+                        reg.nombre as desc_region,
+                        co.id_casa_oracion,
+                        co.nombre as desc_casa_oracion,
+                        rege.tipo_registro,
+                        lug.id_lugar,
+                        lug.nombre as  desc_lugar,
+                        ep.mes,
+                        rege.hora,
+                        rege.id_obrero,
+                        ob.nombre_completo1	 as desc_obrero
+						from ccb.tregion_evento rege
+                        inner join ccb.tgestion ges on ges.id_gestion = rege.id_gestion
+                        inner join ccb.tregion reg on reg.id_region = rege.id_region
+                        inner join ccb.tevento eve on eve.id_evento = rege.id_evento 
+                        inner join ccb.tcasa_oracion co on co.id_casa_oracion = rege.id_casa_oracion
+						inner join segu.tusuario usu1 on usu1.id_usuario = rege.id_usuario_reg
+                        inner join param.tlugar lug on lug.id_lugar = co.id_lugar
+                        inner join ccb.testado_periodo ep   on  rege.fecha_programada::date BETWEEN  ep.fecha_ini::date and ep.fecha_fin::dATE  and ep.estado_reg = ''activo'' and ep.id_casa_oracion = co.id_casa_oracion
+                        left join segu.tusuario usu2 on usu2.id_usuario = rege.id_usuario_mod
+                        left join ccb.vobrero ob on ob.id_obrero = rege.id_obrero
+                        where  '||v_filtro||'  and (fecha_programada  BETWEEN  '''||v_parametros.desde::varchar||'''::date and '''||v_parametros.hasta::varchar||'''::date) ';
+			 
+			--Definicion de la respuesta
+			v_consulta:=v_consulta||' order by '||v_order;
 			--Devuelve la respuesta
 			return v_consulta;
 						

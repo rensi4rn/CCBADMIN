@@ -24,6 +24,22 @@ class ACTCasaOracion extends ACTbase{
 			$this->objFunc=$this->create('MODCasaOracion');
 			$this->res=$this->objFunc->listarCasaOracion($this->objParam);
 		}
+		
+		if($this->objParam->getParametro('_adicionar')!=''){
+		    
+			$respuesta = $this->res->getDatos();
+			array_unshift ( $respuesta, array(  'id_casa_oracion'=>'0',
+		                                'desc_region'=>'Todos',
+									    'nombre'=>'Todos',
+										'nombre'=>'Todos',
+										'desc_lugar'=>'Todos',
+										'direccion'=>'Todos',
+										'codigo'=>'Todos'));
+		    //var_dump($respuesta);
+			$this->res->setDatos($respuesta);
+		}
+		
+		
 		$this->res->imprimirRespuesta($this->res->generarJson());
 	}
 				
