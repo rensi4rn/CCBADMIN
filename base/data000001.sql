@@ -627,3 +627,12 @@ select pxp.f_insert_tgui ('Reporte de egresos mensuales', 'Reporte de egresos me
 select pxp.f_insert_testructura_gui ('REPEGRE', 'MOVECO');
 /********************************************F-DAT-RAC-CCB-0-07/06/2015********************************************/
 
+/********************************************I-DAT-RAC-CCB-0-10/07/2015********************************************/
+
+select pxp.f_insert_tgui ('Reporte Agenda', 'Reporte de Agenda', 'REPAGE', 'si', 5, 'sis_admin/vista/region_evento/RepAgenda.php', 3, '', 'RepAgenda', 'CCB');
+select pxp.f_insert_testructura_gui ('REPAGE', 'CAREVE');
+
+
+/********************************************F-DAT-RAC-CCB-0-10/07/2015********************************************/
+
+

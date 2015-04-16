@@ -358,6 +358,7 @@ class MODRegionEvento extends MODbase{
 		$this->captura('id_obrero','int4');
 		$this->captura('desc_obrero','text');
 		$this->captura('num_dia','varchar');
+		$this->captura('obs_region','varchar');
 		
 		
 		

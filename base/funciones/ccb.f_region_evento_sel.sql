@@ -513,7 +513,8 @@ BEGIN
                           to_char(rege.hora, ''HH24:MI'')::varchar as hora,
                           rege.id_obrero,
                           ob.nombre_completo1	 as desc_obrero,
-                          (extract(dow from  rege.fecha_programada))::varchar as num_dia
+                          (extract(dow from  rege.fecha_programada))::varchar as num_dia,
+                          reg.obs as obs_region
                           from ccb.tregion_evento rege
                           inner join ccb.tgestion ges on ges.id_gestion = rege.id_gestion
                           inner join ccb.tregion reg on reg.id_region = rege.id_region

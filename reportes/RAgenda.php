@@ -104,36 +104,36 @@ class RAgenda extends  ReportePDF {
 			   $this->Cell(97,3.5,$desc_evento,'',0,'C');
 			   $this->ln();
 			   
-			   $this->Cell(26,3.5,'Fecha','LTR',0,'C');
-			   $this->Cell(38,3.5,'Localidad','LTR',0,'C');
+			   $this->Cell(24,3.5,'Fecha','LTR',0,'C');
+			   $this->Cell(40,3.5,'Localidad','LTR',0,'C');
 			   $this->Cell(33,3.5,'Atiende','LTR',0,'C');
 			   
 			   $this->Cell(10,3.5,'','',0,'L');
 			   
-			   $this->Cell(26,3.5,'Fecha','LTR',0,'C');
-			   $this->Cell(38,3.5,'Localidad','LTR',0,'C');
+			   $this->Cell(24,3.5,'Fecha','LTR',0,'C');
+			   $this->Cell(40,3.5,'Localidad','LTR',0,'C');
 			   $this->Cell(33,3.5,'Atiende','LTR',0,'C');
 			   $this->ln();
 	}
 	
 	function setCuerpoDet($val){
-		       $date = ''.$this->getDia($val['num_dia']).' '.$val['fecha_programada'].'-'.$val['hora'];
-		       $loc = $this->calText( $val['desc_casa_oracion'],31);
+		       $date = $this->getDia($val['num_dia']).' '.$val['fecha_programada'].'-'.$val['hora'];
+		       $loc = $this->calText( '('.$val['obs_region'].') '.$val['desc_casa_oracion'],31);
 			   $obre = $this->calText( $val['desc_obrero'],22);
 			   
-			   $this->SetFont('','',8);
-			   $this->Cell(26,3.5,$date,'LTR',0,'L');
+			   $this->SetFont('','',6);
+			   $this->Cell(24,3.5,$date,'LTR',0,'L');
 			   $this->SetFont('','',7);
-			   $this->Cell(38,3.5,$loc,'LTR',0,'L');
+			   $this->Cell(40,3.5,$loc,'LTR',0,'L');
 			   $this->Cell(33,3.5,$obre,'LTR',0,'L');
 			   
 			   
 			   $this->Cell(10,3.5,'','',0,'L');
 			   
-			   $this->SetFont('','',8);
-			   $this->Cell(26,3.5,$date,'LTR',0,'L');
+			   $this->SetFont('','',6);
+			   $this->Cell(24,3.5,$date,'LTR',0,'L');
 			   $this->SetFont('','',7);
-			   $this->Cell(38,3.5,$loc,'LTR',0,'L');
+			   $this->Cell(40,3.5,$loc,'LTR',0,'L');
 			   $this->Cell(33,3.5,$obre,'LTR',0,'L');
 			   $this->SetFont('','',8);
 			   $this->ln();
@@ -141,14 +141,14 @@ class RAgenda extends  ReportePDF {
 	
 	function cerrarDet(){
 		       $this->SetFont('','',8);
-			   $this->Cell(26,3.5,'','T',0,'L');
-			   $this->Cell(38,3.5,'','T',0,'L');
+			   $this->Cell(24,3.5,'','T',0,'L');
+			   $this->Cell(40,3.5,'','T',0,'L');
 			   $this->Cell(33,3.5,'','T',0,'L');
 			   
 			   $this->Cell(10,3.5,'','',0,'L');
 			   
-			   $this->Cell(26,3.5,'','T',0,'L');
-			   $this->Cell(38,3.5,'','T',0,'L');
+			   $this->Cell(24,3.5,'','T',0,'L');
+			   $this->Cell(40,3.5,'','T',0,'L');
 			   $this->Cell(33,3.5,'','T',0,'L');
 			   $this->ln();
 	}
