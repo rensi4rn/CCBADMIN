@@ -206,7 +206,8 @@ Phx.vista.MovimientoEgreso=Ext.extend(Phx.gridInterfaz,{
               Phx.vista.MovimientoEgreso.superclass.onButtonEdit.call(this);
               this.getComponente('fecha').setMinValue(this.fecha_min);
               this.getComponente('fecha').setMaxValue(this.fecha_max);
-              if(this.Cmp.id_concepto_ingas.getValue() == 'operacion'){
+              
+              if(this.Cmp.concepto.getValue() == 'operacion'){
 		   	  	this.mostrarComponente(this.Cmp.id_concepto_ingas)
 		   	  	this.Cmp.id_concepto_ingas.allowBlank = false;
 		   	  }
@@ -549,7 +550,7 @@ Phx.vista.MovimientoEgreso=Ext.extend(Phx.gridInterfaz,{
                     }),
                 valueField: 'id_concepto_ingas',
                 displayField: 'desc_ingas',
-                gdisplayField:'nombre_ingas',
+                gdisplayField:'desc_ingas',
                 tpl:'<tpl for="."><div class="x-combo-list-item"><p><b>{desc_ingas}</b></p><p>TIPO: {tipo}</p></div></tpl>',
                 hiddenName: 'id_concepto_ingas',
                 forceSelection:true,

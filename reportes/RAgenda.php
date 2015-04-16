@@ -74,7 +74,7 @@ class RAgenda extends  ReportePDF {
 		$fecha_rep = date("d-m-Y H:i:s");
 		$this->Cell(($ancho*3), 0, "Fecha : ".$fecha_rep, '', 0, 'L');
 		
-		$this->Cell(20, 0, '', '', 0, 'R');
+		$this->Cell(10, 0, '', '', 0, 'R');
 		
 		$this->Cell($ancho, 0, "Fecha : ".$fecha_rep, '', 0, 'L');
 		$this->Ln($line_width);
