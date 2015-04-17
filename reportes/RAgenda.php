@@ -121,6 +121,8 @@ class RAgenda extends  ReportePDF {
 		       $loc = $this->calText( '('.$val['obs_region'].') '.$val['desc_casa_oracion'],31);
 			   $obre = $this->calText( $val['desc_obrero'],22);
 			   
+			   
+			   
 			   $this->SetFont('','',6);
 			   $this->Cell(24,3.5,$date,'LTR',0,'L');
 			   $this->SetFont('','',7);
@@ -137,6 +139,28 @@ class RAgenda extends  ReportePDF {
 			   $this->Cell(33,3.5,$obre,'LTR',0,'L');
 			   $this->SetFont('','',8);
 			   $this->ln();
+			   
+			   
+			   
+			   if($val['obs'] != ''){
+			   	
+				$conf_par_tablewidths=array(97,10,97);
+		        $conf_par_tablealigns=array('L','L','L');
+		        $conf_par_tablenumbers=array(0,0,0,0);
+		        $conf_tableborders=array('LTR','L','LTR');
+		        $conf_tabletextcolor=array();
+			   	
+				$this->tablewidths=$conf_par_tablewidths;
+	            $this->tablealigns=$conf_par_tablealigns;
+	            $this->tablenumbers=$conf_par_tablenumbers;
+	            $this->tableborders=$conf_tableborders;
+	            $this->tabletextcolor=$conf_tabletextcolor;
+				
+			   	 $RowArray = array('obs'  =>  'OBS: '.$val['obs'],
+								   'esp'  =>  '',
+								   'obs2'  =>  'OBS: '.$val['obs']); 
+			   	 $this-> MultiRow($RowArray,false,0);
+			   }
 	}
 	
 	function cerrarDet(){

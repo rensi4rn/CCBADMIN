@@ -47,6 +47,10 @@ class MODRegionEvento extends MODbase{
 		$this->captura('hora','time');
 		$this->captura('id_obrero','int4');
 		$this->captura('desc_obrero','text');
+		$this->captura('obs','varchar');
+		$this->captura('obs2','varchar');
+		
+		
 		
 		
 		
@@ -79,6 +83,8 @@ class MODRegionEvento extends MODbase{
 		$this->setParametro('tipo_registro','tipo_registro','varchar');
 		$this->setParametro('hora','hora','time');
 		$this->setParametro('id_obrero','id_obrero','int4');
+		$this->setParametro('obs','obs','varchar');
+		$this->setParametro('obs2','obs2','varchar');
 		
 
 		//Ejecuta la instruccion
@@ -107,6 +113,8 @@ class MODRegionEvento extends MODbase{
 		$this->setParametro('tipo_registro','tipo_registro','varchar');
 		$this->setParametro('hora','hora','time');
 		$this->setParametro('id_obrero','id_obrero','int4');
+		$this->setParametro('obs','obs','varchar');
+		$this->setParametro('obs2','obs2','varchar');
 		
 		
 
@@ -359,10 +367,8 @@ class MODRegionEvento extends MODbase{
 		$this->captura('desc_obrero','text');
 		$this->captura('num_dia','varchar');
 		$this->captura('obs_region','varchar');
-		
-		
-		
-		
+		$this->captura('obs','varchar');
+		$this->captura('obs2','varchar');
 		
 		
 		

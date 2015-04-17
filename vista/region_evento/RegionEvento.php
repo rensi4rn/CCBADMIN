@@ -351,6 +351,37 @@ Phx.vista.RegionEvento=Ext.extend(Phx.gridInterfaz,{
             grid:true,
             form:true
         },
+        {
+			config:{
+				name: 'obs',
+				fieldLabel: 'Obs',
+				anchor: '100%',
+				qtip: 'si existen figuran en el reporte',
+				allowBlank: true,
+				gwidth: 100
+			},
+			type: 'TextArea',
+			filters: { pfiltro:'rege.obs', type:'string' },
+			id_grupo: 1,
+			grid: true,
+			form: true
+		},
+        {
+			config:{
+				name: 'obs2',
+				fieldLabel: 'Obs2',
+				anchor: '100%',
+				qtip: 'no entran en reportes, solo a modo de recordatorio',
+				allowBlank: true,
+				increment: 30,
+				gwidth: 100
+			},
+			type: 'TextArea',
+			filters: { pfiltro:'rege.obs2', type:'string' },
+			id_grupo: 1,
+			grid: true,
+			form: true
+		},
 		
 		{
 			config:{
@@ -450,7 +481,8 @@ Phx.vista.RegionEvento=Ext.extend(Phx.gridInterfaz,{
 		{name:'id_usuario_mod', type: 'numeric'},
 		{name:'usr_reg', type: 'string'},
 		{name:'usr_mod', type: 'string'},'tipo_registro',
-		'hora','desc_gestion','desc_evento','desc_region','desc_casa_oracion','id_casa_oracion','id_obrero','desc_obrero'	
+		'hora','desc_gestion','desc_evento','desc_region','desc_casa_oracion',
+		'id_casa_oracion','id_obrero','desc_obrero','obs','obs2'
 	],
 	
 	sortInfo:{

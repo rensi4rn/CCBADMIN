@@ -120,7 +120,9 @@ BEGIN
                         ep.mes,
                         rege.hora,
                         rege.id_obrero,
-                        ob.nombre_completo1	 as desc_obrero
+                        ob.nombre_completo1	 as desc_obrero,
+                        rege.obs,
+                        rege.obs2
 						from ccb.tregion_evento rege
                         inner join ccb.tgestion ges on ges.id_gestion = rege.id_gestion
                         inner join ccb.tregion reg on reg.id_region = rege.id_region
@@ -476,12 +478,12 @@ BEGIN
            END IF;
            
            
-          
+          --raise exception '  % ', v_parametros.tipo_orden;
            
            IF v_parametros.tipo_orden = 'fecha'  THEN
-            v_order = 'ep.num_mes asc , eve.nombre asc, fecha_programada asc';
+            v_order = 'ep.num_mes asc , eve.prioridad asc, rege.fecha_programada asc';
            ELSE
-             v_order = 'eve.nombre asc, fecha_programada asc';
+             v_order = 'eve.prioridad, rege.fecha_programada asc';
            END IF;
            
            
@@ -514,7 +516,9 @@ BEGIN
                           rege.id_obrero,
                           ob.nombre_completo1	 as desc_obrero,
                           (extract(dow from  rege.fecha_programada))::varchar as num_dia,
-                          reg.obs as obs_region
+                          reg.obs as obs_region,
+                          COALESCE(rege.obs,'''') as obs,
+                          rege.obs2
                           from ccb.tregion_evento rege
                           inner join ccb.tgestion ges on ges.id_gestion = rege.id_gestion
                           inner join ccb.tregion reg on reg.id_region = rege.id_region
@@ -525,7 +529,7 @@ BEGIN
                           inner join ccb.testado_periodo ep   on  rege.fecha_programada::date BETWEEN  ep.fecha_ini::date and ep.fecha_fin::dATE  and ep.estado_reg = ''activo'' and ep.id_casa_oracion = co.id_casa_oracion
                           left join segu.tusuario usu2 on usu2.id_usuario = rege.id_usuario_mod
                           left join ccb.vobrero ob on ob.id_obrero = rege.id_obrero
-                        where  '||v_filtro||' (fecha_programada  BETWEEN  '''||v_parametros.desde::varchar||'''::date and '''||v_parametros.hasta::varchar||'''::date) ';
+                        where  '||v_filtro||' (rege.fecha_programada  BETWEEN  '''||v_parametros.desde::varchar||'''::date and '''||v_parametros.hasta::varchar||'''::date) ';
 			 
 			--Definicion de la respuesta
 			v_consulta := v_consulta||' order by '||v_order;

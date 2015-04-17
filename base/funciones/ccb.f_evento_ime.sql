@@ -57,7 +57,8 @@ BEGIN
 			id_usuario_reg,
 			fecha_mod,
 			id_usuario_mod,
-            codigo
+            codigo,
+            prioridad
           	) values(
 			'activo',
 			v_parametros.nombre,
@@ -66,7 +67,8 @@ BEGIN
 			p_id_usuario,
 			null,
 			null,
-            lower(v_parametros.codigo)
+            lower(v_parametros.codigo),
+            prioridad
 							
 			)RETURNING id_evento into v_id_evento;
 			
@@ -95,7 +97,8 @@ BEGIN
 			descripcion = v_parametros.descripcion,
 			fecha_mod = now(),
 			id_usuario_mod = p_id_usuario,
-            codigo = lower(v_parametros.codigo)
+            codigo = lower(v_parametros.codigo),
+            prioridad = v_parametros.prioridad
 			where id_evento=v_parametros.id_evento;
                
 			--Definicion de la respuesta

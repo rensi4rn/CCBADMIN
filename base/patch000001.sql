@@ -671,3 +671,33 @@ AS
 
 /***********************************F-SCP-RAC-CCB-2-27/06/2015****************************************/
 
+/***********************************I-SCP-RAC-CCB-2-25/07/2015****************************************/
+
+
+
+--------------- SQL ---------------
+
+ALTER TABLE ccb.tregion_evento
+  ADD COLUMN obs VARCHAR;
+
+--------------- SQL ---------------
+
+ALTER TABLE ccb.tregion_evento
+  ADD COLUMN obs2 VARCHAR;
+
+COMMENT ON COLUMN ccb.tregion_evento.obs2
+IS 'observaciones que no van en el reporte';
+
+
+
+--------------- SQL ---------------
+
+ALTER TABLE ccb.tevento
+  ADD COLUMN prioridad NUMERIC DEFAULT 1 NOT NULL;
+
+COMMENT ON COLUMN ccb.tevento.prioridad
+IS 'prioridad para aparecer en rerpotes';
+
+
+/***********************************F-SCP-RAC-CCB-2-25/07/2015****************************************/
+

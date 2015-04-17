@@ -108,7 +108,9 @@ BEGIN
               id_casa_oracion,
               tipo_registro,
               hora,
-              id_obrero
+              id_obrero,
+              obs,
+              obs2
           	) values(
               'activo',
               v_parametros.id_gestion,
@@ -123,7 +125,9 @@ BEGIN
               v_parametros.id_casa_oracion,
               v_parametros.tipo_registro,
               v_parametros.hora ,
-              v_parametros.id_obrero   
+              v_parametros.id_obrero,
+              v_parametros.obs,
+              v_parametros.obs2  
 							
 			)RETURNING id_region_evento into v_id_region_evento;
             
@@ -220,7 +224,9 @@ BEGIN
             id_casa_oracion =  v_parametros.id_casa_oracion,
             tipo_registro = v_parametros.tipo_registro,
             hora = v_parametros.hora,
-            id_obrero =  v_parametros.id_obrero
+            id_obrero =  v_parametros.id_obrero,
+            obs = v_parametros.obs,
+            obs2 = v_parametros.obs2 
 			where id_region_evento=v_parametros.id_region_evento;
                
 			--Definicion de la respuesta
