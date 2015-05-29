@@ -13,7 +13,7 @@ header("content-type: text/javascript; charset=UTF-8");
 Phx.vista.RepSaldos=Ext.extend(Phx.frmInterfaz,{
     constructor:function(config)
     {   
-    	this.panelResumen = new Ext.Panel({html:'Hola Prueba'});
+    	this.panelResumen = new Ext.Panel({html:'Hola Prueba', autoHeight  : true, layout: 'fit'});
     	this.Grupos = [{
 
 	                    xtype: 'fieldset',

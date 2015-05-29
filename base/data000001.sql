@@ -606,3 +606,9 @@ select pxp.f_insert_testructura_gui ('REPSAL', 'MOVECO');
 
 /********************************************F-DAT-RAC-CCB-0-01/05/2015********************************************/
 
+/********************************************I-DAT-RAC-CCB-0-23/05/2015********************************************/
+
+select pxp.f_insert_tgui ('Comprobante de Ofrendas', 'Comprobante de Ofrendas', 'COMOFR', 'si', 7, 'sis_admin/vista/movimiento/ComprobanteOfrendas.php', 3, '', 'ComprobanteOfrendas', 'CCB');
+select pxp.f_insert_testructura_gui ('COMOFR', 'MOVECO');
+/********************************************F-DAT-RAC-CCB-0-23/05/2015********************************************/
+
