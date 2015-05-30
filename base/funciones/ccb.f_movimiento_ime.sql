@@ -1210,32 +1210,32 @@ BEGIN
             v_resp = pxp.f_agrega_clave(v_resp,'v_saldo_adm_mantenimiento',v_saldo_adm_mantenimiento::varchar);
            
             v_resp = pxp.f_agrega_clave(v_resp,'v_total_colecta',v_total_colecta::varchar);
-            v_resp = pxp.f_agrega_clave(v_resp,'v_colecta_contruccion',v_colecta_contruccion::varchar);
+            v_resp = pxp.f_agrega_clave(v_resp,'v_colecta_construccion',v_colecta_contruccion::varchar);
             v_resp = pxp.f_agrega_clave(v_resp,'v_colecta_piedad',v_colecta_piedad::varchar);
             v_resp = pxp.f_agrega_clave(v_resp,'v_colecta_viaje',v_colecta_viaje::varchar);
             v_resp = pxp.f_agrega_clave(v_resp,'v_colecta_especial',v_colecta_especial::varchar);
             v_resp = pxp.f_agrega_clave(v_resp,'v_colecta_mantenimiento',v_colecta_mantenimiento::varchar);
            
             v_resp = pxp.f_agrega_clave(v_resp,'v_total_ing_traspasos',v_total_ing_traspasos::varchar);
-            v_resp = pxp.f_agrega_clave(v_resp,'v_ing_traspasos_contruccion',v_ing_traspasos_contruccion::varchar);
+            v_resp = pxp.f_agrega_clave(v_resp,'v_ing_traspasos_construccion',v_ing_traspasos_contruccion::varchar);
             v_resp = pxp.f_agrega_clave(v_resp,'v_ing_traspasos_piedad',v_ing_traspasos_piedad::varchar);
             v_resp = pxp.f_agrega_clave(v_resp,'v_ing_traspasos_viaje',v_ing_traspasos_viaje::varchar);
             v_resp = pxp.f_agrega_clave(v_resp,'v_ing_traspasos_especial',v_ing_traspasos_especial::varchar);
             v_resp = pxp.f_agrega_clave(v_resp,'v_ing_traspasos_mantenimiento',v_ing_traspasos_mantenimiento::varchar);
            
-            v_resp = pxp.f_agrega_clave(v_resp,'v_egre_traspasos_contruccion',v_egre_traspasos_contruccion::varchar);
+            v_resp = pxp.f_agrega_clave(v_resp,'v_egre_traspasos_construccion',v_egre_traspasos_contruccion::varchar);
             v_resp = pxp.f_agrega_clave(v_resp,'v_egre_traspasos_piedad',v_egre_traspasos_piedad::varchar);
             v_resp = pxp.f_agrega_clave(v_resp,'v_egre_traspasos_viaje',v_egre_traspasos_viaje::varchar);
             v_resp = pxp.f_agrega_clave(v_resp,'v_egre_traspasos_especial',v_egre_traspasos_especial::varchar);
             v_resp = pxp.f_agrega_clave(v_resp,'v_egre_traspasos_mantenimiento',v_egre_traspasos_mantenimiento::varchar);        
            
-            v_resp = pxp.f_agrega_clave(v_resp,'v_egreso_operacion_contruccion',v_egreso_operacion_contruccion::varchar);
+            v_resp = pxp.f_agrega_clave(v_resp,'v_egreso_operacion_construccion',v_egreso_operacion_contruccion::varchar);
             v_resp = pxp.f_agrega_clave(v_resp,'v_egreso_operacion_piedad',v_egreso_operacion_piedad::varchar);
             v_resp = pxp.f_agrega_clave(v_resp,'v_egreso_operacion_viaje',v_egreso_operacion_viaje::varchar);
             v_resp = pxp.f_agrega_clave(v_resp,'v_egreso_operacion_especial',v_egreso_operacion_especial::varchar);
             v_resp = pxp.f_agrega_clave(v_resp,'v_egreso_operacion_mantenimiento',v_egreso_operacion_mantenimiento::varchar);
            
-            v_resp = pxp.f_agrega_clave(v_resp,'v_egreso_contra_rendicion_contruccion',v_egreso_contra_rendicion_contruccion::varchar);
+            v_resp = pxp.f_agrega_clave(v_resp,'v_egreso_contra_rendicion_construccion',v_egreso_contra_rendicion_contruccion::varchar);
             v_resp = pxp.f_agrega_clave(v_resp,'v_egreso_contra_rendicion_piedad',v_egreso_contra_rendicion_piedad::varchar);
             v_resp = pxp.f_agrega_clave(v_resp,'v_egreso_contra_rendicion_viaje',v_egreso_contra_rendicion_viaje::varchar);
             v_resp = pxp.f_agrega_clave(v_resp,'v_egreso_contra_rendicion_especial',v_egreso_contra_rendicion_especial::varchar);
@@ -1243,7 +1243,7 @@ BEGIN
            
            
             v_resp = pxp.f_agrega_clave(v_resp,'v_total_egresos_adm_tmp',v_total_egresos_adm_tmp::varchar);
-            v_resp = pxp.f_agrega_clave(v_resp,'v_total_egresos_adm_contruccion_tmp',v_total_egresos_adm_contruccion_tmp::varchar);
+            v_resp = pxp.f_agrega_clave(v_resp,'v_total_egresos_adm_construccion_tmp',v_total_egresos_adm_contruccion_tmp::varchar);
             v_resp = pxp.f_agrega_clave(v_resp,'v_total_egresos_adm_piedad_tmp',v_total_egresos_adm_piedad_tmp::varchar);
             v_resp = pxp.f_agrega_clave(v_resp,'v_total_egresos_adm_viaje_tmp',v_total_egresos_adm_viaje_tmp::varchar);
             v_resp = pxp.f_agrega_clave(v_resp,'v_total_egresos_adm_especial_tmp',v_total_egresos_adm_especial_tmp::varchar);
