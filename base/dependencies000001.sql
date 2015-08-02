@@ -1366,7 +1366,7 @@ AS
            caor.latitud,
            caor.longitud;
     
- CREATE VIEW ccb.vcalendario (
+ OCREATE R REPLACE VIEW ccb.vcalendario (
     event,
     title,
     start,
