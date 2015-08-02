@@ -180,6 +180,7 @@ class RAgendaAnual extends  ReportePDF {
 		       $this->SetFont('','',8);
 			   $this->Cell(200,3.5,'','T',0,'L');
 			   $this->ln();
+			   $this->ln();
 	}
 
    function generarCasasOracion() {
