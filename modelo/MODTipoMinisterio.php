@@ -31,6 +31,7 @@ class MODTipoMinisterio extends MODbase{
 		$this->captura('usr_reg','varchar');
 		$this->captura('usr_mod','varchar');
 		$this->captura('codigo','varchar');
+		$this->captura('prioridad','numeric');
 		
 		//Ejecuta la instruccion
 		$this->armarConsulta();
@@ -51,7 +52,7 @@ class MODTipoMinisterio extends MODbase{
 		$this->setParametro('nombre','nombre','varchar');
 		$this->setParametro('estado_reg','estado_reg','varchar');
 		$this->setParametro('codigo','codigo','varchar');
-
+        $this->setParametro('prioridad','prioridad','numeric');
 		//Ejecuta la instruccion
 		$this->armarConsulta();
 		$this->ejecutarConsulta();
@@ -72,6 +73,7 @@ class MODTipoMinisterio extends MODbase{
 		$this->setParametro('nombre','nombre','varchar');
 		$this->setParametro('estado_reg','estado_reg','varchar');
 		$this->setParametro('codigo','codigo','varchar');
+        $this->setParametro('prioridad','prioridad','numeric');
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();

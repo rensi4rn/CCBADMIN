@@ -185,6 +185,42 @@ class MODObrero extends MODbase{
 		//Devuelve la respuesta
 		return $this->respuesta;
 	}
+
+    function listarObreroAgenda(){
+		//Definicion de variables para ejecucion del procedimientp
+		$this->procedimiento='ccb.f_obrero_sel';
+		$this->transaccion='CCB_OBRAGD_SEL';
+		$this->tipo_procedimiento='SEL';//tipo de transaccion
+		$this->setCount(false);	
+		
+				
+		$this->captura('id_tipo_ministerio','INTEGER');
+        $this->captura('id_obrero','INTEGER');
+      	$this->captura('id_persona','INTEGER');
+     	$this->captura('ministerio','varchar');
+      	$this->captura('nombre_completo1','TEXT');
+      	$this->captura('telefono1','varchar');
+      	$this->captura('telefono2','varchar');
+      	$this->captura('celular1','varchar');
+      	$this->captura('correo','varchar');
+      	$this->captura('casa_oracion','varchar');
+      	$this->captura('region','varchar');
+      	$this->captura('obs','varchar');
+		$this->captura('id_lugar','INTEGER');
+		$this->captura('lugar','varchar');
+		$this->captura('id_region','INTEGER');
+		
+		
+				
+		
+		//Ejecuta la instruccion
+		$this->armarConsulta();
+		$this->ejecutarConsulta();
+		
+		//Devuelve la respuesta
+		return $this->respuesta;
+	}
+
 			
 }
 ?>

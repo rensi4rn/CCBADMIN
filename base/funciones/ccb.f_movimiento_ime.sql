@@ -614,6 +614,7 @@ BEGIN
 			 monto = COALESCE(v_parametros.monto,0),
 			 fecha_mod = now(),
 			 id_usuario_mod = p_id_usuario,
+             id_tipo_movimiento = v_parametros.id_tipo_movimiento,
              id_concepto_ingas = v_parametros.id_concepto_ingas
 			where id_movimiento_det=v_parametros.id_movimiento_det;
             

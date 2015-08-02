@@ -701,3 +701,16 @@ IS 'prioridad para aparecer en rerpotes';
 
 /***********************************F-SCP-RAC-CCB-2-25/07/2015****************************************/
 
+
+/***********************************I-SCP-RAC-CCB-2-16/08/2015****************************************/
+
+--------------- SQL ---------------
+
+ALTER TABLE ccb.ttipo_ministerio
+  ADD COLUMN prioridad NUMERIC DEFAULT 1 NOT NULL;
+
+COMMENT ON COLUMN ccb.ttipo_ministerio.prioridad
+IS 'la prioridad menor es las mas importante';
+
+/***********************************F-SCP-RAC-CCB-2-16/08/2015****************************************/
+

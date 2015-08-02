@@ -1320,3 +1320,228 @@ AS
   WHERE rege.tipo_registro::text = 'detalle'::text;
 
 /********************************************F-DEP-RAC-ADMIN-0-06/06/2015*************************************/
+
+
+
+
+/********************************************I-DEP-RAC-ADMIN-0-15/08/2015*************************************/
+
+CREATE OR REPLACE VIEW ccb.vcasa_oracion(
+    id_casa_oracion,
+    obs,
+    region,
+    casa_oracion,
+    direccion,
+    id_region,
+    id_lugar,
+    lugar,
+    latitud,
+    longitud,
+    horarios)
+AS
+  SELECT caor.id_casa_oracion,
+         reg.obs,
+         reg.nombre AS region,
+         caor.nombre AS casa_oracion,
+         caor.direccion,
+         reg.id_region,
+         lug.id_lugar,
+         lug.nombre AS lugar,
+         caor.latitud,
+         caor.longitud,
+         pxp.list((((cul.dia::text || '-'::text) || to_char(cul.hora::interval,
+           'HH24:MI'::text)) || '-'::text) || cul.tipo_culto::text) AS horarios
+  FROM ccb.tcasa_oracion caor
+       JOIN ccb.tregion reg ON reg.id_region = caor.id_region
+       JOIN param.tlugar lug ON lug.id_lugar = caor.id_lugar
+       LEFT JOIN ccb.tculto cul ON cul.id_casa_oracion = caor.id_casa_oracion
+  GROUP BY caor.id_casa_oracion,
+           reg.obs,
+           reg.nombre,
+           caor.nombre,
+           caor.direccion,
+           reg.id_region,
+           lug.id_lugar,
+           lug.nombre,
+           caor.latitud,
+           caor.longitud;
+    
+ CREATE VIEW ccb.vcalendario (
+    event,
+    title,
+    start,
+    "end",
+    desc_evento,
+    desc_region,
+    desc_casa_oracion,
+    tipo_registro,
+    desc_lugar,
+    hora,
+    id_lugar,
+    fecha_programada,
+    css,
+    id_region_evento,
+    id_obrero,
+    desc_obrero,
+    id_evento)
+AS
+SELECT (rege.id_region_evento::character varying::text || ' - '::text) ||
+    COALESCE(rege.hora::character varying, '19:00:00'::character varying)::text AS event,
+    ((((eve.nombre::text || ' - '::text) || co.nombre::text) || ' ('::text) ||
+        lug.nombre::text) || ')'::text AS title,
+    ((rege.fecha_programada::character varying::text || ' '::text) ||
+        COALESCE(rege.hora, '19:00:00'::time without time zone))::timestamp without time zone AS start,
+    (((rege.fecha_programada::character varying::text || ' '::text) ||
+        COALESCE(rege.hora, '19:00:00'::time without time zone))::timestamp without time zone) + '02:00:00'::interval hour AS "end",
+    eve.nombre AS desc_evento,
+    reg.nombre AS desc_region,
+    co.nombre AS desc_casa_oracion,
+    rege.tipo_registro,
+    lug.nombre AS desc_lugar,
+    COALESCE(rege.hora, '19:00:00'::time without time zone) AS hora,
+    lug.id_lugar,
+    rege.fecha_programada,
+        CASE
+            WHEN eve.codigo::text = 'bautizo'::text THEN 'green'::text
+            WHEN eve.codigo::text = 'santacena'::text THEN 'blue'::text
+            WHEN eve.codigo::text = 'reuniondejuventud'::text THEN 'purple'::text
+            WHEN eve.codigo::text = 'reunmiloc'::text THEN 'orange'::text
+            WHEN eve.codigo::text = 'ensayoreg'::text THEN 'brown'::text
+            WHEN eve.codigo::text = 'reunmireg'::text THEN 'red'::text
+            ELSE 'grey'::text
+        END AS css,
+    rege.id_region_evento,
+    rege.id_obrero,
+    ob.nombre_completo1 AS desc_obrero,
+    eve.id_evento
+FROM ccb.tregion_evento rege
+     JOIN ccb.tgestion ges ON ges.id_gestion = rege.id_gestion
+     JOIN ccb.tregion reg ON reg.id_region = rege.id_region
+     JOIN ccb.tevento eve ON eve.id_evento = rege.id_evento
+     JOIN ccb.tcasa_oracion co ON co.id_casa_oracion = rege.id_casa_oracion
+     JOIN segu.tusuario usu1 ON usu1.id_usuario = rege.id_usuario_reg
+     JOIN param.tlugar lug ON lug.id_lugar = co.id_lugar
+     LEFT JOIN ccb.vobrero ob ON ob.id_obrero = rege.id_obrero
+WHERE rege.tipo_registro::text = 'detalle'::text;     
+
+
+--------------- SQL ---------------
+
+CREATE VIEW ccb.vdias 
+AS 
+select i::date  as dia
+
+from generate_series('01/01/2014', '31/12/2050', '1 day'::interval) i ;
+
+
+--------------- SQL ---------------
+--------------- SQL ---------------
+
+
+CREATE VIEW ccb.vregion_evento
+AS
+ SELECT eve.nombre AS desc_evento,
+         reg.nombre AS desc_region,
+         reg.obs AS desc_region_obs,
+         co.nombre AS desc_casa_oracion,
+         rege.tipo_registro,
+         lug.nombre AS desc_lugar,
+         rege.fecha_programada,
+         lug.id_lugar,
+         to_char(rege.hora, 'HH24:MI'::text) AS hora,
+         CASE
+           WHEN eve.codigo::text = 'bautizo'::text THEN 'green'::text
+           WHEN eve.codigo::text = 'santacena'::text THEN 'blue'::text
+           WHEN eve.codigo::text = 'reuniondejuventud'::text THEN 'purple'::text
+           WHEN eve.codigo::text = 'reunmiloc'::text THEN 'orange'::text
+           WHEN eve.codigo::text = 'ensayoreg'::text THEN 'brown'::text
+           WHEN eve.codigo::text = 'reunmireg'::text THEN 'red'::text
+           ELSE 'grey'::text
+         END AS css,
+         rege.id_region_evento,
+         rege.id_obrero,
+         ob.nombre_completo1 AS desc_obrero,
+         eve.id_evento,
+         rege.id_region,
+         co.id_casa_oracion
+  FROM ccb.tregion_evento rege
+       JOIN ccb.tgestion ges ON ges.id_gestion = rege.id_gestion
+       JOIN ccb.tregion reg ON reg.id_region = rege.id_region
+       JOIN ccb.tevento eve ON eve.id_evento = rege.id_evento
+       JOIN ccb.tcasa_oracion co ON co.id_casa_oracion = rege.id_casa_oracion
+       JOIN segu.tusuario usu1 ON usu1.id_usuario = rege.id_usuario_reg
+       JOIN param.tlugar lug ON lug.id_lugar = co.id_lugar
+       LEFT JOIN ccb.vobrero ob ON ob.id_obrero = rege.id_obrero
+  WHERE rege.tipo_registro::text = 'detalle'::text;
+  --------------- SQL ---------------
+
+
+CREATE OR REPLACE VIEW ccb.vdetalle_agenda(
+    num_dia,
+    mes,
+    dia_sem,
+    hora,
+    desc_region_obs,
+    desc_casa_oracion,
+    desc_evento,
+    css,
+    desc_obrero,
+    desc_region,
+    desc_lugar,
+    id_lugar,
+    id_region_evento,
+    id_evento,
+    id_region,
+    id_casa_oracion,
+    dia)
+AS
+  SELECT to_char(d.dia::timestamp with time zone, 'DD'::text) AS num_dia,
+         to_char(d.dia::timestamp with time zone, 'MONTH'::text) AS mes,
+         to_char(d.dia::timestamp with time zone, 'D'::text) AS dia_sem,
+         re.hora,
+         re.desc_region_obs,
+         re.desc_casa_oracion,
+         re.desc_evento,
+         re.css,
+         re.desc_obrero,
+         re.desc_region,
+         re.desc_lugar,
+         re.id_lugar,
+         re.id_region_evento,
+         re.id_evento,
+         re.id_region,
+         re.id_casa_oracion,
+         d.dia
+  FROM ccb.vdias d
+       LEFT JOIN ccb.vregion_evento re ON re.fecha_programada = d.dia
+  WHERE d.dia >= '2015-01-01'::date AND
+        d.dia <= '2015-12-31'::date
+  ORDER BY d.dia,
+           re.hora;
+
+CREATE VIEW ccb.vagenda_telefonica
+AS
+  SELECT tm.id_tipo_ministerio,
+         o.id_obrero,
+         p.id_persona,
+         tm.nombre AS ministerio,
+         p.nombre_completo1,
+         p.telefono1,
+         p.telefono2,
+         p.celular1,
+         p.correo,
+         co.casa_oracion,
+         co.region,
+         co.obs,
+         co.id_lugar,
+         co.lugar,
+         co.id_region
+  FROM ccb.ttipo_ministerio tm
+       JOIN ccb.tobrero o ON o.id_tipo_ministerio = tm.id_tipo_ministerio
+       JOIN segu.vpersona p ON p.id_persona = o.id_persona
+       LEFT JOIN ccb.vcasa_oracion co ON co.id_casa_oracion = o.id_casa_oracion
+  ORDER BY tm.prioridad,
+           p.nombre_completo1;          
+/********************************************F-DEP-RAC-ADMIN-0-15/08/2015*************************************/
+
+

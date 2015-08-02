@@ -68,7 +68,7 @@ BEGIN
 			null,
 			null,
             lower(v_parametros.codigo),
-            prioridad
+            v_parametros.prioridad
 							
 			)RETURNING id_evento into v_id_evento;
 			

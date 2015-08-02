@@ -59,7 +59,7 @@ class MODCasaOracion extends MODbase{
 		$this->procedimiento='ccb.f_casa_oracion_ime';
 		$this->transaccion='CCB_CAOR_INS';
 		$this->tipo_procedimiento='IME';
-				
+			
 		//Define los parametros para la funcion
 		$this->setParametro('estado_reg','estado_reg','varchar');
 		$this->setParametro('fecha_cierre','fecha_cierre','date');
@@ -122,6 +122,40 @@ class MODCasaOracion extends MODbase{
 		$this->armarConsulta();
 		$this->ejecutarConsulta();
 
+		//Devuelve la respuesta
+		return $this->respuesta;
+	}
+	
+	function listarCasaOracionAgenda(){
+		  //Definicion de variables para ejecucion del procedimientp
+		  $this->procedimiento='ccb.f_casa_oracion_sel';
+		  $this->transaccion='CCB_CAORAGD_SEL';
+		  $this->tipo_procedimiento='SEL';//tipo de transaccion
+		  $this->setCount(false);
+		  
+		  $this->setParametro('id_lugar','id_lugar','int4');
+		  $this->setParametro('id_eventos','id_eventos','varchar');
+		  $this->setParametro('id_regiones','id_regiones','varchar');		
+		  $this->captura('id_casa_oracion','INTEGER');
+          $this->captura('obs','varchar');
+          $this->captura('region','varchar');
+          $this->captura('casa_oracion','varchar');
+          $this->captura('direccion','TEXT');
+          $this->captura('id_region','INTEGER');
+          $this->captura('id_lugar','INTEGER');
+          $this->captura('lugar','varchar');
+          $this->captura('latitud','varchar');
+          $this->captura('longitud','varchar');
+          $this->captura('horarios','text');
+		  
+		 
+		
+		
+		
+		//Ejecuta la instruccion
+		$this->armarConsulta();
+		$this->ejecutarConsulta();
+		
 		//Devuelve la respuesta
 		return $this->respuesta;
 	}

@@ -7,6 +7,7 @@
 *@description Clase que recibe los parametros enviados por la vista para mandar a la capa de Modelo
 */
 require_once(dirname(__FILE__).'/../reportes/RAgenda.php');
+require_once(dirname(__FILE__).'/../reportes/RAgendaAnual.php');
 require_once(dirname(__FILE__).'/../../pxp/pxpReport/DataSource.php');
 class ACTRegionEvento extends ACTbase{    
 			
@@ -171,6 +172,103 @@ class ACTRegionEvento extends ACTbase{
 		$this->mensajeExito->imprimirRespuesta($this->mensajeExito->generarJson());
 		
 	}
+
+    function recuperarDatosCasaOracion(){
+    	
+		$this->objFunc = $this->create('MODCasaOracion');
+		$cbteHeader = $this->objFunc->listarCasaOracionAgenda($this->objParam);
+		if($cbteHeader->getTipo() == 'EXITO'){
+				
+			return $cbteHeader->getDatos();
+		}
+        else{
+		    $cbteHeader->imprimirRespuesta($cbteHeader->generarJson());
+			exit;
+		}              
+		
+    }
+
+   function recuperarDatosAgendaAnual(){
+    	
+		$this->objFunc = $this->create('MODRegionEvento');
+		$cbteHeader = $this->objFunc->listarReporteAgendaAnual($this->objParam);
+		if($cbteHeader->getTipo() == 'EXITO'){
+				
+			return $cbteHeader->getDatos();
+		}
+        else{
+		    $cbteHeader->imprimirRespuesta($cbteHeader->generarJson());
+			exit;
+		}              
+		
+    }
+   
+    function recuperarDatosAgendaTelefonica(){
+    	
+		$this->objFunc = $this->create('MODObrero');
+		$cbteHeader = $this->objFunc->listarObreroAgenda($this->objParam);
+		if($cbteHeader->getTipo() == 'EXITO'){
+				
+			return $cbteHeader->getDatos();
+		}
+        else{
+		    $cbteHeader->imprimirRespuesta($cbteHeader->generarJson());
+			exit;
+		}              
+		
+    }
+
+
+
+   function reporteAgendaAnual(){
+			
+			$nombreArchivo = uniqid(md5(session_id()).'AgendaAnual') . '.pdf'; 
+			$dataSource = $this->recuperarDatosCasaOracion();	
+			
+			//parametros basicos
+			$tamano = 'A4';
+			$orientacion = 'P';
+			$titulo = 'Agenda';
+			
+			$this->objParam->addParametro('orientacion',$orientacion);
+			$this->objParam->addParametro('tamano',$tamano);		
+			$this->objParam->addParametro('titulo_archivo',$titulo);        
+			$this->objParam->addParametro('nombre_archivo',$nombreArchivo);
+			//Instancia la clase de pdf
+			
+			$reporte = new RAgendaAnual($this->objParam);
+			$reporte->datosHeader($dataSource, $this->objParam->getParametro('desde'),$this->objParam->getParametro('hasta'));
+			
+			$reporte->generarCasasOracion();
+			
+			$dataSource = $this->recuperarDatosAgendaAnual();
+			$reporte->setDatosAgenda($dataSource);
+			$reporte->generarAgendaAnual();
+			
+			$dataSource = $this->recuperarDatosAgendaTelefonica();
+			$reporte->setDatosAgendaTelefonica($dataSource);
+			$reporte->generarAgendaTelefonica();
+			
+			
+			$reporte->AddPage();
+			$reporte->generarCuadroManual('BAUTIZOS',35);
+			$reporte->AddPage();
+			$reporte->generarCuadroManual('SANTAS CENAS',35);
+			$reporte->AddPage();
+			$reporte->generarCuadroManualVacio('NOTAS',35);
+				
+			
+			
+			$reporte->output($reporte->url_archivo,'F');
+			
+			$this->mensajeExito=new Mensaje();
+			$this->mensajeExito->setMensaje('EXITO','Reporte.php','Reporte generado','Se generó con éxito el reporte: '.$nombreArchivo,'control');
+			$this->mensajeExito->setArchivoGenerado($nombreArchivo);
+			$this->mensajeExito->imprimirRespuesta($this->mensajeExito->generarJson());
+		
+	}
+	
+	
 	
 	
 		

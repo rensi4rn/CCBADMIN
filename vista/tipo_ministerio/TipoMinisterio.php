@@ -93,6 +93,23 @@ Phx.vista.TipoMinisterio=Ext.extend(Phx.gridInterfaz,{
 		},
 		{
 			config:{
+				name: 'prioridad',
+				fieldLabel: 'Prioridad',
+				allowBlank: false,
+				allowNegative: false,
+				anchor: '80%',
+				gwidth: 100,
+				maxLength:4
+			},
+			type:'NumberField',
+			filters:{pfiltro:'tipmi.prioridad',type:'string'},
+			id_grupo:1,
+			egrid: true,
+			grid:true,
+			form:true
+		},
+		{
+			config:{
 				name: 'estado_reg',
 				fieldLabel: 'Estado Reg.',
 				allowBlank: true,
@@ -182,7 +199,7 @@ Phx.vista.TipoMinisterio=Ext.extend(Phx.gridInterfaz,{
 		{name:'fecha_mod', type: 'date', dateFormat:'Y-m-d H:i:s.u'},
 		{name:'id_usuario_mod', type: 'numeric'},
 		{name:'usr_reg', type: 'string'},
-		{name:'usr_mod', type: 'string'},'codigo'
+		{name:'usr_mod', type: 'string'},'codigo','prioridad'
 		
 	],
 	sortInfo:{

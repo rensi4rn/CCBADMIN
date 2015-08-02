@@ -380,6 +380,49 @@ class MODRegionEvento extends MODbase{
 		//Devuelve la respuesta
 		return $this->respuesta;
 	}
+
+      function listarReporteAgendaAnual(){
+		//Definicion de variables para ejecucion del procedimientp
+		$this->procedimiento='ccb.f_region_evento_sel';
+		$this->transaccion='CCB_REPAGEANU_SEL';
+		$this->tipo_procedimiento='SEL';//tipo de transaccion
+		$this->setCount(false);	
+		
+		$this->setParametro('id_lugar','id_lugar','int4');
+		$this->setParametro('id_eventos','id_eventos','varchar');
+		$this->setParametro('id_regiones','id_regiones','varchar');
+		$this->setParametro('hasta','hasta','date');
+		$this->setParametro('desde','desde','date');				
+	
+		
+		  $this->captura('num_dia','TEXT');
+          $this->captura('dia_sem','TEXT');
+		  $this->captura('mes','TEXT');
+          $this->captura('hora','varchar');
+          $this->captura('desc_region_obs','varchar');
+          $this->captura('desc_casa_oracion','varchar');
+          $this->captura('desc_evento','varchar');
+          $this->captura('css','TEXT');
+          $this->captura('desc_obrero','TEXT');
+          $this->captura('desc_region','varchar');
+          $this->captura('desc_lugar','varchar');
+          $this->captura('id_lugar','int4');
+          $this->captura('id_region_evento','int4');
+          $this->captura('id_evento','int4');
+          $this->captura('id_region','int4');
+          $this->captura('id_casa_oracion','int4');
+          $this->captura('dia','DATE');
+		
+		
+		
+		//Ejecuta la instruccion
+		$this->armarConsulta();
+		$this->ejecutarConsulta();
+		//echo $this->getConsulta();
+		//exit;
+		//Devuelve la respuesta
+		return $this->respuesta;
+	}
 			
 }
 ?>

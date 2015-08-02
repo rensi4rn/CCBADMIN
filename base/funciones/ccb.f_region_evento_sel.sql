@@ -404,7 +404,7 @@ BEGIN
  	#TRANSACCION:  'CCB_REPAGE_SEL'
  	#DESCRIPCION:	consulta de agenda para reporte impreso
  	#AUTOR:		admin	
- 	#FECHA:		13-01-2013 14:31:26
+ 	#FECHA:		16-08-2015 14:31:26
 	***********************************/
 
 	elsif(p_transaccion='CCB_REPAGE_SEL')then
@@ -539,7 +539,96 @@ BEGIN
 			return v_consulta;
 						
 		end;
-    
+     /*********************************    
+ 	#TRANSACCION:  'CCB_REPAGEANU_SEL'
+ 	#DESCRIPCION:	consulta de agenda anual para reporte impreso
+ 	#AUTOR:		admin	
+ 	#FECHA:		16-08-2015 14:31:26
+	***********************************/
+
+	elsif(p_transaccion='CCB_REPAGEANU_SEL')then
+     				
+    	begin
+        
+            
+    		
+            v_inner = '';
+            v_lugares = '0';
+            v_filtro = '0=0 and';
+            
+           -- raise exception '%',  pxp.f_existe_parametro(p_tabla,'id_lugar');
+            IF  pxp.f_existe_parametro(p_tabla,'id_lugar')  THEN
+                 
+                 IF v_parametros.id_lugar is not null THEN
+                      WITH RECURSIVE lugar_rec (id_lugar, id_lugar_fk, nombre) AS (
+                          SELECT lug.id_lugar, id_lugar_fk, nombre
+                          FROM param.tlugar lug
+                          WHERE lug.id_lugar = v_parametros.id_lugar and lug.estado_reg = 'activo'
+                        UNION ALL
+                          SELECT lug2.id_lugar, lug2.id_lugar_fk, lug2.nombre
+                          FROM lugar_rec lrec 
+                          INNER JOIN param.tlugar lug2 ON lrec.id_lugar = lug2.id_lugar_fk
+                          where lug2.estado_reg = 'activo'
+                        )
+                      SELECT  pxp.list(id_lugar::varchar) 
+                        into 
+                          v_lugares
+                      FROM lugar_rec;
+                      v_filtro = ' re.id_lugar in ('||v_lugares||') and ';
+                END IF;
+                
+           END IF; 
+           
+           
+      
+           
+           --filtro de eventos
+           IF  pxp.f_existe_parametro(p_tabla,'id_eventos')  THEN
+             IF v_parametros.id_eventos is not null and v_parametros.id_eventos != '' THEN
+                v_filtro = v_filtro||' re,id_evento in ('||v_parametros.id_eventos||') and ';
+             END IF;
+           END IF;
+           
+                     
+           
+           --filtro de regiones
+           IF  pxp.f_existe_parametro(p_tabla,'id_regiones')  THEN
+             IF v_parametros.id_regiones is not null and v_parametros.id_regiones != '' THEN
+                v_filtro = v_filtro||' re.id_region in ('||v_parametros.id_regiones||') and ';
+             END IF;
+           END IF;
+           
+          
+            --Sentencia de la consulta
+			v_consulta:='SELECT (to_char(d.dia::timestamp with time zone, ''DD''::text))::TEXT  AS num_dia,
+                                (to_char(d.dia::timestamp with time zone, ''D''::text))::TEXT AS dia_sem,
+                                (to_char(d.dia::timestamp with time zone, ''MONTH''::text))::TEXT  AS mes,
+                                 
+                                 re.hora::varchar,
+                                 re.desc_region_obs,
+                                 re.desc_casa_oracion,
+                                 re.desc_evento,
+                                 re.css,
+                                 re.desc_obrero,
+                                 re.desc_region,
+                                 re.desc_lugar,
+                                 re.id_lugar,
+                                 re.id_region_evento,
+                                 re.id_evento,
+                                 re.id_region,
+                                 re.id_casa_oracion,
+                                 d.dia::Date
+                          FROM ccb.vdias d
+                               LEFT JOIN ccb.vregion_evento re 
+                               
+                               ON re.fecha_programada = d.dia and '||v_filtro||' 0=0 
+                           WHERE  (dia  BETWEEN  '''||v_parametros.desde::varchar||'''::date and '''||v_parametros.hasta::varchar||'''::date) 
+                           ORDER BY d.dia, re.hora';
+			 
+			
+			return v_consulta;
+						
+		end;
     else
 					     
 		raise exception 'Transaccion inexistente';

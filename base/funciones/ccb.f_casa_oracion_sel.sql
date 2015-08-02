@@ -33,6 +33,8 @@ DECLARE
     v_filtro_lugares	varchar;
     v_lugares			varchar;
     v_verificar			varchar;
+    v_filtro			varchar;
+   
 			    
 BEGIN
 
@@ -194,6 +196,83 @@ BEGIN
 			return v_consulta;
 
 		end;
+    /*********************************    
+ 	#TRANSACCION:  'CCB_CAORAGD_SEL'
+ 	#DESCRIPCION:	Lista la cas de oracion para la agenda anual
+ 	#AUTOR:		rensi	
+ 	#FECHA:		16-08-2015 08:52:02
+	***********************************/
+
+	elsif(p_transaccion='CCB_CAORAGD_SEL')then
+     				
+    	begin
+            v_lugares = '0';
+            v_filtro =  ' ';
+            
+            IF  pxp.f_existe_parametro(p_tabla,'id_lugar')  THEN
+            
+               IF v_parametros.id_lugar is not null THEN
+                  WITH RECURSIVE lugar_rec (id_lugar, id_lugar_fk, nombre) AS (
+                    SELECT lug.id_lugar, id_lugar_fk, nombre
+                    FROM param.tlugar lug
+                    WHERE lug.id_lugar = v_parametros.id_lugar and lug.estado_reg = 'activo'
+                  UNION ALL
+                    SELECT lug2.id_lugar, lug2.id_lugar_fk, lug2.nombre
+                    FROM lugar_rec lrec 
+                    INNER JOIN param.tlugar lug2 ON lrec.id_lugar = lug2.id_lugar_fk
+                    where lug2.estado_reg = 'activo'
+                  )
+                SELECT  pxp.list(id_lugar::varchar) 
+                  into 
+                    v_lugares
+                FROM lugar_rec;
+                v_filtro = ' id_lugar in ('||v_lugares||') and ';
+              END IF;    
+                
+                
+           END IF;
+           
+           
+           IF  pxp.f_existe_parametro(p_tabla,'id_eventos')  THEN
+             IF v_parametros.id_eventos is not null and v_parametros.id_eventos != '' THEN
+                v_filtro = v_filtro||' id_evento in ('||v_parametros.id_eventos||') and ';
+             END IF;
+           END IF;
+           
+           
+           
+           --filtro de regiones
+           IF  pxp.f_existe_parametro(p_tabla,'id_regiones')  THEN
+             IF v_parametros.id_regiones is not null and v_parametros.id_regiones != '' THEN
+                v_filtro = v_filtro||' id_region in ('||v_parametros.id_regiones||') and ';
+             END IF;
+           END IF;
+            
+            
+    		--Sentencia de la consulta
+			v_consulta:='SELECT 
+                          id_casa_oracion,
+                          obs,
+                          region,
+                          casa_oracion,
+                          direccion,
+                          id_region,
+                          id_lugar,
+                          lugar,
+                          latitud,
+                          longitud,
+                          horarios
+                        FROM 
+                          ccb.vcasa_oracion
+                        WHERE '||v_filtro ||' 0=0';
+			
+			--Definicion de la respuesta
+			 v_consulta = v_consulta||' order by region ASC, casa_oracion asc;';  
+            
+           --Devuelve la respuesta
+			return v_consulta;
+						
+		end;    
 					
 	else
 					     

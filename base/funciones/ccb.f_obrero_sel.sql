@@ -29,6 +29,8 @@ DECLARE
 	v_parametros  		record;
 	v_nombre_funcion   	text;
 	v_resp				varchar;
+    v_filtro			varchar;
+    v_lugares			varchar;
 			    
 BEGIN
 
@@ -170,6 +172,90 @@ BEGIN
 			--Devuelve la respuesta
 			return v_consulta;
 
+		end;
+    
+    /*********************************    
+ 	#TRANSACCION:  'CCB_OBRAGD_SEL'
+ 	#DESCRIPCION:	Lista los obreros para el report ede agenda anua
+ 	#AUTOR:		rensi	
+ 	#FECHA:		16-08-2015 12:03:11
+	***********************************/
+
+	elsif(p_transaccion='CCB_OBRAGD_SEL')then
+     				
+    	begin
+        
+          
+            v_lugares = '0';
+            v_filtro = ' ';
+            
+           -- raise exception '%',  pxp.f_existe_parametro(p_tabla,'id_lugar');
+            IF  pxp.f_existe_parametro(p_tabla,'id_lugar')  THEN
+                 
+                 IF v_parametros.id_lugar is not null THEN
+                      WITH RECURSIVE lugar_rec (id_lugar, id_lugar_fk, nombre) AS (
+                          SELECT lug.id_lugar, id_lugar_fk, nombre
+                          FROM param.tlugar lug
+                          WHERE lug.id_lugar = v_parametros.id_lugar and lug.estado_reg = 'activo'
+                        UNION ALL
+                          SELECT lug2.id_lugar, lug2.id_lugar_fk, lug2.nombre
+                          FROM lugar_rec lrec 
+                          INNER JOIN param.tlugar lug2 ON lrec.id_lugar = lug2.id_lugar_fk
+                          where lug2.estado_reg = 'activo'
+                        )
+                      SELECT  pxp.list(id_lugar::varchar) 
+                        into 
+                          v_lugares
+                      FROM lugar_rec;
+                      v_filtro = ' id_lugar in ('||v_lugares||') and ';
+                END IF;
+                
+           END IF; 
+           
+           
+      
+           
+           --filtro de eventos
+           IF  pxp.f_existe_parametro(p_tabla,'id_eventos')  THEN
+             IF v_parametros.id_eventos is not null and v_parametros.id_eventos != '' THEN
+                v_filtro = v_filtro||' id_evento in ('||v_parametros.id_eventos||') and ';
+             END IF;
+           END IF;
+           
+                     
+           
+           --filtro de regiones
+           IF  pxp.f_existe_parametro(p_tabla,'id_regiones')  THEN
+             IF v_parametros.id_regiones is not null and v_parametros.id_regiones != '' THEN
+                v_filtro = v_filtro||' id_region in ('||v_parametros.id_regiones||') and ';
+             END IF;
+           END IF;
+           
+    		--Sentencia de la consulta
+			v_consulta:='SELECT 
+                          id_tipo_ministerio,
+                          id_obrero,
+                          id_persona,
+                          ministerio,
+                          nombre_completo1,
+                          telefono1,
+                          telefono2,
+                          celular1,
+                          correo,
+                          casa_oracion,
+                          region,
+                          obs,
+                          id_lugar,
+                          lugar,
+                          id_region
+                        FROM 
+                          ccb.vagenda_telefonica  
+                        WHERE '||v_filtro||' 0=0 ' ;
+			
+			raise notice '%', v_consulta;
+			--Devuelve la respuesta
+			return v_consulta;
+						
 		end;
 					
 	else
