@@ -636,3 +636,13 @@ select pxp.f_insert_testructura_gui ('REPAGE', 'CAREVE');
 /********************************************F-DAT-RAC-CCB-0-10/07/2015********************************************/
 
 
+/********************************************I-DAT-RAC-CCB-0-30/08/2015********************************************/
+
+
+select pxp.f_insert_tgui ('Agenda Anual', 'Agenda Anual', 'AGEAN', 'si', 7, 'sis_admin/vista/region_evento/RepAgendaAnual.php', 3, '', 'RepAgendaAnual', 'CCB');
+select pxp.f_insert_testructura_gui ('AGEAN', 'CAREVE');
+
+
+/********************************************F-DAT-RAC-CCB-0-30/08/2015********************************************/
+
+
