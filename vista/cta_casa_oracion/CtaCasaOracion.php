@@ -45,6 +45,9 @@ Phx.vista.CtaCasaOracion = {
             miExtra = Ext.apply(extra, miExtra) 
         }
       Phx.vista.CtaCasaOracion.superclass.EnableSelect.call(this,n,miExtra);  
+   },
+   cargaMapa: function(){
+   	
    }
 };
 </script>

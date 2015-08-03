@@ -375,8 +375,9 @@ Phx.vista.CasaOracion=Ext.extend(Phx.gridInterfaz,{
 			Phx.vista.CasaOracion.superclass.onButtonEdit.call(this);
 			Phx.CP.getPagina(this.idContenedor+'-east').setMarkerDragableOn();
 	 },
-	EnableSelect:function(n){
-		
+	
+	
+	cargaMapa: function(){
 		var data = this.getSelectedData();
 		console.log('data',data)
 		if(Phx.CP.getPagina(this.idContenedor+'-east')){	
@@ -386,7 +387,12 @@ Phx.vista.CasaOracion=Ext.extend(Phx.gridInterfaz,{
 				    	
 			alert("No hay acceso a internet")
 		}
+	},
+	
+	EnableSelect:function(n){
 		
+		
+		this.cargaMapa();
 		Phx.vista.CasaOracion.superclass.EnableSelect.call(this,n)
 	},
 	bdel:true,
