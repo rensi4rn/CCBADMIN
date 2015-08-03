@@ -824,6 +824,8 @@ BEGIN
                    
                -- si la gestion actual es la misma que la anterior
                IF v_id_gestion_ant = v_id_gestion THEN
+             
+              
                      -- raise exception 'yyyyyyyyyyyy % - %  - % - %',v_id_gestion_ant, v_fecha_ultimo_anterior , v_parametros.id_casa_oracion, v_registros.id_tipo_movimiento   ;
                      
                      -- determinar administrativo del mes anterior anterior
@@ -876,7 +878,7 @@ BEGIN
                              md.id_tipo_movimiento = v_registros.id_tipo_movimiento 
                          and mv.concepto = 'saldo_inicial'
                          and mv.id_casa_oracion = v_parametros.id_casa_oracion
-                         and ep.id_gestion = v_id_gestion_ant;
+                         and ep.id_gestion = v_id_gestion;
                        
                     
                     ELSIF  v_registros.codigo = 'piedad' THEN
@@ -894,7 +896,7 @@ BEGIN
                              md.id_tipo_movimiento = v_registros.id_tipo_movimiento 
                          and mv.concepto = 'saldo_inicial'
                          and mv.id_casa_oracion = v_parametros.id_casa_oracion
-                         and ep.id_gestion = v_id_gestion_ant;
+                         and ep.id_gestion = v_id_gestion;
                        
                     ELSIF  v_registros.codigo = 'especial' THEN
                        
@@ -911,7 +913,7 @@ BEGIN
                              md.id_tipo_movimiento = v_registros.id_tipo_movimiento 
                          and mv.concepto = 'saldo_inicial'
                          and mv.id_casa_oracion = v_parametros.id_casa_oracion
-                         and ep.id_gestion = v_id_gestion_ant;
+                         and ep.id_gestion = v_id_gestion;
                        
                     ELSIF  v_registros.codigo = 'viaje' THEN
                        
@@ -927,7 +929,7 @@ BEGIN
                              md.id_tipo_movimiento = v_registros.id_tipo_movimiento 
                          and mv.concepto = 'saldo_inicial'
                          and mv.id_casa_oracion = v_parametros.id_casa_oracion
-                         and ep.id_gestion = v_id_gestion_ant;
+                         and ep.id_gestion = v_id_gestion;
                        
                     ELSIF  v_registros.codigo = 'construccion' THEN
                        
@@ -944,8 +946,8 @@ BEGIN
                              md.id_tipo_movimiento = v_registros.id_tipo_movimiento 
                          and mv.concepto = 'saldo_inicial'
                          and mv.id_casa_oracion = v_parametros.id_casa_oracion
-                         and ep.id_gestion = v_id_gestion_ant;
-                    END IF ;
+                         and ep.id_gestion = v_id_gestion;
+                    END IF;
                
                
                END IF;
@@ -954,7 +956,7 @@ BEGIN
             END LOOP;
             
             
-             
+            --raise exception '%, %, %, %, %', v_saldo_adm_construccion, v_saldo_adm_piedad,v_saldo_adm_viaje ,v_saldo_adm_especial,v_saldo_adm_mantenimiento; 
             v_total_saldo_adm = v_saldo_adm_construccion + v_saldo_adm_viaje +  v_saldo_adm_especial + v_saldo_adm_piedad + v_saldo_adm_mantenimiento;
             
             

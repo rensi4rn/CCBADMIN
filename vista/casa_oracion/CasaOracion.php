@@ -345,23 +345,23 @@ Phx.vista.CasaOracion=Ext.extend(Phx.gridInterfaz,{
 		direction: 'ASC'
 	},
 	east:{
-		  url:'../../../sis_admin/vista/casa_oracion/mapaLocalizacion.php',
-		  title:'Ubicación', 
-		  width:'50%',
-		  cls:'mapaLocalizacion'
+			  url:'../../../sis_admin/vista/casa_oracion/mapaLocalizacion.php',
+			  title:'Ubicación', 
+			  width:'50%',
+			  cls:'mapaLocalizacion'
 		 },
 	tabsouth:[
 	      {
-		 url:'../../../sis_admin/vista/culto/Culto.php',		  
-		  title:'Cultos', 
-		  height:'50%',
-		  cls:'Culto'
+			  url:'../../../sis_admin/vista/culto/Culto.php',		  
+			  title:'Cultos', 
+			  height:'50%',
+			  cls:'Culto'
 		 },
 	     {
-		  url:'../../../sis_admin/vista/estado_periodo/EstadoPeriodo.php',		
-		  title:'Periodos', 
-		  height:'50%',
-		  cls:'EstadoPeriodo'
+			  url:'../../../sis_admin/vista/estado_periodo/EstadoPeriodo.php',		
+			  title:'Periodos', 
+			  height:'50%',
+			  cls:'EstadoPeriodo'
 		 }
 	
 	   ],
