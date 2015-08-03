@@ -655,7 +655,7 @@ select pxp.f_insert_testructura_gui ('AGEAN', 'CAREVE');
 select pxp.f_insert_tgui ('Relaciones Contables', 'Relaciones Contables', 'RCCCB', 'si', 1, '', 2, '', '', 'CCB');
 select pxp.f_insert_tgui ('Casa Oracion', 'Casa Oracion', 'RCCO', 'si', 1, 'sis_admin/vista/cta_casa_oracion/CtaCasaOracion.php', 3, '', 'CtaCasaOracion', 'CCB');
 select pxp.f_insert_testructura_gui ('RCCCB', 'ADM');
-select pxp.f_insert_testructura_gui ('RCCO', 'RCCCB')
+select pxp.f_insert_testructura_gui ('RCCO', 'RCCCB');
 
 
 /********************************************F-DAT-RAC-CCB-0-26/09/2015********************************************/
