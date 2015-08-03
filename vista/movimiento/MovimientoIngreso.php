@@ -431,13 +431,12 @@ Phx.vista.MovimientoIngreso=Ext.extend(Phx.gridInterfaz,{
 			grid:true,
 			form:true
 		},
-		
 		{
 			//configuracion del componente
 			config:{
 					labelSeparator:'',
 					inputType:'hidden',
-					name: 'id_movimiento_det_mantenimiento'
+					name: 'id_movimiento_det_construccion'
 			},
 			type:'Field',
 			form:true 
@@ -447,15 +446,15 @@ Phx.vista.MovimientoIngreso=Ext.extend(Phx.gridInterfaz,{
 			config:{
 					labelSeparator:'',
 					inputType:'hidden',
-					name: 'id_tipo_movimiento_mantenimiento'
+					name: 'id_tipo_movimiento_construccion'
 			},
 			type:'Field',
 			form:true 
 		},
 		{
 			config:{
-				name: 'monto_mantenimiento',
-				fieldLabel: 'Mantenimiento',
+				name: 'monto_construccion',
+				fieldLabel: 'Construcción',
 				allowBlank: true,
 				anchor: '80%',
 				gwidth: 100,
@@ -463,18 +462,16 @@ Phx.vista.MovimientoIngreso=Ext.extend(Phx.gridInterfaz,{
 				maxLength:1245186,
 				renderer:function (value, p, record){
                             if(record.data.tipo_reg=='summary'){
-                                 return String.format('<b><font color="green">{0}</font></b>', record.data.total_mantenimiento);
+                                 return String.format('<b><font color="green">{0}</font></b>', record.data.total_construccion);
                             }
                             else{
                                 return String.format('{0}', value);
                             }
                         
                         }
-				
 			},
 			type:'NumberField',
-			bottom_filter: true,
-			filters:{pfiltro:'mov.monto_mantenimiento',type:'numeric'},
+			filters:{pfiltro:'mov.monto_construccion',type:'numeric'},
 			id_grupo:1,
 			grid:true,
 			egrid:true,
@@ -521,52 +518,6 @@ Phx.vista.MovimientoIngreso=Ext.extend(Phx.gridInterfaz,{
 			},
 			type:'NumberField',
 			filters:{pfiltro:'mov.monto_piedad',type:'numeric'},
-			id_grupo:1,
-			grid:true,
-			egrid:true,
-			form:true
-		},
-		{
-			//configuracion del componente
-			config:{
-					labelSeparator:'',
-					inputType:'hidden',
-					name: 'id_movimiento_det_construccion'
-			},
-			type:'Field',
-			form:true 
-		},
-		{
-			//configuracion del componente
-			config:{
-					labelSeparator:'',
-					inputType:'hidden',
-					name: 'id_tipo_movimiento_construccion'
-			},
-			type:'Field',
-			form:true 
-		},
-		{
-			config:{
-				name: 'monto_construccion',
-				fieldLabel: 'Construcción',
-				allowBlank: true,
-				anchor: '80%',
-				gwidth: 100,
-				minValue :0,
-				maxLength:1245186,
-				renderer:function (value, p, record){
-                            if(record.data.tipo_reg=='summary'){
-                                 return String.format('<b><font color="green">{0}</font></b>', record.data.total_construccion);
-                            }
-                            else{
-                                return String.format('{0}', value);
-                            }
-                        
-                        }
-			},
-			type:'NumberField',
-			filters:{pfiltro:'mov.monto_construccion',type:'numeric'},
 			id_grupo:1,
 			grid:true,
 			egrid:true,
@@ -659,6 +610,55 @@ Phx.vista.MovimientoIngreso=Ext.extend(Phx.gridInterfaz,{
 			},
 			type:'NumberField',
 			filters:{pfiltro:'mov.monto_especial',type:'numeric'},
+			id_grupo:1,
+			grid:true,
+			egrid:true,
+			form:true
+		},
+		
+		{
+			//configuracion del componente
+			config:{
+					labelSeparator:'',
+					inputType:'hidden',
+					name: 'id_movimiento_det_mantenimiento'
+			},
+			type:'Field',
+			form:true 
+		},
+		{
+			//configuracion del componente
+			config:{
+					labelSeparator:'',
+					inputType:'hidden',
+					name: 'id_tipo_movimiento_mantenimiento'
+			},
+			type:'Field',
+			form:true 
+		},
+		{
+			config:{
+				name: 'monto_mantenimiento',
+				fieldLabel: 'Mantenimiento',
+				allowBlank: true,
+				anchor: '80%',
+				gwidth: 100,
+				minValue :0,
+				maxLength:1245186,
+				renderer:function (value, p, record){
+                            if(record.data.tipo_reg=='summary'){
+                                 return String.format('<b><font color="green">{0}</font></b>', record.data.total_mantenimiento);
+                            }
+                            else{
+                                return String.format('{0}', value);
+                            }
+                        
+                        }
+				
+			},
+			type:'NumberField',
+			bottom_filter: true,
+			filters:{pfiltro:'mov.monto_mantenimiento',type:'numeric'},
 			id_grupo:1,
 			grid:true,
 			egrid:true,

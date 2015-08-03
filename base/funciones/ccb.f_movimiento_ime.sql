@@ -822,38 +822,133 @@ BEGIN
              
                    v_monto = 0;
                    
-                   -- raise exception 'yyyyyyyyyyyy % - %  - % - %',v_id_gestion_ant, v_fecha_ultimo_anterior , v_parametros.id_casa_oracion, v_registros.id_tipo_movimiento   ;
+               -- si la gestion actual es la misma que la anterior
+               IF v_id_gestion_ant = v_id_gestion THEN
+                     -- raise exception 'yyyyyyyyyyyy % - %  - % - %',v_id_gestion_ant, v_fecha_ultimo_anterior , v_parametros.id_casa_oracion, v_registros.id_tipo_movimiento   ;
+                     
+                     -- determinar administrativo del mes anterior anterior
+                      v_cadena = ccb.f_calculo_saldos(v_id_gestion_ant, 
+                                                       v_fecha_ultimo_anterior, 
+                                                       NULL, --.id_lugar, 
+                                                       v_parametros.id_casa_oracion, 
+                                                       NULL, --.id_region, 
+                                                       NULL, --id_obrero, 
+                                                       v_registros.id_tipo_movimiento, --id_tipo_movimiento, 
+                                                       NULL);
+                     
+                     IF v_registros.codigo = 'mantenimiento' THEN
+                       v_id_tm_mantenimiento =  v_registros.id_tipo_movimiento;
+                       v_saldo_adm_mantenimiento = COALESCE(((pxp.f_recupera_clave(v_cadena, 'v_saldo_adm'))[1])::numeric,0);
+                       
+                     ELSIF  v_registros.codigo = 'piedad' THEN
+                       v_id_tm_piedad =  v_registros.id_tipo_movimiento;
+                       v_saldo_adm_piedad =  COALESCE(((pxp.f_recupera_clave(v_cadena, 'v_saldo_adm'))[1])::numeric,0);
+                       
+                     ELSIF  v_registros.codigo = 'especial' THEN
+                       v_id_tm_especial =  v_registros.id_tipo_movimiento;
+                       v_saldo_adm_especial =  COALESCE(((pxp.f_recupera_clave(v_cadena, 'v_saldo_adm'))[1])::numeric,0);
+                       
+                     ELSIF  v_registros.codigo = 'viaje' THEN
+                       v_id_tm_viaje =  v_registros.id_tipo_movimiento;
+                       v_saldo_adm_viaje =  COALESCE(((pxp.f_recupera_clave(v_cadena, 'v_saldo_adm'))[1])::numeric,0);
+                     ELSIF  v_registros.codigo = 'construccion' THEN
+                       v_id_tm_construccion =  v_registros.id_tipo_movimiento;
+                       v_saldo_adm_construccion =  COALESCE(((pxp.f_recupera_clave(v_cadena, 'v_saldo_adm'))[1])::numeric,0);
+                     END IF ;
+               
+               
+               ELSE
+                    --PAra calcular el saldo inicial registro de las gestion anterior (EL saldo trancrito con el tipo saldo_inicial)
+                  
+                    IF v_registros.codigo = 'mantenimiento' THEN 
+                       
+                    
+                       v_id_tm_mantenimiento =  v_registros.id_tipo_movimiento;
+                      
+                       select 
+                        sum(md.monto)
+                       into 
+                        v_saldo_adm_mantenimiento
+                       from ccb.tmovimiento mv 
+                       inner join ccb.tmovimiento_det md on  mv.id_movimiento = md.id_movimiento
+                       inner join ccb.testado_periodo ep on ep.id_estado_periodo = mv.id_estado_periodo
+                       where 
+                             md.id_tipo_movimiento = v_registros.id_tipo_movimiento 
+                         and mv.concepto = 'saldo_inicial'
+                         and mv.id_casa_oracion = v_parametros.id_casa_oracion
+                         and ep.id_gestion = v_id_gestion_ant;
+                       
+                    
+                    ELSIF  v_registros.codigo = 'piedad' THEN
                    
-                   -- determinar administrativo del mes anterior anterior
-                    v_cadena = ccb.f_calculo_saldos(v_id_gestion_ant, 
-                                                     v_fecha_ultimo_anterior, 
-                                                     NULL, --.id_lugar, 
-                                                     v_parametros.id_casa_oracion, 
-                                                     NULL, --.id_region, 
-                                                     NULL, --id_obrero, 
-                                                     v_registros.id_tipo_movimiento, --id_tipo_movimiento, 
-                                                     NULL);
-                   
-                   IF v_registros.codigo = 'mantenimiento' THEN
-                     v_id_tm_mantenimiento =  v_registros.id_tipo_movimiento;
-                     v_saldo_adm_mantenimiento = COALESCE(((pxp.f_recupera_clave(v_cadena, 'v_saldo_adm'))[1])::numeric,0);
-                     
-                   ELSIF  v_registros.codigo = 'piedad' THEN
-                     v_id_tm_piedad =  v_registros.id_tipo_movimiento;
-                     v_saldo_adm_piedad =  COALESCE(((pxp.f_recupera_clave(v_cadena, 'v_saldo_adm'))[1])::numeric,0);
-                     
-                   ELSIF  v_registros.codigo = 'especial' THEN
-                     v_id_tm_especial =  v_registros.id_tipo_movimiento;
-                     v_saldo_adm_especial =  COALESCE(((pxp.f_recupera_clave(v_cadena, 'v_saldo_adm'))[1])::numeric,0);
-                     
-                   ELSIF  v_registros.codigo = 'viaje' THEN
-                     v_id_tm_viaje =  v_registros.id_tipo_movimiento;
-                     v_saldo_adm_viaje =  COALESCE(((pxp.f_recupera_clave(v_cadena, 'v_saldo_adm'))[1])::numeric,0);
-                   ELSIF  v_registros.codigo = 'construccion' THEN
-                     v_id_tm_construccion =  v_registros.id_tipo_movimiento;
-                     v_saldo_adm_construccion =  COALESCE(((pxp.f_recupera_clave(v_cadena, 'v_saldo_adm'))[1])::numeric,0);
-                   END IF ;
-             
+                       v_id_tm_piedad =  v_registros.id_tipo_movimiento;
+                       
+                       select 
+                        sum(md.monto)
+                       into 
+                        v_saldo_adm_piedad
+                       from ccb.tmovimiento mv 
+                       inner join ccb.tmovimiento_det md on  mv.id_movimiento = md.id_movimiento
+                       inner join ccb.testado_periodo ep on ep.id_estado_periodo = mv.id_estado_periodo
+                       where 
+                             md.id_tipo_movimiento = v_registros.id_tipo_movimiento 
+                         and mv.concepto = 'saldo_inicial'
+                         and mv.id_casa_oracion = v_parametros.id_casa_oracion
+                         and ep.id_gestion = v_id_gestion_ant;
+                       
+                    ELSIF  v_registros.codigo = 'especial' THEN
+                       
+                       v_id_tm_especial =  v_registros.id_tipo_movimiento;
+                       
+                       select 
+                        sum(md.monto)
+                       into 
+                        v_saldo_adm_especial
+                       from ccb.tmovimiento mv 
+                       inner join ccb.tmovimiento_det md on  mv.id_movimiento = md.id_movimiento
+                       inner join ccb.testado_periodo ep on ep.id_estado_periodo = mv.id_estado_periodo
+                       where 
+                             md.id_tipo_movimiento = v_registros.id_tipo_movimiento 
+                         and mv.concepto = 'saldo_inicial'
+                         and mv.id_casa_oracion = v_parametros.id_casa_oracion
+                         and ep.id_gestion = v_id_gestion_ant;
+                       
+                    ELSIF  v_registros.codigo = 'viaje' THEN
+                       
+                       v_id_tm_viaje =  v_registros.id_tipo_movimiento;
+                       select 
+                        sum(md.monto)
+                       into 
+                        v_saldo_adm_viaje
+                      from ccb.tmovimiento mv 
+                       inner join ccb.tmovimiento_det md on  mv.id_movimiento = md.id_movimiento
+                       inner join ccb.testado_periodo ep on ep.id_estado_periodo = mv.id_estado_periodo
+                       where 
+                             md.id_tipo_movimiento = v_registros.id_tipo_movimiento 
+                         and mv.concepto = 'saldo_inicial'
+                         and mv.id_casa_oracion = v_parametros.id_casa_oracion
+                         and ep.id_gestion = v_id_gestion_ant;
+                       
+                    ELSIF  v_registros.codigo = 'construccion' THEN
+                       
+                       v_id_tm_construccion =  v_registros.id_tipo_movimiento;
+                       
+                       select 
+                        sum(md.monto)
+                       into 
+                        v_saldo_adm_construccion
+                       from ccb.tmovimiento mv 
+                       inner join ccb.tmovimiento_det md on  mv.id_movimiento = md.id_movimiento
+                       inner join ccb.testado_periodo ep on ep.id_estado_periodo = mv.id_estado_periodo
+                       where 
+                             md.id_tipo_movimiento = v_registros.id_tipo_movimiento 
+                         and mv.concepto = 'saldo_inicial'
+                         and mv.id_casa_oracion = v_parametros.id_casa_oracion
+                         and ep.id_gestion = v_id_gestion_ant;
+                    END IF ;
+               
+               
+               END IF;
             
             
             END LOOP;

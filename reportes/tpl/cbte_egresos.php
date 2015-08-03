@@ -26,19 +26,15 @@
 	  	<td  colspan="2" align="left"  > <font size="11"><b>I)  SALDOS PREVIOS</b></font></td>
 	  	<td align="left" width="40%"> <font size="11"><b><?php echo number_format($datos['v_total_saldo_adm'], 2) ?></b></font></td>
 	  </tr>
-	  <tr>
-	  	<td align="left" width="30%"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Mantenimiento</b></td>
-	  	<td align="right" width="30%"> <?php echo number_format($datos['v_saldo_adm_mantenimiento'], 2) ?></td>
-	  	<td align="left" width="40%">&nbsp;</td>
-	  </tr>
+	  
 	  <tr>
 	  	<td align="left" width="30%"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Construcción</b></td>
 	  	<td align="right" width="30%"> <?php echo number_format($datos['v_saldo_adm_construccion'], 2) ?></td>
 	  	<td align="left" width="40%">&nbsp;</td>
 	  </tr>
 	  <tr>
-	  	<td align="left" width="30%"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Especial</b></td>
-	  	<td align="right" width="30%"> <?php echo number_format($datos['v_saldo_adm_especial'], 2) ?></td>
+	  	<td align="left" width="30%"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Piedad</b></td>
+	  	<td align="right" width="30%"> <?php echo number_format($datos['v_saldo_adm_piedad'], 2) ?></td>
 	  	<td align="left" width="40%">&nbsp;</td>
 	  </tr>
 	  <tr>
@@ -47,10 +43,16 @@
 	  	<td align="left" width="40%">&nbsp;</td>
 	  </tr>
 	  <tr>
-	  	<td align="left" width="30%"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Piedad</b></td>
-	  	<td align="right" width="30%"> <?php echo number_format($datos['v_saldo_adm_piedad'], 2) ?></td>
+	  	<td align="left" width="30%"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Especial</b></td>
+	  	<td align="right" width="30%"> <?php echo number_format($datos['v_saldo_adm_especial'], 2) ?></td>
 	  	<td align="left" width="40%">&nbsp;</td>
 	  </tr>
+	  <tr>
+	  	<td align="left" width="30%"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Mantenimiento</b></td>
+	  	<td align="right" width="30%"> <?php echo number_format($datos['v_saldo_adm_mantenimiento'], 2) ?></td>
+	  	<td align="left" width="40%">&nbsp;</td>
+	  </tr>
+	  
 	</table>
 	<br> 
 	<table width="100%" style="width: 100%; text-align: center;" cellspacing="1" cellpadding="1" border="0">
@@ -58,19 +60,15 @@
 	  	<td  colspan="2" align="left"  > <font size="11"><b>II)  COLECTAS DEL MES</b></font></td>
 	  	<td align="left" width="40%"> <font size="11"><b><?php echo number_format($datos['v_total_colecta'], 2) ?></b></font></td>
 	  </tr>
-	  <tr>
-	  	<td align="left" width="30%"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Mantenimiento</b></td>
-	  	<td align="right" width="30%"> <?php echo number_format($datos['v_colecta_mantenimiento'], 2) ?></td>
-	  	<td align="left" width="40%">&nbsp;</td>
-	  </tr>
+	  
 	  <tr>
 	  	<td align="left" width="30%"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Construcción</b></td>
 	  	<td align="right" width="30%"> <?php echo number_format($datos['v_colecta_construccion'], 2) ?></td>
 	  	<td align="left" width="40%">&nbsp;</td>
 	  </tr>
 	  <tr>
-	  	<td align="left" width="30%"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Especial</b></td>
-	  	<td align="right" width="30%"> <?php echo number_format($datos['v_colecta_especial'], 2) ?></td>
+	  	<td align="left" width="30%"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Piedad</b></td>
+	  	<td align="right" width="30%"> <?php echo number_format($datos['v_colecta_piedad'], 2) ?></td>
 	  	<td align="left" width="40%">&nbsp;</td>
 	  </tr>
 	  <tr>
@@ -79,8 +77,13 @@
 	  	<td align="left" width="40%">&nbsp;</td>
 	  </tr>
 	  <tr>
-	  	<td align="left" width="30%"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Piedad</b></td>
-	  	<td align="right" width="30%"> <?php echo number_format($datos['v_colecta_piedad'], 2) ?></td>
+	  	<td align="left" width="30%"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Especial</b></td>
+	  	<td align="right" width="30%"> <?php echo number_format($datos['v_colecta_especial'], 2) ?></td>
+	  	<td align="left" width="40%">&nbsp;</td>
+	  </tr>
+	  <tr>
+	  	<td align="left" width="30%"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Mantenimiento</b></td>
+	  	<td align="right" width="30%"> <?php echo number_format($datos['v_colecta_mantenimiento'], 2) ?></td>
 	  	<td align="left" width="40%">&nbsp;</td>
 	  </tr>
 	</table>
@@ -96,29 +99,32 @@
 	  	<td  colspan="2" align="left"  > <font size="11"><b>a)  INGRESOS </b></font></td>
 	  	<td align="right" width="30%"> <font size="11"><b><?php echo number_format($datos['v_total_ing_traspasos'], 2) ?></b></font></td>
 	  </tr>
-	  <tr>
-	  	<td align="left" width="40%"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Mantenimiento</b></td>
-	  	<td align="right" width="30%"> <?php echo number_format($datos['v_ing_traspasos_mantenimiento'], 2) ?></td>
-	  	<td align="left" width="30%">&nbsp;</td>
-	  </tr>
+	  
 	  <tr>
 	  	<td align="left" width="40%"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Construcción</b></td>
 	  	<td align="right" width="30%"> <?php echo number_format($datos['v_ing_traspasos_construccion'], 2) ?></td>
 	  	<td align="left" width="30%">&nbsp;</td>
 	  </tr>
 	  <tr>
-	  	<td align="left" width="40%"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Especial</b></td>
-	  	<td align="right" width="30%"> <?php echo number_format($datos['v_ing_traspasos_especial'], 2) ?></td>
+	  	<td align="left" width="40%"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Piedad</b></td>
+	  	<td align="right" width="30%"> <?php echo number_format($datos['v_ing_traspasos_piedad'], 2) ?></td>
 	  	<td align="left" width="30%">&nbsp;</td>
 	  </tr>
+	 
 	  <tr>
 	  	<td align="left" width="40%"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Viaje</b></td>
 	  	<td align="right" width="30%"> <?php echo number_format($datos['v_ing_traspasos_viaje'], 2) ?></td>
 	  	<td align="left" width="30%">&nbsp;</td>
 	  </tr>
+	   <tr>
+	  	<td align="left" width="40%"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Especial</b></td>
+	  	<td align="right" width="30%"> <?php echo number_format($datos['v_ing_traspasos_especial'], 2) ?></td>
+	  	<td align="left" width="30%">&nbsp;</td>
+	  </tr>
+	  
 	  <tr>
-	  	<td align="left" width="40%"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Piedad</b></td>
-	  	<td align="right" width="30%"> <?php echo number_format($datos['v_ing_traspasos_piedad'], 2) ?></td>
+	  	<td align="left" width="40%"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Mantenimiento</b></td>
+	  	<td align="right" width="30%"> <?php echo number_format($datos['v_ing_traspasos_mantenimiento'], 2) ?></td>
 	  	<td align="left" width="30%">&nbsp;</td>
 	  </tr>
 	</table>
@@ -128,29 +134,32 @@
 	  	<td  colspan="2" align="left"  > <font size="11"><b>b)  EGRESOS </b></font></td>
 	  	<td align="right" width="40%"> <font size="11"><b><?php echo number_format($datos['v_egre_traspasos_construccion'], 2) ?>&nbsp;&nbsp;&nbsp;&nbsp;</b></font></td>
 	  </tr>
-	  <tr>
-	  	<td align="left" width="40%"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Mantenimiento</b></td>
-	  	<td align="right" width="30%"> <?php echo number_format($datos['v_egre_traspasos_mantenimiento'], 2) ?></td>
-	  	<td align="left" width="30%">&nbsp;</td>
-	  </tr>
+	  
 	  <tr>   
 	  	<td align="left" width="40%"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Construcción</b></td>
 	  	<td align="right" width="30%"> <?php echo number_format($datos['v_egre_traspasos_construccion'], 2) ?></td>
 	  	<td align="left" width="30%">&nbsp;</td>
 	  </tr>
 	  <tr>
-	  	<td align="left" width="40%"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Especial</b></td>
-	  	<td align="right" width="30%"> <?php echo number_format($datos['v_egre_traspasos_especial'], 2) ?></td>
+	  	<td align="left" width="40%"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Piedad</b></td>
+	  	<td align="right" width="30%"> <?php echo number_format($datos['v_egre_traspasos_piedad'], 2) ?></td>
 	  	<td align="left" width="30%">&nbsp;</td>
 	  </tr>
+	  
 	  <tr>
 	  	<td align="left" width="40%"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Viaje</b></td>
 	  	<td align="right" width="30%"> <?php echo number_format($datos['v_egre_traspasos_viaje'], 2) ?></td>
 	  	<td align="left" width="30%">&nbsp;</td>
 	  </tr>
+	  
 	  <tr>
-	  	<td align="left" width="40%"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Piedad</b></td>
-	  	<td align="right" width="30%"> <?php echo number_format($datos['v_egre_traspasos_piedad'], 2) ?></td>
+	  	<td align="left" width="40%"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Especial</b></td>
+	  	<td align="right" width="30%"> <?php echo number_format($datos['v_egre_traspasos_especial'], 2) ?></td>
+	  	<td align="left" width="30%">&nbsp;</td>
+	  </tr>
+	  <tr>
+	  	<td align="left" width="40%"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Mantenimiento</b></td>
+	  	<td align="right" width="30%"> <?php echo number_format($datos['v_egre_traspasos_mantenimiento'], 2) ?></td>
 	  	<td align="left" width="30%">&nbsp;</td>
 	  </tr>
 	</table>
@@ -162,31 +171,37 @@
 	  	<td  colspan="2" align="left"  > <font size="11"><b>IV)  TOTAL EGRESOS DEL MES</b></font></td>
 	  	<td align="left" width="40%"> <font size="11"><b><?php echo number_format($datos['v_total_egresos_adm_tmp'], 2) ?></b></font></td>
 	  </tr>
-	  <tr>
-	  	<td align="left" width="30%"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Mantenimiento</b></td>
-	  	<td align="right" width="30%"> <?php echo number_format($datos['v_total_egresos_adm_mantenimiento_tmp'], 2) ?></td>
-	  	<td align="left" width="40%">&nbsp;</td>
-	  </tr>
+	 
 	  <tr>
 	  	<td align="left" width="30%"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Construcción</b></td>
 	  	<td align="right" width="30%"> <?php echo number_format($datos['v_total_egresos_adm_construccion_tmp'], 2) ?></td>
 	  	<td align="left" width="40%">&nbsp;</td>
 	  </tr>
-	  <tr>
-	  	<td align="left" width="30%"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Especial</b></td>
-	  	<td align="right" width="30%"> <?php echo number_format($datos['v_total_egresos_adm_especial_tmp'], 2) ?></td>
+	   <tr>
+	  	<td align="left" width="30%"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Piedad</b></td>
+	  	<td align="right" width="30%"> <?php echo number_format($datos['v_total_egresos_adm_piedad_tmp'], 2) ?></td>
 	  	<td align="left" width="40%">&nbsp;</td>
 	  </tr>
+	  
 	  <tr>
 	  	<td align="left" width="30%"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Viaje</b></td>
 	  	<td align="right" width="30%"> <?php echo number_format($datos['v_total_egresos_adm_viaje_tmp'], 2) ?></td>
 	  	<td align="left" width="40%">&nbsp;</td>
 	  </tr>
+	  
 	  <tr>
-	  	<td align="left" width="30%"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Piedad</b></td>
-	  	<td align="right" width="30%"> <?php echo number_format($datos['v_total_egresos_adm_piedad_tmp'], 2) ?></td>
+	  	<td align="left" width="30%"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Especial</b></td>
+	  	<td align="right" width="30%"> <?php echo number_format($datos['v_total_egresos_adm_especial_tmp'], 2) ?></td>
 	  	<td align="left" width="40%">&nbsp;</td>
 	  </tr>
+	 
+	  
+	   <tr>
+	  	<td align="left" width="30%"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Mantenimiento</b></td>
+	  	<td align="right" width="30%"> <?php echo number_format($datos['v_total_egresos_adm_mantenimiento_tmp'], 2) ?></td>
+	  	<td align="left" width="40%">&nbsp;</td>
+	  </tr>
+	  
 	</table>
 	<br> 
 	<table width="100%" style="width: 100%; text-align: center;" cellspacing="1" cellpadding="1" border="0">
@@ -194,29 +209,32 @@
 	  	<td  colspan="2" align="left"  > <font size="11"><b>V)  SALDO ACTUAL (En administración)<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (v) = (i) + (ii) + (a) - (b) - (iv)</b></font></td>
 	  	<td align="left" width="40%"> <font size="11"><b><?php echo number_format($datos['v_total_saldo_mes'], 2) ?></b></font></td>
 	  </tr>
-	  <tr>
-	  	<td align="left" width="30%"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Mantenimiento</b></td>
-	  	<td align="right" width="30%"> <?php echo number_format($datos['v_saldo_mes_mantenimiento'], 2) ?></td>
-	  	<td align="left" width="40%">&nbsp;</td>
-	  </tr>
+	  
 	  <tr>
 	  	<td align="left" width="30%"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Construcción</b></td>
 	  	<td align="right" width="30%"> <?php echo number_format($datos['v_saldo_mes_construccion'], 2) ?></td>
 	  	<td align="left" width="40%">&nbsp;</td>
 	  </tr>
 	  <tr>
-	  	<td align="left" width="30%"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Especial</b></td>
-	  	<td align="right" width="30%"> <?php echo number_format($datos['v_saldo_mes_especial'], 2) ?></td>
+	  	<td align="left" width="30%"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Piedad</b></td>
+	  	<td align="right" width="30%"> <?php echo number_format($datos['v_saldo_mes_piedad'], 2) ?></td>
 	  	<td align="left" width="40%">&nbsp;</td>
 	  </tr>
+	 
 	  <tr>
 	  	<td align="left" width="30%"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Viaje</b></td>
 	  	<td align="right" width="30%"> <?php echo number_format($datos['v_saldo_mes_viaje'], 2) ?></td>
 	  	<td align="left" width="40%">&nbsp;</td>
 	  </tr>
+	   <tr>
+	  	<td align="left" width="30%"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Especial</b></td>
+	  	<td align="right" width="30%"> <?php echo number_format($datos['v_saldo_mes_especial'], 2) ?></td>
+	  	<td align="left" width="40%">&nbsp;</td>
+	  </tr>
+	  
 	  <tr>
-	  	<td align="left" width="30%"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Piedad</b></td>
-	  	<td align="right" width="30%"> <?php echo number_format($datos['v_saldo_mes_piedad'], 2) ?></td>
+	  	<td align="left" width="30%"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Mantenimiento</b></td>
+	  	<td align="right" width="30%"> <?php echo number_format($datos['v_saldo_mes_mantenimiento'], 2) ?></td>
 	  	<td align="left" width="40%">&nbsp;</td>
 	  </tr>
 	</table>
