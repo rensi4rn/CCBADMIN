@@ -669,5 +669,44 @@ select pxp.f_insert_testructura_gui ('RCTM', 'RCCCB');
 
 /********************************************F-DAT-RAC-CCB-1-26/09/2015********************************************/
 
+/********************************************I-DAT-RAC-CCB-1-04/10/2015********************************************/
+/* Data for the 'ccb.ttipo_concepto' table  (Records 1 - 10) */
+
+INSERT INTO ccb.ttipo_concepto ("id_usuario_reg", "id_usuario_mod", "fecha_reg", "fecha_mod", "estado_reg", "id_usuario_ai", "usuario_ai", "codigo", "descripcion", "prioridad")
+VALUES (1, 1, E'2015-08-04 03:57:48.716', E'2015-08-04 03:58:58.448', E'activo', NULL, E'NULL', E'colecta_adultos', E'Colecta de Adultos', 1);
+
+INSERT INTO ccb.ttipo_concepto ("id_usuario_reg", "id_usuario_mod", "fecha_reg", "fecha_mod", "estado_reg", "id_usuario_ai", "usuario_ai", "codigo", "descripcion", "prioridad")
+VALUES (1, 1, E'2015-08-04 03:58:03.351', E'2015-08-04 03:59:09.177', E'activo', NULL, E'NULL', E'colecta_jovenes', E'Colecta de Jovenes', 2);
+
+INSERT INTO ccb.ttipo_concepto ("id_usuario_reg", "id_usuario_mod", "fecha_reg", "fecha_mod", "estado_reg", "id_usuario_ai", "usuario_ai", "codigo", "descripcion", "prioridad")
+VALUES (1, 1, E'2015-08-04 03:58:13.176', E'2015-08-04 03:59:22.606', E'activo', NULL, E'NULL', E'colecta_especial', E'Colecta Especial', 3);
+
+INSERT INTO ccb.ttipo_concepto ("id_usuario_reg", "id_usuario_mod", "fecha_reg", "fecha_mod", "estado_reg", "id_usuario_ai", "usuario_ai", "codigo", "descripcion", "prioridad")
+VALUES (1, 1, E'2015-08-04 03:58:25.966', E'2015-08-04 03:59:33.930', E'activo', NULL, E'NULL', E'saldo_inicial', E'Saldo Inicial', 4);
+
+INSERT INTO ccb.ttipo_concepto ("id_usuario_reg", "id_usuario_mod", "fecha_reg", "fecha_mod", "estado_reg", "id_usuario_ai", "usuario_ai", "codigo", "descripcion", "prioridad")
+VALUES (1, NULL, E'2015-08-04 03:58:43.138', NULL, E'activo', NULL, E'NULL', E'ingreso_trapaso', E'Ingreso por Trapaso', 4);
+
+INSERT INTO ccb.ttipo_concepto ("id_usuario_reg", "id_usuario_mod", "fecha_reg", "fecha_mod", "estado_reg", "id_usuario_ai", "usuario_ai", "codigo", "descripcion", "prioridad")
+VALUES (1, NULL, E'2015-08-04 04:00:21.568', NULL, E'activo', NULL, E'NULL', E'operacion', E'Operacion', 1);
+
+INSERT INTO ccb.ttipo_concepto ("id_usuario_reg", "id_usuario_mod", "fecha_reg", "fecha_mod", "estado_reg", "id_usuario_ai", "usuario_ai", "codigo", "descripcion", "prioridad")
+VALUES (1, NULL, E'2015-08-04 04:00:37.449', NULL, E'activo', NULL, E'NULL', E'egreso_traspaso', E'Egreso por Traspaso', 2);
+
+INSERT INTO ccb.ttipo_concepto ("id_usuario_reg", "id_usuario_mod", "fecha_reg", "fecha_mod", "estado_reg", "id_usuario_ai", "usuario_ai", "codigo", "descripcion", "prioridad")
+VALUES (1, NULL, E'2015-08-04 04:01:15.495', NULL, E'activo', NULL, E'NULL', E'contra_rendicion', E'Contra rendición', 3);
+
+INSERT INTO ccb.ttipo_concepto ("id_usuario_reg", "id_usuario_mod", "fecha_reg", "fecha_mod", "estado_reg", "id_usuario_ai", "usuario_ai", "codigo", "descripcion", "prioridad")
+VALUES (1, NULL, E'2015-08-04 04:01:41.076', NULL, E'activo', NULL, E'NULL', E'egreso_inicial_por_rendir', E'Saldo por Rendir (año pasado)', 4);
+
+INSERT INTO ccb.ttipo_concepto ("id_usuario_reg", "id_usuario_mod", "fecha_reg", "fecha_mod", "estado_reg", "id_usuario_ai", "usuario_ai", "codigo", "descripcion", "prioridad")
+VALUES (1, NULL, E'2015-08-04 04:02:21.465', NULL, E'activo', NULL, E'NULL', E'rendicion', E'Rendición', 5);
+
+
+select pxp.f_insert_tgui ('Tipo Concepto', 'Tipo concepto', 'TIPCON', 'si', 6, 'sis_admin/vista/tipo_concepto/TipoConcepto.php', 3, '', 'TipoConcepto', 'CCB');
+select pxp.f_insert_testructura_gui ('TIPCON', 'PAR');
+
+/********************************************F-DAT-RAC-CCB-1-04/10/2015********************************************/
+
 
 
