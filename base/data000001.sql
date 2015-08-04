@@ -710,3 +710,10 @@ select pxp.f_insert_testructura_gui ('TIPCON', 'PAR');
 
 
 
+/********************************************I-DAT-RAC-CCB-1-25/10/2015********************************************/
+
+select pxp.f_insert_tgui ('Reporte de Colectas', 'Reporte de Colectas', 'REPCOL', 'si', 6, 'sis_admin/vista/movimiento/RepColectas.php', 3, '', 'RepColectas', 'CCB');
+select pxp.f_insert_testructura_gui ('REPCOL', 'MOVECO');
+
+/********************************************F-DAT-RAC-CCB-1-25/10/2015********************************************/
+

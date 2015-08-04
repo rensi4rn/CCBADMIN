@@ -15,16 +15,16 @@ class REgresos extends  ReportePDF {
 		$this->datos_detalle = $detalle;
 		$this->datos_titulo = $totales;
 		$this->subtotal = 0;
-		$this->SetMargins(5, 22.5, 5);
+		$this->SetMargins(10, 28, 5);
 	}
 	
 	function Header() {
 		//cabecera del reporte
-		//$this->Image(dirname(__FILE__).'/../../lib'.$_SESSION['_DIR_LOGO'], $this->ancho_hoja, 5, 30, 10);
+		$this->Image(dirname(__FILE__).'/../../lib/imagenes/logos/logo.png', 10,5,45,20);
 		$this->ln(5);
 		$this->SetFont('','BU',12);
 		
-		$this->Cell(0,5,"Egresos y Rendiciones del Mes de ".$this->datos_titulo['mes']." de ".$this->datos_titulo['gestion'],0,1,'C');
+		$this->Cell(0,5,"Egresos del Mes de ".$this->datos_titulo['mes']." de ".$this->datos_titulo['gestion'],0,1,'C');
 		$this->Ln(1);
 		$this->Cell(0,5,"Casa de Oración: ".$this->datos_detalle[0]['desc_casa_oracion'],0,1,'C');
 		

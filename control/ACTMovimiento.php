@@ -11,6 +11,7 @@ require_once(dirname(__FILE__).'/../../lib/lib_reporte/PlantillasHTML.php');
 require_once(dirname(__FILE__).'/../../lib/lib_reporte/smarty/ksmarty.php');
 require_once dirname(__FILE__).'/../../pxp/lib/lib_reporte/ReportePDFFormulario.php';
 require_once(dirname(__FILE__).'/../reportes/REgresos.php');
+require_once(dirname(__FILE__).'/../reportes/RColectas.php');
 
 class ACTMovimiento extends ACTbase{    
 			
@@ -311,6 +312,7 @@ class ACTMovimiento extends ACTbase{
 		}              
 		
     }
+	
 	function reporteEgresos(){
 			
 		$nombreArchivo = uniqid(md5(session_id()).'Egresos') . '.pdf'; 
@@ -342,6 +344,58 @@ class ACTMovimiento extends ACTbase{
 		$this->mensajeExito->imprimirRespuesta($this->mensajeExito->generarJson());
 		
 	}
+	
+	
+
+
+	 
+   function recuperarDatosCoelectas(){
+    	
+		$this->objFunc = $this->create('MODMovimiento');
+		$cbteHeader = $this->objFunc->listarColectasMes($this->objParam);
+		if($cbteHeader->getTipo() == 'EXITO'){
+				
+			return $cbteHeader;
+		}
+        else{
+		    $cbteHeader->imprimirRespuesta($cbteHeader->generarJson());
+			exit;
+		}              
+		
+    }
+
+    function reporteColectas(){
+			
+		$nombreArchivo = uniqid(md5(session_id()).'Egresos') . '.pdf'; 
+		$dataSource = $this->recuperarDatosCoelectas();	
+		
+		
+		//parametros basicos
+		$tamano = 'LETTER';
+		$orientacion = 'P';
+		$titulo = 'Colectas';
+		
+		$this->objParam->addParametro('orientacion',$orientacion);
+		$this->objParam->addParametro('tamano',$tamano);		
+		$this->objParam->addParametro('titulo_archivo',$titulo);	
+        
+		$this->objParam->addParametro('nombre_archivo',$nombreArchivo);
+		//Instancia la clase de pdf
+		
+		$reporte = new RColectas($this->objParam);
+		$reporte->datosHeader($dataSource->getDatos(),  $dataSource->extraData);
+		//$this->objReporteFormato->renderDatos($this->res2->datos);
+		
+		$reporte->generarReporte();
+		$reporte->output($reporte->url_archivo,'F');
+		
+		$this->mensajeExito=new Mensaje();
+		$this->mensajeExito->setMensaje('EXITO','Reporte.php','Reporte generado','Se generó con éxito el reporte: '.$nombreArchivo,'control');
+		$this->mensajeExito->setArchivoGenerado($nombreArchivo);
+		$this->mensajeExito->imprimirRespuesta($this->mensajeExito->generarJson());
+		
+	}
+
 	
 		
 	

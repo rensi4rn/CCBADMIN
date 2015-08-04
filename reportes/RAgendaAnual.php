@@ -37,7 +37,7 @@ class RAgendaAnual extends  ReportePDF {
 	
 	function Header() {
 		
-		$titulo = 'COONGREGACIÓN CRISTIANA EN BOLIVIA';
+		$titulo = 'CONGREGACIÓN CRISTIANA EN BOLIVIA';
 		$titulo2 = 'Del '.$this->desde.' al '.$this->hasta;	
 			
 		//cabecera del reporte

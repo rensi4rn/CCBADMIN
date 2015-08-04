@@ -6,9 +6,9 @@
 *@date 13-01-2013 14:31:26
 *@description Clase que recibe los parametros enviados por la vista para mandar a la capa de Modelo
 */
+require_once(dirname(__FILE__).'/../../pxp/pxpReport/DataSource.php');
 require_once(dirname(__FILE__).'/../reportes/RAgenda.php');
 require_once(dirname(__FILE__).'/../reportes/RAgendaAnual.php');
-require_once(dirname(__FILE__).'/../../pxp/pxpReport/DataSource.php');
 class ACTRegionEvento extends ACTbase{    
 			
 	function listarRegionEvento(){

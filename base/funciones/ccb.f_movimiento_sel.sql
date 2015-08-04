@@ -633,6 +633,142 @@ BEGIN
 			return v_consulta;
 
 		end;
+    
+    /*********************************    
+ 	#TRANSACCION:  'CCB_INFCOLMES_SEL'
+ 	#DESCRIPCION:	Reporte ingresos por colecta mensual
+ 	#AUTOR:		admin	
+ 	#FECHA:		25-10-2015 00:22:36
+	***********************************/
+
+	elsif(p_transaccion='CCB_INFCOLMES_SEL')then
+     				
+    	begin
+        
+            select 
+                ep.estado_periodo,
+                ep.id_estado_periodo,
+                ep.fecha_ini,
+                ges.id_gestion,
+                ep.mes,
+                ges.gestion
+              into
+                g_registros
+              from ccb.testado_periodo ep 
+              inner join ccb.tgestion ges on ges.id_gestion = ep.id_gestion
+              where ep.id_casa_oracion = v_parametros.id_casa_oracion
+                   and  v_parametros.fecha::date BETWEEN  ep.fecha_ini::date and ep.fecha_fin::dATE;
+                   
+            IF g_registros.id_estado_periodo is NULL THEN
+              raise exception 'No se encontro un periodo para la fecha indicada %',v_parametros.fecha; 
+            END IF;
+        
+        
+            --Sentencia de la consulta
+			v_consulta:='SELECT 
+                              mov.id_movimiento,
+                              mov.estado_reg,
+                              mov.tipo,
+                              mov.id_casa_oracion,
+                              mov.concepto,
+                              mov.obs,
+                              mov.fecha,
+                              mov.id_estado_periodo,
+                              mov.fecha_reg,
+                              mov.id_usuario_reg,
+                              mov.fecha_mod,
+                              mov.id_usuario_mod,
+                              mov.usr_reg,
+                              mov.usr_mod,
+                              mov.id_tipo_movimiento_mantenimiento,
+                              mov.id_movimiento_det_mantenimiento,
+                              mov.monto_mantenimiento,
+                              mov.id_tipo_movimiento_especial,
+                              mov.id_movimiento_det_especial,
+                              mov.monto_especial,
+                              mov.id_tipo_movimiento_piedad,
+                              mov.id_movimiento_det_piedad,
+                              mov.monto_piedad,
+                              mov.id_tipo_movimiento_construccion,
+                              mov.id_movimiento_det_construccion,
+                              mov.monto_construccion,
+                              mov.id_tipo_movimiento_viaje,
+                              mov.id_movimiento_det_viaje,
+                              mov.monto_viaje,
+                              mov.monto_dia,
+                              mov.id_obrero,
+                              mov.desc_obrero,
+                              mov.estado,
+                              mov.desc_casa_oracion,
+                              mov.mes,
+                              mov.estado_periodo,
+                              mov.id_gestion,
+                              mov.gestion,
+                              mov.id_ot,
+                              mov.id_tipo_movimiento_ot,
+                              mov.nombre_tipo_mov_ot,
+                              COALESCE(mov.desc_orden,'''') as desc_orden,                              
+                              tc.descripcion as desc_concepto
+                            FROM 
+                                     ccb.vmovimiento_ingreso  mov
+                              inner join ccb.ttipo_concepto tc on tc.codigo = mov.concepto
+                          WHERE      mov.concepto in (''colecta_jovenes'',''colecta_adultos'')  
+                                and  mov.id_estado_periodo = '||g_registros.id_estado_periodo::varchar;
+			
+			--Definicion de la respuesta
+			
+			v_consulta:=v_consulta||'  order by tc.prioridad ASC, mov.fecha ASC';
+           
+			--Devuelve la respuesta
+			return v_consulta;
+						
+		end;
+    
+    /*********************************    
+ 	#TRANSACCION:  'CCB_INFCOLMES_CONT'
+ 	#DESCRIPCION:	Conteo de registros de colectas
+ 	#AUTOR:		admin	
+ 	#FECHA:		16-03-2013 00:22:36
+	***********************************/
+
+	elsif(p_transaccion='CCB_INFCOLMES_CONT')then
+
+		begin
+            select 
+                ep.estado_periodo,
+                ep.id_estado_periodo,
+                ep.fecha_ini,
+                ges.id_gestion,
+                ep.mes,
+                ges.gestion
+              into
+                g_registros
+              from ccb.testado_periodo ep 
+              inner join ccb.tgestion ges on ges.id_gestion = ep.id_gestion
+              where ep.id_casa_oracion = v_parametros.id_casa_oracion
+                   and  v_parametros.fecha::date BETWEEN  ep.fecha_ini::date and ep.fecha_fin::dATE;
+                   
+            IF g_registros.id_estado_periodo is NULL THEN
+              raise exception 'No se encontro un periodo para la fecha indicada %',v_parametros.fecha; 
+            END IF;
+            
+			--Sentencia de la consulta de conteo de registros
+			v_consulta:='select 
+                          count(mov.id_movimiento),
+                          '''||g_registros.mes||'''::varchar as mes,
+                          '''||g_registros.gestion||'''::varchar as gestion
+                         FROM ccb.vmovimiento_ingreso  mov
+                             inner join ccb.ttipo_concepto tc on tc.codigo = mov.concepto
+                         WHERE       mov.concepto in (''colecta_jovenes'',''colecta_adultos'')  
+                                and  mov.id_estado_periodo = '||g_registros.id_estado_periodo::varchar;
+			
+			--Definicion de la respuesta		    
+			raise notice '%',v_consulta;
+			--Devuelve la respuesta
+			return v_consulta;
+
+		end;
+    
     else
 					     
 		raise exception 'Transaccion inexistente';

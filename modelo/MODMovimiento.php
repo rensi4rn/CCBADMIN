@@ -518,6 +518,76 @@ class MODMovimiento extends MODbase{
 		//Devuelve la respuesta
 		return $this->respuesta;
 	}
+
+
+    function listarColectasMes(){
+		//Definicion de variables para ejecucion del procedimiento
+		$this->procedimiento='ccb.f_movimiento_sel';
+		$this->transaccion='CCB_INFCOLMES_SEL';
+		$this->tipo_procedimiento='SEL';
+		
+		//Define los parametros para la funcion
+		$this->setParametro('fecha','fecha','date');
+		$this->setParametro('id_casa_oracion','id_casa_oracion','int4');
+		//captura parametros adicionales para el count
+		$this->capturaCount('mes','varchar');
+		$this->capturaCount('gestion','varchar');
+		
+		//Definicion de la lista del resultado del query
+		
+		
+		  $this->captura('id_movimiento','INTEGER');
+		  $this->captura('estado_reg','VARCHAR(10)');
+		  $this->captura('tipo','VARCHAR');
+		  $this->captura('id_casa_oracion','INTEGER');
+		  $this->captura('concepto','VARCHAR');
+		  $this->captura('obs','TEXT');
+		  $this->captura('fecha','DATE');
+		  $this->captura('id_estado_periodo','INTEGER');
+		  $this->captura('fecha_reg','TIMESTAMP');
+		  $this->captura('id_usuario_reg','INTEGER');
+		  $this->captura('fecha_mod','TIMESTAMP');
+		  $this->captura('id_usuario_mod','INTEGER');
+		  $this->captura('usr_reg','VARCHAR');
+		  $this->captura('usr_mod','VARCHAR');
+		  $this->captura('id_tipo_movimiento_mantenimiento','INTEGER');
+		  $this->captura('id_movimiento_det_mantenimiento','INTEGER');
+		  $this->captura('monto_mantenimiento','NUMERIC');
+		  $this->captura('id_tipo_movimiento_especial','INTEGER');
+		  $this->captura('id_movimiento_det_especial','INTEGER');
+		  $this->captura('monto_especial','NUMERIC');
+		  $this->captura('id_tipo_movimiento_piedad','INTEGER');
+		  $this->captura('id_movimiento_det_piedad','INTEGER');
+		  $this->captura('monto_piedad','NUMERIC');
+		  $this->captura('id_tipo_movimiento_construccion','INTEGER');
+		  $this->captura('id_movimiento_det_construccion','INTEGER');
+		  $this->captura('monto_construccion','NUMERIC');
+		  $this->captura('id_tipo_movimiento_viaje','INTEGER');
+		  $this->captura('id_movimiento_det_viaje','INTEGER');
+		  $this->captura('monto_viaje','NUMERIC');
+		  $this->captura('monto_dia','NUMERIC');
+		  $this->captura('id_obrero','INTEGER');
+		  $this->captura('desc_obrero','TEXT');
+		  $this->captura('estado','VARCHAR');
+		  $this->captura('desc_casa_oracion','VARCHAR');
+		  $this->captura('mes','VARCHAR');
+		  $this->captura('estado_periodo','VARCHAR');
+		  $this->captura('id_gestion','INTEGER');
+		  $this->captura('gestion','VARCHAR');
+		  $this->captura('id_ot','INTEGER');
+		  $this->captura('id_tipo_movimiento_ot','INTEGER');
+		  $this->captura('nombre_tipo_mov_ot','VARCHAR');
+		  $this->captura('desc_orden','VARCHAR');
+		  $this->captura('desc_concepto','VARCHAR');
+		
+
+		//Ejecuta la instruccion
+		$this->armarConsulta();
+		$this->ejecutarConsulta();
+
+		//Devuelve la respuesta
+		return $this->respuesta;
+	}
 	 
 	 
 	 

@@ -24,11 +24,15 @@ class RAgenda extends  ReportePDF {
 		
 		$this->SetMargins(5, 20, 10);
 		
+		
+		
 	}
 	
 	function Header() {
 		
-		$titulo = 'COONGREGACIÓN CRISTIANA EN BOLIVIA';
+		//$this->Image(dirname(__FILE__).'/../../lib/imagenes/logos/logo.png', 10,5,45,20);
+		
+		$titulo = 'CONGREGACIÓN CRISTIANA EN BOLIVIA';
 		$titulo2 = 'Del '.$this->desde.' al '.$this->hasta;	
 			
 		//cabecera del reporte

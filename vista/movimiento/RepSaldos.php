@@ -359,12 +359,12 @@ Phx.vista.RepSaldos=Ext.extend(Phx.frmInterfaz,{
 						Egresos contra rendición: {7}</br>\
 						Rendiciones: {8}</br>\
 						Egresos por Traspaso: {9}</br></br>\
-						<b>Egreso Efectivo = (Egresos por operación) + (Rendiciones)</b></br>\
-						Egreso Efectivo: {10}</br></br>\
+						Egreso Efectivo = (Egresos por operación) + (Rendiciones)</br>\
+						<b>Egreso Efectivo: {10}</br></b></br>\
 						Saldo en efectivo =  (Ingreso Total) - (Egreso Efectivo) - (Egresos por Traspaso)</br>\
 						Saldo en efectivo: {11}</br></br>\
 						Saldo en la administración =  (Ingreso Total)  - (Egresos por Traspaso) - (Egresos por operación) - (Egresos contra rendición)</br>\
-						Saldo en la administración: {12}</br></br>\
+						<b>Saldo en la administración: {12}</b></br></br>\
 						Saldo por Rendir =  (Egresos inicial por rendir) + (Egresos contra rendición)  - (Rendiciones)</br>\
 						Saldo por Rendir: {13}</br></br></div>";
        
