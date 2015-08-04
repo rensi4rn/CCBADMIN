@@ -664,7 +664,6 @@ select pxp.f_insert_testructura_gui ('RCCO', 'RCCCB');
 
 
 select pxp.f_insert_tgui ('Tipo de Movimiento', 'Tipos de Movimiento', 'RCTM', 'si', 2, 'sis_admin/vista/cta_tipo_movimiento/CtaTipoMovimiento.php', 3, '', 'CtaTipoMovimiento', 'CCB');
-
 select pxp.f_insert_testructura_gui ('RCTM', 'RCCCB');
 
 

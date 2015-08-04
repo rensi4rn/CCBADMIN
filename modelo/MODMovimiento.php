@@ -508,6 +508,8 @@ class MODMovimiento extends MODbase{
 		$this->captura('desc_orden','varchar');
 		$this->captura('id_concepto_ingas','integer');
 		$this->captura('desc_ingas','varchar');
+		$this->captura('desc_concepto','varchar');
+		
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();

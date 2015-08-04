@@ -714,3 +714,24 @@ IS 'la prioridad menor es las mas importante';
 
 /***********************************F-SCP-RAC-CCB-2-16/08/2015****************************************/
 
+
+
+/***********************************I-SCP-RAC-CCB-2-04/10/2015****************************************/
+
+--------------- SQL ---------------
+
+CREATE TABLE ccb.ttipo_concepto (
+  id_tipo_concepto SERIAL NOT NULL,
+  codigo VARCHAR(40) NOT NULL UNIQUE,
+  descripcion VARCHAR,
+  prioridad INTEGER NOT NULL,
+  PRIMARY KEY(id_tipo_concepto)
+) INHERITS (pxp.tbase)
+;
+
+ALTER TABLE ccb.ttipo_concepto
+  ALTER COLUMN descripcion SET STATISTICS 0;
+  
+
+/***********************************F-SCP-RAC-CCB-2-04/10/2015****************************************/
+

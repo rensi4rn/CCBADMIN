@@ -573,14 +573,16 @@ BEGIN
                               mov.id_ot,
                               COALESCE(mov.desc_orden,'''') as desc_orden,
                               mov.id_concepto_ingas,
-                              COALESCE(mov.desc_ingas,'''') as desc_ingas
+                              COALESCE(mov.desc_ingas,'''') as desc_ingas,
+                              tc.descripcion as desc_concepto
                             FROM 
-                              ccb.vmovimiento_egreso  mov 
+                              ccb.vmovimiento_egreso  mov
+                             inner join ccb.ttipo_concepto tc on tc.codigo = mov.concepto
                           WHERE mov.id_estado_periodo = '||g_registros.id_estado_periodo::varchar;
 			
 			--Definicion de la respuesta
 			
-			v_consulta:=v_consulta||' order by mov.fecha asc';
+			v_consulta:=v_consulta||'  order by tc.prioridad, mov.fecha DESC, mov.id_movimiento_det desc';
            
 			--Devuelve la respuesta
 			return v_consulta;

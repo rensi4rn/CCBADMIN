@@ -38,13 +38,7 @@ Phx.vista.MovimientoEgreso=Ext.extend(Phx.gridInterfaz,{
 		   if(this.validarFiltros()){
 		          this.capturaFiltros();
 		   }
-		    
-		    
-		    
 		},this);
-		
-		
-		
 		
 		
 		
@@ -71,6 +65,8 @@ Phx.vista.MovimientoEgreso=Ext.extend(Phx.gridInterfaz,{
            this.capturaFiltros();
            this.fecha_min = dat.data.fecha_ini;
            this.fecha_max = dat.data.fecha_fin;
+           this.getComponente('fecha').setMinValue(this.fecha_min);
+           this.getComponente('fecha').setMaxValue(this.fecha_max);
          },this);
          
          
@@ -122,8 +118,7 @@ Phx.vista.MovimientoEgreso=Ext.extend(Phx.gridInterfaz,{
                 ['recibo_sin_retencion', 'Recibo sin retención']
       ],
 	documentoContraRendicion: [
-                ['recibo_piedad', 'Recibo de Piedad'],
-                ['recibo', 'Recibo Especial']
+                ['recibo', 'Recibo por rendir']
       ],
 	documentoTrapaso: [
                 ['recibo', 'Recibo de trapaso']
@@ -204,8 +199,7 @@ Phx.vista.MovimientoEgreso=Ext.extend(Phx.gridInterfaz,{
         }
          else{
               Phx.vista.MovimientoEgreso.superclass.onButtonEdit.call(this);
-              this.getComponente('fecha').setMinValue(this.fecha_min);
-              this.getComponente('fecha').setMaxValue(this.fecha_max);
+              
               
               if(this.Cmp.concepto.getValue() == 'operacion'){
 		   	  	this.mostrarComponente(this.Cmp.id_concepto_ingas)
@@ -415,6 +409,7 @@ Phx.vista.MovimientoEgreso=Ext.extend(Phx.gridInterfaz,{
                     renderer:function (value, p, record){
                         var dato='';
                         dato = (dato==''&&value=='colecta_adultos')?'Colecta de Adultos':dato;
+                        dato = (dato==''&&value=='contra_rendicion')?'Contra Rendición':dato;
                         dato = (dato==''&&value=='colecta_jovenes')?'Colecta de Jovenes':dato;
                         dato = (dato==''&&value=='colecta_especial')?'Colecta Especial':dato;
                         dato = (dato==''&&value=='colecta_especial')?'Colecta Especial':dato;
@@ -475,6 +470,7 @@ Phx.vista.MovimientoEgreso=Ext.extend(Phx.gridInterfaz,{
                 minChars:2
             },
             type:'ComboBox',
+            bottom_filter: true,
             filters:{pfiltro:'mov.desc_tipo_movimiento',type:'string'},
             id_grupo:1,
             grid:true,

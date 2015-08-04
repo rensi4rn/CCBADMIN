@@ -13,7 +13,7 @@ header("content-type: text/javascript; charset=UTF-8");
 Phx.vista.MovimientoIngreso=Ext.extend(Phx.gridInterfaz,{
 
 	constructor: function(config){
-	    
+	   
 		this.maestro=config.maestro;
 		this.initButtons=[this.cmbTipo,this.cmbCasaOracion,this.cmbGestion,this.cmbEstadoPeriodo];
     	//llama al constructor de la clase padre
@@ -66,6 +66,8 @@ Phx.vista.MovimientoIngreso=Ext.extend(Phx.gridInterfaz,{
            this.capturaFiltros();
            this.fecha_min = dat.data.fecha_ini;
            this.fecha_max = dat.data.fecha_fin;
+           this.getComponente('fecha').setMinValue(this.fecha_min);
+           this.getComponente('fecha').setMaxValue(this.fecha_max);
          },this);
          
          this.iniciarEventos();
@@ -139,14 +141,14 @@ Phx.vista.MovimientoIngreso=Ext.extend(Phx.gridInterfaz,{
     },
     onButtonEdit:function(){
         
-        
+       
          if(!this.validarFiltros()){
              alert('Especifique los filtros antes');
         }
          else{
               Phx.vista.MovimientoIngreso.superclass.onButtonEdit.call(this);
-              this.getComponente('fecha').setMinValue(this.fecha_min);
-              this.getComponente('fecha').setMaxValue(this.fecha_max);
+              console.log('fechas .....  ', this.fecha_min, this.fecha_max)
+              
              
 		   	  if(this.Cmp.id_ot.getValue()){
 		   	  	this.mostrarComponente(this.Cmp.id_tipo_movimiento_ot)

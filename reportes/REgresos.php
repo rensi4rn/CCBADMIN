@@ -14,6 +14,7 @@ class REgresos extends  ReportePDF {
 		$this->ancho_hoja = $this->getPageWidth()-PDF_MARGIN_LEFT-PDF_MARGIN_RIGHT-10;
 		$this->datos_detalle = $detalle;
 		$this->datos_titulo = $totales;
+		$this->subtotal = 0;
 		$this->SetMargins(5, 22.5, 5);
 	}
 	
@@ -23,7 +24,7 @@ class REgresos extends  ReportePDF {
 		$this->ln(5);
 		$this->SetFont('','BU',12);
 		
-		$this->Cell(0,5,"Egresos del Mes de ".$this->datos_titulo['mes']." de ".$this->datos_titulo['gestion'],0,1,'C');
+		$this->Cell(0,5,"Egresos y Rendiciones del Mes de ".$this->datos_titulo['mes']." de ".$this->datos_titulo['gestion'],0,1,'C');
 		$this->Ln(1);
 		$this->Cell(0,5,"Casa de Oración: ".$this->datos_detalle[0]['desc_casa_oracion'],0,1,'C');
 		
@@ -35,11 +36,52 @@ class REgresos extends  ReportePDF {
 		
 		
    }
-	function generarReporte() {
+   
+   function generarReporte() {
 		$this->setFontSubsetting(false);
 		$this->AddPage();
 		
 		
+		$sw = false;
+		$concepto = '';
+		foreach ($this->datos_detalle as $val) {
+			
+			
+			if ($concepto != $val['concepto']){
+				
+				if($sw){
+				    $this->cerrarCuadro();
+					$this->Ln(1);
+				}
+			   $sw = true;	
+			   $this->subtotal = 0;
+			   $concepto = $val['concepto'];
+			   $this->generarCabecera($val['desc_concepto'],  $val['desc_obrero']);
+			}
+			
+			$this->generarCuerpo($val);
+			$this->subtotal = $this->subtotal + $val['monto'];
+			
+		}
+		
+		$this->cerrarCuadro();
+		
+		
+	} 
+
+    function generarCabecera($titulo, $obrero){
+    	
+		
+		//definir subtitulo
+		$this->tablewidths=array(20+ 25 + 90 +25 +15 +15 +10);
+        $this->tablealigns=array('L');
+        $this->tablenumbers=array(0);
+        $this->tableborders=array();
+        $this->tabletextcolor=array();
+		$RowArray = array('tipo_concepto'=> $titulo);
+		$this-> MultiRow($RowArray,false,1);
+		
+		//armca caecera de la tabla
 		$conf_par_tablewidths=array(20,25,90,25,15,15,10);
         $conf_par_tablealigns=array('C','C','C','C','C','C','C');
         $conf_par_tablenumbers=array(0,0,0,0,0,0,0);
@@ -62,11 +104,15 @@ class REgresos extends  ReportePDF {
 						'rev'=>'Rev');
                          
         $this-> MultiRow($RowArray,false,1);
+    }
+	
+	function generarCuerpo($val){
 		
 		
 		
+		$conf_par_tablewidths=array(20,25,90,25,15,15,10);
 		$conf_par_tablealigns=array('L','L','L','R','L','R','R');
-		 $conf_par_tablenumbers=array(0,0,0,2,0,0,0);
+		$conf_par_tablenumbers=array(0,0,0,2,0,0,0);
 		$this->tablewidths=$conf_par_tablewidths;
         $this->tablealigns=$conf_par_tablealigns;
         $this->tablenumbers=$conf_par_tablenumbers;
@@ -74,33 +120,21 @@ class REgresos extends  ReportePDF {
         $this->tabletextcolor=$conf_tabletextcolor;
 		//configuracion de la tabla
 		$this->SetFont('','',9);
-        
-		        
-        foreach ($this->datos_detalle as $val) {
-        	
-			//define formato tipo de recibo
-			if($val['tipo_documento'] == 'recibo_sin_retencion'){
-				$tipo = 'Recibo s/r';
-			}
-			else{
-				if($val['tipo_documento'] == 'factura'){
-				   $tipo = 'Factura';
-			    }
-				else{
-				   if($val['tipo_documento'] == 'recibo_piedad'){
-				        $tipo = 'Rec Piedad';
-				    }
-					else{
-					   $tipo = $val['tipo_documento'];	
-					}
-			     }	
-			}  
-			//formato de fecha
-			$newDate = date("d-m-Y", strtotime($val['fecha']));
-			
-		    $obs = trim($val['obs']).'
-		    ('. $val['desc_ingas'].')';
-			$RowArray = array(
+        //define formato tipo de recibo
+		$tipo = $this->getTipoDoc($val['tipo_documento']);	
+		//formato de fecha
+		$newDate = date("d-m-Y", strtotime($val['fecha']));
+		
+		if( isset($val['desc_ingas']) && $val['desc_ingas'] != ''){
+			$obs = trim($val['obs']).'
+		       ('.trim($val['desc_ingas']).')';
+		}
+		else{
+			$obs = trim($val['obs']);
+		}
+		
+		
+		$RowArray = array(
             			'fecha'  => $newDate,
                         'conlecta'  => $val['desc_tipo_movimiento'] ,                        
                         'obs'    => $obs,
@@ -109,30 +143,58 @@ class REgresos extends  ReportePDF {
                         'num_doc' => $val['num_documento'],
 						'rec' => '');
                          
-            
-			$this-> MultiRow($RowArray,false,1);
+        $this-> MultiRow($RowArray,false,1);
 			
-			
+	}
+
+
+  function cerrarCuadro(){
+  	
+	   if($inicio != 'si'){
+	   	    //si noes inicio termina el cuardro anterior
+	   	    $conf_tp_tablewidths=array(20 +25 + 90,25);
+	        $conf_tp_tablealigns=array('R','R');
+	        $conf_tp_tablenumbers=array(0,2);
+	        $conf_tp_tableborders=array(0,1);
+			//coloca el total de egresos
+			//coloca el total de la partida 
+	        $this->tablewidths=$conf_tp_tablewidths;
+	        $this->tablealigns=$conf_tp_tablealigns;
+	        $this->tablenumbers=$conf_tp_tablenumbers;
+	        $this->tableborders=$conf_tp_tableborders;
+	        
+	        $RowArray = array( 
+	                    'espacio' => 'Total: ',
+	                    'precio_total' => $this->subtotal
+	                  );     
+	                     
+	        $this-> MultiRow($RowArray,false,1);
+	   }
+	   
+	   
+	
+  }
+
+  function getTipoDoc($tipo_documento){
+        if($tipo_documento == 'recibo_sin_retencion'){
+			$tipo = 'Recibo s/r';
 		}
+		else{
+			if($tipo_documento == 'factura'){
+			   $tipo = 'Factura';
+		    }
+			else{
+			   if($tipo_documento == 'recibo_piedad'){
+			        $tipo = 'Rec Piedad';
+			    }
+				else{
+				   $tipo = $val['tipo_documento'];	
+				}
+		     }	
+		} 
 		
-		$conf_tp_tablewidths=array(20 +25 + 90,25);
-        $conf_tp_tablealigns=array('R','R');
-        $conf_tp_tablenumbers=array(0,2);
-        $conf_tp_tableborders=array(0,1);
-		//coloca el total de egresos
-		//coloca el total de la partida 
-        $this->tablewidths=$conf_tp_tablewidths;
-        $this->tablealigns=$conf_tp_tablealigns;
-        $this->tablenumbers=$conf_tp_tablenumbers;
-        $this->tableborders=$conf_tp_tableborders;
-        
-        $RowArray = array( 
-                    'espacio' => 'Total: ',
-                    'precio_total' => $this->datos_titulo['total_monto']
-                  );     
-                     
-        $this-> MultiRow($RowArray,false,1);	
-	} 
+		return $tipo;
+  }
 }
 ?>
 

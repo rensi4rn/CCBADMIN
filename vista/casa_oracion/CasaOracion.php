@@ -68,6 +68,7 @@ Phx.vista.CasaOracion=Ext.extend(Phx.gridInterfaz,{
 				renderer:function (value, p, record){return String.format('{0}', record.data['desc_region']);}
 			},
 			type:'ComboBox',
+			bottom_filter: true,
 			filters:{pfiltro:'reg.nombre',type:'string'},
 			id_grupo:1,
 			grid:true,
@@ -84,6 +85,7 @@ Phx.vista.CasaOracion=Ext.extend(Phx.gridInterfaz,{
 				maxLength:255
 			},
 			type:'TextField',
+			bottom_filter: true,
 			filters:{pfiltro:'caor.codigo',type:'string'},
 			id_grupo:1,
 			grid:true,
@@ -100,6 +102,7 @@ Phx.vista.CasaOracion=Ext.extend(Phx.gridInterfaz,{
 				maxLength:255
 			},
 			type:'TextField',
+			bottom_filter: true,
 			filters:{pfiltro:'caor.nombre',type:'string'},
 			id_grupo:1,
 			grid:true,
@@ -115,6 +118,7 @@ Phx.vista.CasaOracion=Ext.extend(Phx.gridInterfaz,{
 				maxLength:500
 			},
 			type:'TextArea',
+			bottom_filter: true,
 			filters:{pfiltro:'caor.direccion',type:'string'},
 			id_grupo:1,
 			grid:true,
@@ -157,6 +161,7 @@ Phx.vista.CasaOracion=Ext.extend(Phx.gridInterfaz,{
 				renderer:function (value, p, record){return String.format('{0}', record.data['desc_lugar']);}
 			},
 			type:'ComboBox',
+			bottom_filter: true,
 			filters:{pfiltro:'lug.nombre',type:'string'},
 			id_grupo:1,
 			grid:true,
