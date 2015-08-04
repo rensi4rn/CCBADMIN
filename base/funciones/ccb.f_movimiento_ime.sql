@@ -1390,7 +1390,7 @@ BEGIN
             v_resp = pxp.f_agrega_clave(v_resp,'v_ing_traspasos_especial',v_ing_traspasos_especial::varchar);
             v_resp = pxp.f_agrega_clave(v_resp,'v_ing_traspasos_mantenimiento',v_ing_traspasos_mantenimiento::varchar);
            
-            v_resp = pxp.f_agrega_clave(v_resp,'v_total_ing_devolucion',v_total_ing_traspasos::varchar);
+            v_resp = pxp.f_agrega_clave(v_resp,'v_total_ing_devolucion',v_total_ing_devolucion::varchar);
             v_resp = pxp.f_agrega_clave(v_resp,'v_ing_devolucion_construccion',v_ing_devolucion_construccion::varchar);
             v_resp = pxp.f_agrega_clave(v_resp,'v_ing_devolucion_piedad',v_ing_devolucion_piedad::varchar);
             v_resp = pxp.f_agrega_clave(v_resp,'v_ing_devolucion_viaje',v_ing_devolucion_viaje::varchar);
