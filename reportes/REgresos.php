@@ -35,6 +35,7 @@ class REgresos extends  ReportePDF {
 		
 		
 		
+		
    }
    
    function generarReporte() {
@@ -73,6 +74,7 @@ class REgresos extends  ReportePDF {
     	
 		
 		//definir subtitulo
+		$this->SetFont('','B',10);
 		$this->tablewidths=array(20+ 25 + 90 +25 +15 +15 +10);
         $this->tablealigns=array('L');
         $this->tablenumbers=array(0);
