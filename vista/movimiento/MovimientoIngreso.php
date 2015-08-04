@@ -147,10 +147,7 @@ Phx.vista.MovimientoIngreso=Ext.extend(Phx.gridInterfaz,{
         }
          else{
               Phx.vista.MovimientoIngreso.superclass.onButtonEdit.call(this);
-              console.log('fechas .....  ', this.fecha_min, this.fecha_max)
-              
-             
-		   	  if(this.Cmp.id_ot.getValue()){
+              if(this.Cmp.id_ot.getValue()){
 		   	  	this.mostrarComponente(this.Cmp.id_tipo_movimiento_ot)
 		   	  	this.Cmp.id_tipo_movimiento_ot.allowBlank = false;
 		   	  }
@@ -348,6 +345,7 @@ Phx.vista.MovimientoIngreso=Ext.extend(Phx.gridInterfaz,{
                         dato = (dato==''&&value=='reunion_juventud')?'Reunión de Juventud':dato;
                         dato = (dato==''&&value=='colecta_especial')?'Colecta Especial':dato;
                         dato = (dato==''&&value=='saldo_inicial')?'Saldo Inicial':dato;
+                        dato = (dato==''&&value=='devolucion')?'Devolución de Saldo':dato;
                         dato = (dato==''&&value=='ingreso_trapaso')?'Ingreso por Trapaso':dato;
                         dato = (dato==''&&value=='operacion')?'Operacion':dato;
                         dato = (dato==''&&value=='egreso_traspaso')?'Egreso por Traspaso':dato;
@@ -946,7 +944,8 @@ Phx.vista.MovimientoIngreso=Ext.extend(Phx.gridInterfaz,{
                 ['reunion_juventud', 'Reunión de Juventud'],
                 ['colecta_especial', 'Colecta Especial'],
                 ['saldo_inicial', 'Saldo Inicial'],
-                ['ingreso_trapaso', 'Ingreso por Trapaso']
+                ['ingreso_trapaso', 'Ingreso por Trapaso'],
+                ['devolucion', 'Devolución de Saldo']
         
         ] ,
     dataEgreso : [

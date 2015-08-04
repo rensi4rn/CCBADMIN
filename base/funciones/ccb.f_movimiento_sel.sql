@@ -582,7 +582,7 @@ BEGIN
 			
 			--Definicion de la respuesta
 			
-			v_consulta:=v_consulta||'  order by tc.prioridad, mov.fecha DESC, mov.id_movimiento_det desc';
+			v_consulta:=v_consulta||'  order by tc.prioridad ASC, mov.fecha ASC, mov.id_movimiento_det desc';
            
 			--Devuelve la respuesta
 			return v_consulta;

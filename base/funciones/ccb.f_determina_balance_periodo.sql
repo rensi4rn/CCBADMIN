@@ -34,6 +34,8 @@ DECLARE
   
 BEGIN
 
+   
+
     v_nombre_funcion:='ccb.f_determina_balance_periodo';
     v_filtro = ' 0=0';
      v_sw = FALSE;
@@ -135,9 +137,10 @@ BEGIN
                           where      mov.id_estado_periodo = '||p_id_estado_periodo::varchar||' ';
     
     
-    
     IF p_codigo_balance = 'ingreso_traspasos' then      
           v_consulta = v_consulta_ingreso ||' and ' ||v_filtro||'  and mov.concepto = ''ingreso_trapaso'' ';
+    ELSIF p_codigo_balance = 'devolucion' then      
+          v_consulta = v_consulta_ingreso ||' and ' ||v_filtro||'  and mov.concepto = ''devolucion'' ';
     ELSIF p_codigo_balance = 'ingreso_colectas' then
 	      v_consulta = v_consulta_ingreso ||' and ' ||v_filtro||'  and mov.concepto in(''colecta_adultos'',''colecta_jovenes'',''colecta_especial'',''reunion_juventud'',''reunion_miniterio'') ';
     ELSIF p_codigo_balance = 'ingreso_inicial' then
@@ -152,6 +155,8 @@ BEGIN
           v_consulta = v_consulta_egreso ||' and ' ||v_filtro||'  and mov.concepto in(''rendicion'') ';
     ELSIF p_codigo_balance = 'egreso_inicial_por_rendir' then
           v_consulta = v_consulta_egreso ||' and ' ||v_filtro||'  and mov.concepto in(''egreso_inicial_por_rendir'') ';
+    ELSE
+      raise exception 'Concepto no reconocido %', p_codigo_balance;
     END IF;
     
     raise notice '.... % .....', v_consulta;

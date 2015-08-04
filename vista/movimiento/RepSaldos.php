@@ -8,23 +8,43 @@
 */
 header("content-type: text/javascript; charset=UTF-8");
 ?>
-
 <script>
 Phx.vista.RepSaldos=Ext.extend(Phx.frmInterfaz,{
+	autoScroll: true,
     constructor:function(config)
     {   
-    	this.panelResumen = new Ext.Panel({html:'Hola Prueba', autoHeight  : true, layout: 'fit'});
+    	this.panelResumen = new Ext.Panel({  
+    		    padding: '0 0 0 20',
+    		    html: 'Hola Prueba',
+    		    split: true, 
+    		    layout:  'fit' });
+    		    
     	this.Grupos = [{
 
 	                    xtype: 'fieldset',
-	                    border: false,
-	                    autoScroll: true,
-	                    layout: 'form',
-	                    items: [],
-	                    id_grupo: 0
+	                        border: false,
+	                        layout: 'column',
+	                        region: 'north',
+	                        collapseFirst : false,
+	                        width: '100%',
+	                    items: [
+			                    {
+		
+			                    xtype: 'fieldset',
+			                    border: false,
+			                    collapsible: true,
+			                    autoScroll: true,
+			                    layout: 'form',
+			                    padding: '0 20 0 10',
+			                    split: true,
+			                    items: [],
+			                    id_grupo: 0
+						      },
+						      this.panelResumen
+	                    
+	                    ]
 				               
-				    },
-				     this.panelResumen
+				    }
 				    ];
 				    
         Phx.vista.RepSaldos.superclass.constructor.call(this,config);
@@ -327,29 +347,31 @@ Phx.vista.RepSaldos=Ext.extend(Phx.frmInterfaz,{
        } 
        console.log(reg);
        var deco = reg.ROOT.datos,
-       	   plantilla = "<br><br><p> \
+       	   plantilla = "<div style='overflow-y: initial;'><br><b>CUENTA DEL PRIMER DIA DEL AÑO  A LA FECHA SEÑALADA</b><br><p> \
        					Ingreso  Inicial: {0} </br>\
-						Ingreso por colectas: {1}</br>\
-						Ingreso por Traspasos: {2}</br></br>\
-						Ingreso Total =  (Ingreso por Traspasos) + (Ingreso por colectas) + (Ingreso  Inicial)</br>\
-						Ingreso Total: {3}</br></br>\
-						Egresos por operación: {4}</br>\
-						Egresos inicial por rendir: {5}</br>\
-						Egresos contra rendición: {6}</br>\
-						Rendiciones: {7}</br>\
-						Egresos por Traspaso: {8}</br></br>\
-						Egreso Efectivo = (Egresos por operación) + (Rendiciones)</br>\
-						Egreso Efectivo: {9}</br></br>\
+						<b>Ingreso por Colectas: {1}</b></br>\
+						Ingreso por Devolucion: {2}</br>\
+						Ingreso por Traspasos: {3}</br>\
+						Ingreso Total =  (Ingreso por Traspasos) + (Ingreso por colectas) + (Ingreso  Inicial) + (Devoluciones)</br>\
+						Ingreso Total: {4}</br></br>\
+						Egresos por operación: {5}</br>\
+						Egresos inicial por rendir: {6}</br>\
+						Egresos contra rendición: {7}</br>\
+						Rendiciones: {8}</br>\
+						Egresos por Traspaso: {9}</br></br>\
+						<b>Egreso Efectivo = (Egresos por operación) + (Rendiciones)</b></br>\
+						Egreso Efectivo: {10}</br></br>\
 						Saldo en efectivo =  (Ingreso Total) - (Egreso Efectivo) - (Egresos por Traspaso)</br>\
-						Saldo en efectivo: {10}</br></br>\
+						Saldo en efectivo: {11}</br></br>\
 						Saldo en la administración =  (Ingreso Total)  - (Egresos por Traspaso) - (Egresos por operación) - (Egresos contra rendición)</br>\
-						Saldo en la administración: {11}</br></br>\
+						Saldo en la administración: {12}</br></br>\
 						Saldo por Rendir =  (Egresos inicial por rendir) + (Egresos contra rendición)  - (Rendiciones)</br>\
-						Saldo por Rendir: {12}</br></br>";
+						Saldo por Rendir: {13}</br></br></div>";
        
 	   this.panelResumen.update( String.format(plantilla,
 	                                           deco.v_ingreso_inicial, 
 	                                           deco.v_ingreso_colectas,
+	                                           deco.v_ingreso_devolucion,
 	                                           deco.v_ingreso_traspasos,
 	                                           deco.v_ingreso_total,
 	                                           deco.v_egreso_operacion ,

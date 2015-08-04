@@ -58,6 +58,7 @@ DECLARE
     v_fecha_ultimo_anterior			date;
     v_estado_periodo_ant			varchar;
     v_id_estado_periodo_ant			integer;
+    v_ingreso_devolucion			numeric;
   
 BEGIN
 
@@ -76,6 +77,21 @@ BEGIN
                                                                          p_id_obrero, 
                                                                          p_id_tipo_movimiento, 
                                                                          p_id_ot);
+                                                                         
+            
+            
+             -- determinar el ingreso por devolucion     (v_ingreso_devolucion)
+            v_ingreso_devolucion =  ccb.f_determina_balance('devolucion', 
+                                                                         p_id_gestion, 
+                                                                         p_fecha, 
+                                                                         p_id_lugar, 
+                                                                         p_id_casa_oracion, 
+                                                                         p_id_region, 
+                                                                         p_id_obrero, 
+                                                                         p_id_tipo_movimiento, 
+                                                                         p_id_ot);
+                                                                         
+                                                                                                                                      
              
             -- determinar el ingreso po colectas       (v_ingreso_colectas)
             v_ingreso_colectas =  ccb.f_determina_balance('ingreso_colectas', 
@@ -102,7 +118,7 @@ BEGIN
                                                                          
             -- determinar el total ingreso  (v_ingreso_total =  v_ingreso_traspasos + v_ingreso_colectas + v_ingreso_inicial )
             
-            v_ingreso_total =  v_ingreso_traspasos + v_ingreso_colectas + v_ingreso_inicial;
+            v_ingreso_total =  v_ingreso_traspasos + v_ingreso_colectas + v_ingreso_inicial + v_ingreso_devolucion;
             
             
             
@@ -172,8 +188,8 @@ BEGIN
             -- determinar saldo administracion (v_saldo_adm =  v_ingreso_total  - v_egreso_traspaso - v_egreso_operacion - v_egresos_contra_rendicion)
             v_saldo_adm =  v_ingreso_total  - v_egreso_traspaso - v_egreso_operacion - v_egresos_contra_rendicion;
             
-            -- determinar saldo que falta por rendir  (v_sado_x_rendir =  v_egreso_inicial_por_rendir + v_egresos_contra_rendicion  - v_egresos_rendidos )
-            v_sado_x_rendir =  v_egreso_inicial_por_rendir + v_egresos_contra_rendicion  - v_egresos_rendidos;
+            -- determinar saldo que falta por rendir  (v_sado_x_rendir =  v_egreso_inicial_por_rendir + v_egresos_contra_rendicion  - v_egresos_rendidos - v_ingreso_devolucion)
+            v_sado_x_rendir =  v_egreso_inicial_por_rendir + v_egresos_contra_rendicion  - v_egresos_rendidos - v_ingreso_devolucion;
             
             
             
@@ -181,6 +197,9 @@ BEGIN
             v_resp = pxp.f_agrega_clave(v_resp,'mensaje','saldos calculados'); 
             v_resp = pxp.f_agrega_clave(v_resp,'v_ingreso_colectas',v_ingreso_colectas::varchar);
             v_resp = pxp.f_agrega_clave(v_resp,'v_ingreso_traspasos',v_ingreso_traspasos::varchar);
+            v_resp = pxp.f_agrega_clave(v_resp,'v_ingreso_devolucion',v_ingreso_devolucion::varchar);
+           
+            
             v_resp = pxp.f_agrega_clave(v_resp,'v_ingreso_inicial',v_ingreso_inicial::varchar);
             v_resp = pxp.f_agrega_clave(v_resp,'v_ingreso_total',v_ingreso_total::varchar);
             v_resp = pxp.f_agrega_clave(v_resp,'v_egreso_operacion',v_egreso_operacion::varchar);

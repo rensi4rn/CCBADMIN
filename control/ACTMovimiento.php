@@ -281,8 +281,6 @@ class ACTMovimiento extends ACTbase{
 			$pdf->writeHTML($content, true, false, true, false, '');
 			$pdf->AddPage();
 			$pdf->writeHTML($content, true, false, true, false, '');
-			$pdf->AddPage();
-			$pdf->writeHTML($content, true, false, true, false, '');
 			$nombreArchivo = 'IntComprobante.pdf';
 			$pdf->Output(dirname(__FILE__).'/../../reportes_generados/'.$nombreArchivo, 'F');
 			
