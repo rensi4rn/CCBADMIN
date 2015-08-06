@@ -1872,6 +1872,7 @@ BEGIN
             END LOOP;
             
             
+            
             /**********************************************************           
             --  II)  DETERMINAR EGRESOS CONTRA RENCION DEL PERIDO
             ***********************************************************/
@@ -1942,11 +1943,11 @@ BEGIN
             
             --determinar id de los tipos de movimientos ...
            
-            v_saldo_adm_mantenimiento = 0;         
-            v_saldo_adm_piedad = 0;          
-            v_saldo_adm_especial = 0;           
-            v_saldo_adm_viaje = 0;           
-            v_saldo_adm_construccion = 0;
+            v_saldo_act_mantenimiento = 0;         
+            v_saldo_act_piedad = 0;          
+            v_saldo_act_especial = 0;           
+            v_saldo_act_viaje = 0;           
+            v_saldo_act_construccion = 0;
             
              FOR v_registros in (
                              select

@@ -284,7 +284,7 @@ class RCbteRendicion extends  ReportePDF {
 		
 		//var_dump($this->datos_saldos);
 		//exit;
-		$RowArray = array('tipo_concepto'=> "(V) Saldo por Rendir Anterior \n   \t\t(V) = (I) + (II) - (III) - (IV)",
+		$RowArray = array('tipo_concepto'=> "(V) Saldo por Rendir a La Fecha \n   \t\t(V) = (I) + (II) - (III) - (IV)",
 		                  'monto'=> $this->datos_saldos["v_total_saldo_act"]);
 		
 		$this-> MultiRow($RowArray,false,1);
