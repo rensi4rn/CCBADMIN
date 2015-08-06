@@ -264,7 +264,33 @@ Phx.vista.RepAgenda=Ext.extend(Phx.frmInterfaz,{
 			type:'TextArea',
 			id_grupo:1,
 			form:true
-		}
+		},
+		{
+            config:{
+                name: 'tipo_imp',
+                fieldLabel: 'Tiene Anticipo Parcial',
+                allowBlank: false,
+                qtip:'comfigura el tipo de impresión,  (doble: imprime en doble columna, necesitara cortar la hoja), (simple: imprime continuo necesitara configurar la impresora para imprimir  dos hojas por página). En ambos casos el tamaño de la pagina es siempre CARTA',
+                anchor: '80%',
+                emptyText:'Tipo Obligacion',
+                store:new Ext.data.ArrayStore({
+                            fields: ['variable', 'valor'],
+                            data : [  ['unica','Simple'],
+                                      ['doble','Doble']]
+                                    }),
+                valueField: 'variable',
+                value:'doble',
+                displayField: 'valor',
+                forceSelection: true,
+                triggerAction: 'all',
+                lazyRender: true,
+                mode: 'local',
+                wisth: 250
+            },
+            type:'ComboBox',
+            valorInicial:'doble',
+            form:true
+        },
 		
 		  
 

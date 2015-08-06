@@ -35,11 +35,13 @@ class RAgendaAnual extends  ReportePDF {
 		$this->datos_agenda_telefonica = $detalle;
 	}
 	
+	
 	function Header() {
+		//$this->Image(dirname(__FILE__).'/../../lib/imagenes/logos/logo.png', 10,5,45,20);
 		
 		$titulo = 'CONGREGACIÓN CRISTIANA EN BOLIVIA';
 		$titulo2 = 'Del '.$this->desde.' al '.$this->hasta;	
-			
+		
 		//cabecera del reporte
 		$this->SetFont('','B',10);
 		

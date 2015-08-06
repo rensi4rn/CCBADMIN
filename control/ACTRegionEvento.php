@@ -7,8 +7,13 @@
 *@description Clase que recibe los parametros enviados por la vista para mandar a la capa de Modelo
 */
 require_once(dirname(__FILE__).'/../../pxp/pxpReport/DataSource.php');
+require_once(dirname(__FILE__).'/../../lib/lib_reporte/PlantillasHTML.php');
+require_once(dirname(__FILE__).'/../../lib/lib_reporte/smarty/ksmarty.php');
+require_once dirname(__FILE__).'/../../pxp/lib/lib_reporte/ReportePDFFormulario.php';
 require_once(dirname(__FILE__).'/../reportes/RAgenda.php');
 require_once(dirname(__FILE__).'/../reportes/RAgendaAnual.php');
+
+
 class ACTRegionEvento extends ACTbase{    
 			
 	function listarRegionEvento(){
@@ -150,14 +155,24 @@ class ACTRegionEvento extends ACTbase{
 		$dataSource = $this->recuperarDatosReporteAgenda();	
 		
 		//parametros basicos
-		$tamano = 'LETTER';
+		if($this->objParam->getParametro('tipo_imp') == 'unica'){
+			$tamano = array(108,279);//LETTER
+		}
+		else{
+			$tamano = 'LETTER';//LETTER
+		}
+		
 		$orientacion = 'P';
 		$titulo = 'Agenda';
 		
+		//$this->objParam->addParametro('tipo_imp','unica');  //unica, doble
 		$this->objParam->addParametro('orientacion',$orientacion);
 		$this->objParam->addParametro('tamano',$tamano);		
 		$this->objParam->addParametro('titulo_archivo',$titulo);        
 		$this->objParam->addParametro('nombre_archivo',$nombreArchivo);
+		
+		
+		
 		//Instancia la clase de pdf
 		
 		$reporte = new RAgenda($this->objParam);

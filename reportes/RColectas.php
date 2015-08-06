@@ -1,5 +1,4 @@
 <?php
-
 // Extend the TCPDF class to create custom MultiRow
 class RColectas extends  ReportePDF {
 	var $datos_titulo;
@@ -283,4 +282,3 @@ class RColectas extends  ReportePDF {
   }
 }
 ?>
-

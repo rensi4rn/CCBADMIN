@@ -335,7 +335,8 @@ Phx.vista.RegionEvento=Ext.extend(Phx.gridInterfaz,{
 							'telefono1','telefono2','celular1','correo'],
                     // turn on remote sorting
                     remoteSort: true,
-                    baseParams:{par_filtro:'per.nombre_completo1',codigo_ministerio:"''anciano'',''cooperador'',''diacono''"}
+                   // baseParams:{par_filtro:'per.nombre_completo1',codigo_ministerio:"''anciano'',''cooperador'',''diacono''"}
+                    baseParams:{par_filtro:'per.nombre_completo1'}
                 }),
                 valueField: 'id_obrero',
                 tpl:'<tpl for="."><div class="x-combo-list-item"><p><b>{desc_persona}</b></p><p>{desc_tipo_ministerio}</p><p>{desc_casa_oracion}</p> </div></tpl>',
