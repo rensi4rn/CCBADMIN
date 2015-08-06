@@ -229,8 +229,7 @@ class RAgenda extends  ReportePDF {
 	function imprimirComunicado(){
 		
 		
-		        $this->ln();
-				
+		       
 			   $this->SetFont('','B',9);
 		       $this->Cell(97,3.5,'Comunicados','',0,'C');
 			   $this->Cell(8,3.5,'','',0,'C');
