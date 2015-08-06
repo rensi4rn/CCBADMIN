@@ -136,23 +136,6 @@ Phx.vista.MovimientoRendicion=Ext.extend(Phx.gridInterfaz,{
     },
      iniciarEventos:function(){
 		
-		//Eventos
-		
-		this.Cmp.concepto.on('change', 
-		   function(cmb){
-		   	console.log('valor ..', cmb.getValue())
-		   	  if(cmb.getValue() == 'rendicion'){
-		   	  	this.mostrarComponente(this.Cmp.id_concepto_ingas)
-		   	  	this.Cmp.id_concepto_ingas.allowBlank = false;
-		   	  }
-		   	  else{
-		   	  	this.ocultarComponente(this.Cmp.id_concepto_ingas)
-		   	  	this.Cmp.id_concepto_ingas.allowBlank = true;
-		   	  	this.Cmp.id_concepto_ingas.reset();
-		   	  }
-		   	
-		   },this);	
-		
 		
 		
 	},
@@ -166,8 +149,7 @@ Phx.vista.MovimientoRendicion=Ext.extend(Phx.gridInterfaz,{
               Phx.vista.MovimientoRendicion.superclass.onButtonNew.call(this);
               this.getComponente('fecha').setMinValue(this.fecha_min);
               this.getComponente('fecha').setMaxValue(this.fecha_max);
-              this.mostrarComponente(this.Cmp.id_concepto_ingas)
-		   	  this.Cmp.id_concepto_ingas.allowBlank = false;
+              
          }
         
     },
@@ -181,15 +163,7 @@ Phx.vista.MovimientoRendicion=Ext.extend(Phx.gridInterfaz,{
               Phx.vista.MovimientoRendicion.superclass.onButtonEdit.call(this);
               this.getComponente('fecha').setMinValue(this.fecha_min);
               this.getComponente('fecha').setMaxValue(this.fecha_max);
-              if(this.Cmp.id_concepto_ingas.getValue() == 'rendicion'){
-		   	  	this.mostrarComponente(this.Cmp.id_concepto_ingas)
-		   	  	this.Cmp.id_concepto_ingas.allowBlank = false;
-		   	  }
-		   	  else{
-		   	  	 this.ocultarComponente(this.Cmp.id_concepto_ingas)
-		   	  	 this.Cmp.id_concepto_ingas.allowBlank = true;
-		   	  	 this.Cmp.id_concepto_ingas.reset();
-		   	  }
+              
          }
         
     },
@@ -509,7 +483,7 @@ Phx.vista.MovimientoRendicion=Ext.extend(Phx.gridInterfaz,{
             config:{
                 name: 'id_concepto_ingas',
                 fieldLabel: 'Concepto Gasto',
-                allowBlank: true,
+                allowBlank: false,
                 emptyText: 'Concepto Ingreso Gasto...',
                 store: new Ext.data.JsonStore({
                          url: '../../sis_parametros/control/ConceptoIngas/listarConceptoIngas',
@@ -527,7 +501,7 @@ Phx.vista.MovimientoRendicion=Ext.extend(Phx.gridInterfaz,{
                     }),
                 valueField: 'id_concepto_ingas',
                 displayField: 'desc_ingas',
-                gdisplayField:'nombre_ingas',
+                gdisplayField:'desc_ingas',
                 tpl:'<tpl for="."><div class="x-combo-list-item"><p><b>{desc_ingas}</b></p><p>TIPO: {tipo}</p></div></tpl>',
                 hiddenName: 'id_concepto_ingas',
                 forceSelection:true,

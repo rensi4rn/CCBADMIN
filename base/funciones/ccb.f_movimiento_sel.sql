@@ -294,6 +294,89 @@ BEGIN
 			return v_consulta;
 
 		end;
+        
+        
+        /*********************************    
+ 	#TRANSACCION:  'CCB_MOVOTIN_SEL'
+ 	#DESCRIPCION:	Consulta los movimientos egresos
+ 	#AUTOR:		admin	
+ 	#FECHA:		06-11-2015 00:22:36
+	***********************************/
+
+	elsif(p_transaccion='CCB_MOVOTIN_SEL')then
+     				
+    	begin
+       -- raise exception 'ssssss';
+    		--Sentencia de la consulta
+			v_consulta:='SELECT 
+                              mov.id_movimiento,
+                              mov.estado_reg,
+                              mov.tipo,
+                              mov.id_casa_oracion,
+                              mov.concepto,
+                              mov.obs,
+                              mov.fecha,
+                              mov.id_estado_periodo,
+                              mov.fecha_reg,
+                              mov.id_usuario_reg,
+                              mov.fecha_mod,
+                              mov.id_usuario_mod,
+                              mov.usr_reg,
+                              mov.usr_mod,
+                              mov.id_tipo_movimiento,
+                              mov.id_movimiento_det,
+                              mov.monto,
+                              mov.id_obrero,
+                              mov.desc_obrero,
+                              mov.estado,
+                              mov.tipo_documento,
+                              mov.num_documento,
+                              mov.desc_tipo_movimiento,
+                              mov.desc_casa_oracion,
+                              mov.mes,
+                              mov.estado_periodo,
+                              mov.id_gestion,
+                              mov.gestion,
+                              mov.id_ot,
+                              COALESCE(mov.desc_orden,'''') as desc_orden
+                            FROM 
+                              ccb.vmovimiento_ingreso_x_colecta  mov
+                          WHERE ';
+			
+			--Definicion de la respuesta
+			v_consulta:=v_consulta||v_parametros.filtro;
+			v_consulta:=v_consulta||' order by ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
+            raise notice '>>  %  <<<', v_consulta;
+			--Devuelve la respuesta
+			return v_consulta;
+						
+		end;
+
+	/*********************************    
+ 	#TRANSACCION:  'CCB_MOVOTIN_CONT'
+ 	#DESCRIPCION:	Conteo de registros
+ 	#AUTOR:		admin	
+ 	#FECHA:		16-03-2013 00:22:36
+	***********************************/
+
+	elsif(p_transaccion='CCB_MOVOTIN_CONT')then
+
+		begin
+			--Sentencia de la consulta de conteo de registros
+			v_consulta:='select 
+                          count(mov.id_movimiento),
+                          sum(mov.monto) as total_monto
+                          FROM 
+                              ccb.vmovimiento_ingreso_x_colecta  mov
+                        WHERE ';
+			
+			--Definicion de la respuesta		    
+			v_consulta:=v_consulta||v_parametros.filtro;
+
+			--Devuelve la respuesta
+			return v_consulta;
+
+		end;
         			
 	  /*********************************
       #TRANSACCION: 'CCB_MOVDIN_SEL'
@@ -768,6 +851,137 @@ BEGIN
 			return v_consulta;
 
 		end;
+    
+    /*********************************    
+ 	#TRANSACCION:  'CCB_OINGMES_SEL'
+ 	#DESCRIPCION:	Reporte de otros ingresos mensuales 
+ 	#AUTOR:		admin	
+ 	#FECHA:		29-10-2015 00:22:36
+	***********************************/
+
+	elsif(p_transaccion='CCB_OINGMES_SEL')then
+     				
+    	begin
+        
+            select 
+                ep.estado_periodo,
+                ep.id_estado_periodo,
+                ep.fecha_ini,
+                ges.id_gestion,
+                ep.mes,
+                ges.gestion
+              into
+                g_registros
+              from ccb.testado_periodo ep 
+              inner join ccb.tgestion ges on ges.id_gestion = ep.id_gestion
+              where ep.id_casa_oracion = v_parametros.id_casa_oracion
+                   and  v_parametros.fecha::date BETWEEN  ep.fecha_ini::date and ep.fecha_fin::dATE;
+                   
+            IF g_registros.id_estado_periodo is NULL THEN
+              raise exception 'No se encontro un periodo para la fecha indicada %',v_parametros.fecha; 
+            END IF;
+        
+        
+            -- raise exception 'ssssss';
+    		--Sentencia de la consulta
+			v_consulta:='SELECT 
+                                  mov.id_movimiento,
+                                  mov.estado_reg,
+                                  mov.tipo,
+                                  mov.id_casa_oracion,
+                                  mov.concepto,
+                                  mov.obs,
+                                  mov.fecha,
+                                  mov.id_estado_periodo,
+                                  mov.fecha_reg,
+                                  mov.id_usuario_reg,
+                                  mov.fecha_mod,
+                                  mov.id_usuario_mod,
+                                  mov.usr_reg,
+                                  mov.usr_mod,
+                                  mov.id_tipo_movimiento,
+                                  mov.id_movimiento_det,
+                                  mov.monto,
+                                  mov.id_obrero,
+                                  mov.desc_obrero,
+                                  mov.estado,
+                                  mov.tipo_documento,
+                                  mov.num_documento,
+                                  mov.desc_tipo_movimiento,
+                                  mov.desc_casa_oracion,
+                                  mov.mes,
+                                  mov.estado_periodo,
+                                  mov.id_gestion,
+                                  mov.gestion,
+                                  mov.id_region,
+                                  mov.id_lugar,
+                                  mov.id_ot,
+                                  COALESCE(mov.desc_orden,'''') as desc_orden,                              
+                                  tc.descripcion as desc_concepto
+                              
+                                FROM 
+                          ccb.vmovimiento_ingreso_x_colecta  mov
+                             inner join ccb.ttipo_concepto tc on tc.codigo = mov.concepto
+                          WHERE      mov.concepto in (''ingreso_traspaso'',''devolucion'')  and  mov.monto > 0
+                                and  mov.id_estado_periodo = '||g_registros.id_estado_periodo::varchar;
+			
+			
+                          
+			
+			v_consulta:=v_consulta||'  order by tc.prioridad ASC, mov.fecha ASC, mov.id_movimiento_det desc';
+           
+			--Devuelve la respuesta
+			return v_consulta;
+						
+		end;
+
+	/*********************************    
+ 	#TRANSACCION:  'CCB_OINGMES_CONT'
+ 	#DESCRIPCION:	Conteo de registros
+ 	#AUTOR:		admin	
+ 	#FECHA:		16-03-2013 00:22:36
+	***********************************/
+
+	elsif(p_transaccion='CCB_OINGMES_CONT')then
+
+		begin
+            select 
+                ep.estado_periodo,
+                ep.id_estado_periodo,
+                ep.fecha_ini,
+                ges.id_gestion,
+                ep.mes,
+                ges.gestion
+              into
+                g_registros
+              from ccb.testado_periodo ep 
+              inner join ccb.tgestion ges on ges.id_gestion = ep.id_gestion
+              where ep.id_casa_oracion = v_parametros.id_casa_oracion
+                   and  v_parametros.fecha::date BETWEEN  ep.fecha_ini::date and ep.fecha_fin::dATE;
+                   
+            IF g_registros.id_estado_periodo is NULL THEN
+              raise exception 'No se encontro un periodo para la fecha indicada %',v_parametros.fecha; 
+            END IF;
+            
+			--Sentencia de la consulta de conteo de registros
+			v_consulta:='select 
+                          count(mov.id_movimiento),
+                          sum(mov.monto) as total_monto,
+                          '''||g_registros.mes||'''::varchar as mes,
+                          '''||g_registros.gestion||'''::varchar as gestion
+                           FROM 
+                          ccb.vmovimiento_ingreso_x_colecta  mov
+                             inner join ccb.ttipo_concepto tc on tc.codigo = mov.concepto
+                          WHERE      mov.concepto in (''ingreso_traspaso'',''devolucion'')  
+                                and  mov.id_estado_periodo = '||g_registros.id_estado_periodo::varchar;
+			
+			--Definicion de la respuesta		    
+			raise notice '%',v_consulta;
+			--Devuelve la respuesta
+			return v_consulta;
+
+		end;
+    
     
     else
 					     

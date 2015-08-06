@@ -6,7 +6,6 @@
 *@date 16-03-2013 00:22:36
 *@description Archivo con la interfaz de usuario que permite la ejecucion de todas las funcionalidades del sistema
 */
-
 header("content-type: text/javascript; charset=UTF-8");
 ?>
 <script>
@@ -346,7 +345,7 @@ Phx.vista.MovimientoIngreso=Ext.extend(Phx.gridInterfaz,{
                         dato = (dato==''&&value=='colecta_especial')?'Colecta Especial':dato;
                         dato = (dato==''&&value=='saldo_inicial')?'Saldo Inicial':dato;
                         dato = (dato==''&&value=='devolucion')?'Devolución de Saldo':dato;
-                        dato = (dato==''&&value=='ingreso_trapaso')?'Ingreso por Trapaso':dato;
+                        dato = (dato==''&&value=='ingreso_traspaso')?'Ingreso por Traspaso':dato;
                         dato = (dato==''&&value=='operacion')?'Operacion':dato;
                         dato = (dato==''&&value=='egreso_traspaso')?'Egreso por Traspaso':dato;
                         return String.format('{0}', dato);
@@ -941,11 +940,11 @@ Phx.vista.MovimientoIngreso=Ext.extend(Phx.gridInterfaz,{
 	dataIngreso : [
                 ['colecta_adultos', 'Colecta de Adultos'],
                 ['colecta_jovenes', 'Colecta de Jovenes'],
-                ['reunion_juventud', 'Reunión de Juventud'],
-                ['colecta_especial', 'Colecta Especial'],
+                //['reunion_juventud', 'Reunión de Juventud'],
+                //['colecta_especial', 'Colecta Especial'],
                 ['saldo_inicial', 'Saldo Inicial'],
-                ['ingreso_trapaso', 'Ingreso por Trapaso'],
-                ['devolucion', 'Devolución de Saldo']
+                //['ingreso_traspaso', 'Ingreso por Traspaso'],
+                //['devolucion', 'Devolución de Saldo']
         
         ] ,
     dataEgreso : [

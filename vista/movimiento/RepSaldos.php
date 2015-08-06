@@ -365,7 +365,7 @@ Phx.vista.RepSaldos=Ext.extend(Phx.frmInterfaz,{
 						Saldo en efectivo: {11}</br></br>\
 						Saldo en la administración =  (Ingreso Total)  - (Egresos por Traspaso) - (Egresos por operación) - (Egresos contra rendición)</br>\
 						<b>Saldo en la administración: {12}</b></br></br>\
-						Saldo por Rendir =  (Egresos inicial por rendir) + (Egresos contra rendición)  - (Rendiciones)</br>\
+						Saldo por Rendir =  (Egresos inicial por rendir) + (Egresos contra rendición)  - (Rendiciones) - (devoluciones)</br>\
 						Saldo por Rendir: {13}</br></br></div>";
        
 	   this.panelResumen.update( String.format(plantilla,

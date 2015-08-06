@@ -210,6 +210,21 @@ Phx.vista.MovimientoEgreso=Ext.extend(Phx.gridInterfaz,{
 		   	  	 this.Cmp.id_concepto_ingas.allowBlank = true;
 		   	  	 this.Cmp.id_concepto_ingas.reset();
 		   	  }
+		   	  
+		   	var con = this.Cmp.concepto.getValue();
+		   	 
+		   	if(con == 'contra_rendicion'){
+		      this.Cmp.tipo_documento.store.loadData(this.documentoContraRendicion)
+		    }
+		    if(con == 'egreso_traspaso'){
+		        this.Cmp.tipo_documento.store.loadData(this.documentoTrapaso)
+		    }
+		    if(con == 'operacion'){
+		        this.Cmp.tipo_documento.store.loadData(this.documentoEgreso)
+		    }
+		    if(con == 'egreso_inicial_por_rendir'){
+		        this.Cmp.tipo_documento.store.loadData(this.documentoContraRendicion)
+		    }
          }
         
     },

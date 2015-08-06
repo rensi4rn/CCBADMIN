@@ -171,6 +171,56 @@ class MODMovimiento extends MODbase{
 		//Devuelve la respuesta
 		return $this->respuesta;
 	}
+
+
+    function listarMovimientoOtrosIngresos(){
+		//Definicion de variables para ejecucion del procedimientp
+		$this->procedimiento='ccb.f_movimiento_sel';
+		$this->transaccion='CCB_MOVOTIN_SEL';
+		$this->tipo_procedimiento='SEL';//tipo de transaccion
+		
+		//captura parametros adicionales para el count
+		$this->capturaCount('total_monto','numeric');
+		
+		//Definicion de la lista del resultado del query
+		$this->captura('id_movimiento','int4');
+		$this->captura('estado_reg','varchar');
+		$this->captura('tipo','varchar');
+		$this->captura('id_casa_oracion','int4');
+		$this->captura('concepto','varchar');
+		$this->captura('obs','text');
+		$this->captura('fecha','date');
+		$this->captura('id_estado_periodo','int4');
+		$this->captura('fecha_reg','timestamp');
+		$this->captura('id_usuario_reg','int4');
+		$this->captura('fecha_mod','timestamp');
+		$this->captura('id_usuario_mod','int4');
+		$this->captura('usr_reg','varchar');
+		$this->captura('usr_mod','varchar');		
+		$this->captura('id_tipo_movimiento','int4');
+		$this->captura('id_movimiento_det','int4');
+		$this->captura('monto','numeric');	
+		$this->captura('id_obrero','int4');
+		$this->captura('desc_obrero','text');
+		$this->captura('estado','varchar');
+		$this->captura('tipo_documento','varchar');
+		$this->captura('num_documento','varchar');
+		$this->captura('desc_tipo_movimiento','varchar');
+		$this->captura('desc_casa_oracion','varchar');
+		$this->captura('mes','varchar');
+		$this->captura('estado_periodo','varchar');
+		$this->captura('id_gestion','int4');
+		$this->captura('gestion','varchar');
+		$this->captura('id_ot','integer');
+		$this->captura('desc_orden','varchar');
+		
+		//Ejecuta la instruccion
+		$this->armarConsulta();
+		$this->ejecutarConsulta();
+		
+		//Devuelve la respuesta
+		return $this->respuesta;
+	}
 	
 	
 	
@@ -416,6 +466,76 @@ class MODMovimiento extends MODbase{
 		return $this->respuesta;
 	}
 
+    function insertarMovimientoOtrosIngresos(){
+		//Definicion de variables para ejecucion del procedimiento
+		$this->procedimiento='ccb.f_movimiento_ime';
+		$this->transaccion='CCB_MOVOTRING_INS';
+		$this->tipo_procedimiento='IME';
+				
+		//Define los parametros para la funcion
+		$this->setParametro('estado_reg','estado_reg','varchar');
+		$this->setParametro('tipo','tipo','varchar');
+		$this->setParametro('id_casa_oracion','id_casa_oracion','int4');
+		$this->setParametro('concepto','concepto','varchar');
+		$this->setParametro('obs','obs','text');
+		$this->setParametro('fecha','fecha','date');
+		$this->setParametro('id_estado_periodo','id_estado_periodo','int4');
+		
+		
+		$this->setParametro('monto','monto','numeric');
+		$this->setParametro('id_tipo_movimiento','id_tipo_movimiento','int4');
+		$this->setParametro('tipo_documento','tipo_documento','varchar');
+		$this->setParametro('num_documento','num_documento','varchar');
+		
+		
+		
+		$this->setParametro('id_obrero','id_obrero','int4');
+		$this->setParametro('estado','estado','varchar');
+		$this->setParametro('id_ot','id_ot','int4');
+		$this->setParametro('id_concepto_ingas','id_concepto_ingas','int4');
+		
+
+		//Ejecuta la instruccion
+		$this->armarConsulta();
+		$this->ejecutarConsulta();
+
+		//Devuelve la respuesta
+		return $this->respuesta;
+	}
+    function modificarMovimientoOtrosIngresos(){
+		//Definicion de variables para ejecucion del procedimiento
+		$this->procedimiento='ccb.f_movimiento_ime';
+		$this->transaccion='CCB_MOVOINGRE_MOD';
+		$this->tipo_procedimiento='IME';
+				
+		//Define los parametros para la funcion
+		$this->setParametro('id_movimiento','id_movimiento','int4');
+		$this->setParametro('estado_reg','estado_reg','varchar');
+		$this->setParametro('tipo','tipo','varchar');
+		$this->setParametro('id_casa_oracion','id_casa_oracion','int4');
+		$this->setParametro('concepto','concepto','varchar');
+		$this->setParametro('obs','obs','text');
+		$this->setParametro('fecha','fecha','date');
+		$this->setParametro('id_estado_periodo','id_estado_periodo','int4');
+		$this->setParametro('id_movimiento_det','id_movimiento_det','int4');
+		$this->setParametro('monto','monto','numeric');
+		$this->setParametro('id_tipo_movimiento','id_tipo_movimiento','int4');
+		$this->setParametro('tipo_documento','tipo_documento','varchar');
+		$this->setParametro('num_documento','num_documento','varchar');
+		$this->setParametro('id_obrero','id_obrero','int4');
+		$this->setParametro('estado','estado','varchar');
+		$this->setParametro('id_ot','id_ot','int4');
+		$this->setParametro('id_concepto_ingas','id_concepto_ingas','int4');
+		
+
+		//Ejecuta la instruccion
+		$this->armarConsulta();
+		$this->ejecutarConsulta();
+
+		//Devuelve la respuesta
+		return $this->respuesta;
+	}
+
     function calcularSaldos(){
 		//Definicion de variables para ejecucion del procedimiento
 		$this->procedimiento='ccb.f_movimiento_ime';
@@ -579,6 +699,274 @@ class MODMovimiento extends MODbase{
 		  $this->captura('nombre_tipo_mov_ot','VARCHAR');
 		  $this->captura('desc_orden','VARCHAR');
 		  $this->captura('desc_concepto','VARCHAR');
+		
+
+		//Ejecuta la instruccion
+		$this->armarConsulta();
+		$this->ejecutarConsulta();
+
+		//Devuelve la respuesta
+		return $this->respuesta;
+	}
+
+    function listarOtrosIngresosMes(){
+		//Definicion de variables para ejecucion del procedimiento
+		$this->procedimiento='ccb.f_movimiento_sel';
+		$this->transaccion='CCB_OINGMES_SEL';
+		$this->tipo_procedimiento='SEL';
+		
+		//Define los parametros para la funcion
+		$this->setParametro('fecha','fecha','date');
+		$this->setParametro('id_casa_oracion','id_casa_oracion','int4');
+		//captura parametros adicionales para el count
+		$this->capturaCount('total_monto','numeric');
+		$this->capturaCount('mes','varchar');
+		$this->capturaCount('gestion','varchar');
+		
+	
+  
+  
+ 
+
+		
+		//Definicion de la lista del resultado del query
+		$this->captura('id_movimiento','int4');
+		$this->captura('estado_reg','varchar');
+		$this->captura('tipo','varchar');
+		$this->captura('id_casa_oracion','int4');
+		$this->captura('concepto','varchar');
+		$this->captura('obs','text');
+		$this->captura('fecha','date');
+		$this->captura('id_estado_periodo','int4');
+		$this->captura('fecha_reg','timestamp');
+		$this->captura('id_usuario_reg','int4');
+		$this->captura('fecha_mod','timestamp');
+		$this->captura('id_usuario_mod','int4');
+		$this->captura('usr_reg','varchar');
+		$this->captura('usr_mod','varchar');		
+		$this->captura('id_tipo_movimiento','int4');
+		$this->captura('id_movimiento_det','int4');
+		$this->captura('monto','numeric');	
+		$this->captura('id_obrero','int4');
+		$this->captura('desc_obrero','text');
+		$this->captura('estado','varchar');
+		$this->captura('tipo_documento','varchar');
+		$this->captura('num_documento','varchar');
+		$this->captura('desc_tipo_movimiento','varchar');
+		$this->captura('desc_casa_oracion','varchar');
+		$this->captura('mes','varchar');
+		$this->captura('estado_periodo','varchar');
+		$this->captura('id_gestion','int4');
+		$this->captura('gestion','varchar');
+		$this->captura('id_region','integer');
+		$this->captura('id_lugar','integer');
+		$this->captura('id_ot','integer');
+		$this->captura('desc_orden','varchar');
+		$this->captura('desc_concepto','varchar');
+		
+	
+	
+	
+		
+
+		//Ejecuta la instruccion
+		$this->armarConsulta();
+		$this->ejecutarConsulta();
+
+		//Devuelve la respuesta
+		return $this->respuesta;
+	}
+
+    function listarRendicionesObreroMes(){
+		//Definicion de variables para ejecucion del procedimiento
+		$this->procedimiento='ccb.f_movimiento_sel';
+		$this->transaccion='CCB_REDREPO_SEL';
+		$this->tipo_procedimiento='SEL';
+		
+		//Define los parametros para la funcion
+		$this->setParametro('fecha','fecha','date');
+		$this->setParametro('id_casa_oracion','id_casa_oracion','int4');
+		$this->setParametro('id_obrero','id_obrero','int4');
+		//captura parametros adicionales para el count
+		$this->capturaCount('total_monto','numeric');
+		$this->capturaCount('mes','varchar');
+		$this->capturaCount('gestion','varchar');
+		
+		//Definicion de la lista del resultado del query
+		$this->captura('id_movimiento','int4');
+		$this->captura('estado_reg','varchar');
+		$this->captura('tipo','varchar');
+		$this->captura('id_casa_oracion','int4');
+		$this->captura('concepto','varchar');
+		$this->captura('obs','text');
+		$this->captura('fecha','date');
+		$this->captura('id_estado_periodo','int4');
+		$this->captura('fecha_reg','timestamp');
+		$this->captura('id_usuario_reg','int4');
+		$this->captura('fecha_mod','timestamp');
+		$this->captura('id_usuario_mod','int4');
+		$this->captura('usr_reg','varchar');
+		$this->captura('usr_mod','varchar');		
+		$this->captura('id_tipo_movimiento','int4');
+		$this->captura('id_movimiento_det','int4');
+		$this->captura('monto','numeric');	
+		$this->captura('id_obrero','int4');
+		$this->captura('desc_obrero','text');
+		$this->captura('estado','varchar');
+		$this->captura('tipo_documento','varchar');
+		$this->captura('num_documento','varchar');
+		$this->captura('desc_tipo_movimiento','varchar');
+		$this->captura('desc_casa_oracion','varchar');
+		$this->captura('mes','varchar');
+		$this->captura('estado_periodo','varchar');
+		$this->captura('id_gestion','int4');
+		$this->captura('gestion','varchar');
+		$this->captura('id_ot','integer');
+		$this->captura('desc_orden','varchar');
+		$this->captura('id_concepto_ingas','integer');
+		$this->captura('desc_ingas','varchar');
+		$this->captura('desc_concepto','varchar');
+		$this->captura('retenciones','numeric');
+		
+
+		//Ejecuta la instruccion
+		$this->armarConsulta();
+		$this->ejecutarConsulta();
+
+		//Devuelve la respuesta
+		return $this->respuesta;
+	}
+
+   function listarDevolucionesObreroMes(){
+		//Definicion de variables para ejecucion del procedimiento
+		$this->procedimiento='ccb.f_movimiento_sel';
+		$this->transaccion='CCB_DEVREPO_SEL';
+		$this->tipo_procedimiento='SEL';
+		
+		//Define los parametros para la funcion
+		$this->setParametro('fecha','fecha','date');
+		$this->setParametro('id_casa_oracion','id_casa_oracion','int4');
+		$this->setParametro('id_obrero','id_obrero','int4');
+		//captura parametros adicionales para el count
+		$this->capturaCount('total_monto','numeric');
+		$this->capturaCount('mes','varchar');
+		$this->capturaCount('gestion','varchar');
+		
+
+		//Definicion de la lista del resultado del query
+		$this->captura('id_movimiento','int4');
+		$this->captura('estado_reg','varchar');
+		$this->captura('tipo','varchar');
+		$this->captura('id_casa_oracion','int4');
+		$this->captura('concepto','varchar');
+		$this->captura('obs','text');
+		$this->captura('fecha','date');
+		$this->captura('id_estado_periodo','int4');
+		$this->captura('fecha_reg','timestamp');
+		$this->captura('id_usuario_reg','int4');
+		$this->captura('fecha_mod','timestamp');
+		$this->captura('id_usuario_mod','int4');
+		$this->captura('usr_reg','varchar');
+		$this->captura('usr_mod','varchar');		
+		$this->captura('id_tipo_movimiento','int4');
+		$this->captura('id_movimiento_det','int4');
+		$this->captura('monto','numeric');	
+		$this->captura('id_obrero','int4');
+		$this->captura('desc_obrero','text');
+		$this->captura('estado','varchar');
+		$this->captura('tipo_documento','varchar');
+		$this->captura('num_documento','varchar');
+		$this->captura('desc_tipo_movimiento','varchar');
+		$this->captura('desc_casa_oracion','varchar');
+		$this->captura('mes','varchar');
+		$this->captura('estado_periodo','varchar');
+		$this->captura('id_gestion','int4');
+		$this->captura('gestion','varchar');
+		$this->captura('id_region','integer');
+		$this->captura('id_lugar','integer');
+		$this->captura('id_ot','integer');
+		$this->captura('desc_orden','varchar');
+		$this->captura('desc_concepto','varchar');
+		
+	
+
+		//Ejecuta la instruccion
+		$this->armarConsulta();
+		$this->ejecutarConsulta();
+
+		//Devuelve la respuesta
+		return $this->respuesta;
+	}
+
+   function saldosPorRendirObreroMes(){
+		//Definicion de variables para ejecucion del procedimiento
+		$this->procedimiento='ccb.f_movimiento_ime';
+		$this->transaccion='CCB_CSALXREND_IME';
+		$this->tipo_procedimiento='IME';
+				
+		//Define los parametros para la funcion
+		$this->setParametro('fecha','fecha','date');
+		$this->setParametro('id_casa_oracion','id_casa_oracion','int4');
+		$this->setParametro('id_obrero','id_obrero','int4');
+		
+
+		//Ejecuta la instruccion
+		$this->armarConsulta();
+		$this->ejecutarConsulta();
+
+		//Devuelve la respuesta
+		return $this->respuesta;
+	}
+   
+   function listarEgresosContraRendicionMes(){
+		//Definicion de variables para ejecucion del procedimiento
+		$this->procedimiento='ccb.f_movimiento_sel';
+		$this->transaccion='CCB_EGECRMES_SEL';
+		$this->tipo_procedimiento='SEL';
+		
+		//Define los parametros para la funcion
+		$this->setParametro('fecha','fecha','date');
+		$this->setParametro('id_casa_oracion','id_casa_oracion','int4');
+		$this->setParametro('id_obrero','id_obrero','int4');
+		//captura parametros adicionales para el count
+		$this->capturaCount('total_monto','numeric');
+		$this->capturaCount('mes','varchar');
+		$this->capturaCount('gestion','varchar');
+		
+		//Definicion de la lista del resultado del query
+		$this->captura('id_movimiento','int4');
+		$this->captura('estado_reg','varchar');
+		$this->captura('tipo','varchar');
+		$this->captura('id_casa_oracion','int4');
+		$this->captura('concepto','varchar');
+		$this->captura('obs','text');
+		$this->captura('fecha','date');
+		$this->captura('id_estado_periodo','int4');
+		$this->captura('fecha_reg','timestamp');
+		$this->captura('id_usuario_reg','int4');
+		$this->captura('fecha_mod','timestamp');
+		$this->captura('id_usuario_mod','int4');
+		$this->captura('usr_reg','varchar');
+		$this->captura('usr_mod','varchar');		
+		$this->captura('id_tipo_movimiento','int4');
+		$this->captura('id_movimiento_det','int4');
+		$this->captura('monto','numeric');	
+		$this->captura('id_obrero','int4');
+		$this->captura('desc_obrero','text');
+		$this->captura('estado','varchar');
+		$this->captura('tipo_documento','varchar');
+		$this->captura('num_documento','varchar');
+		$this->captura('desc_tipo_movimiento','varchar');
+		$this->captura('desc_casa_oracion','varchar');
+		$this->captura('mes','varchar');
+		$this->captura('estado_periodo','varchar');
+		$this->captura('id_gestion','int4');
+		$this->captura('gestion','varchar');
+		$this->captura('id_ot','integer');
+		$this->captura('desc_orden','varchar');
+		$this->captura('id_concepto_ingas','integer');
+		$this->captura('desc_ingas','varchar');
+		$this->captura('desc_concepto','varchar');
 		
 
 		//Ejecuta la instruccion

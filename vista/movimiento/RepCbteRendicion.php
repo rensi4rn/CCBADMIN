@@ -8,28 +8,47 @@
 */
 header("content-type: text/javascript; charset=UTF-8");
 ?>
-
 <script>
-Phx.vista.RepIngresos=Ext.extend(Phx.frmInterfaz,{
+Phx.vista.RepCbteRendicion=Ext.extend(Phx.frmInterfaz,{
+	autoScroll: true,
     constructor:function(config)
     {   
-    	this.panelResumen = new Ext.Panel({html:''});
+    	this.panelResumen = new Ext.Panel({  
+    		    padding: '0 0 0 20',
+    		    html: 'Hola Prueba',
+    		    split: true, 
+    		    layout:  'fit' });
+    		    
     	this.Grupos = [{
 
 	                    xtype: 'fieldset',
-	                    border: false,
-	                    autoScroll: true,
-	                    layout: 'form',
-	                    items: [],
-	                    id_grupo: 0
+	                        border: false,
+	                        layout: 'column',
+	                        region: 'north',
+	                        collapseFirst : false,
+	                        width: '100%',
+	                    items: [
+			                    {
+		
+			                    xtype: 'fieldset',
+			                    border: false,
+			                    collapsible: true,
+			                    autoScroll: true,
+			                    layout: 'form',
+			                    padding: '0 20 0 10',
+			                    split: true,
+			                    items: [],
+			                    id_grupo: 0
+						      },
+						      this.panelResumen
+	                    
+	                    ]
 				               
-				    },
-				     this.panelResumen
+				    }
 				    ];
 				    
-        Phx.vista.RepIngresos.superclass.constructor.call(this,config);
-        this.init(); 
-        this.iniciarEventos();   
+        Phx.vista.RepCbteRendicion.superclass.constructor.call(this,config);
+        this.init();  
        
         
         
@@ -49,11 +68,10 @@ Phx.vista.RepIngresos=Ext.extend(Phx.frmInterfaz,{
 				id_grupo: 0,
 				form: true
 		},
-		
 		{
 			config: {
 				name: 'id_casa_oracion',
-                fieldLabel: 'Casa de Oración a reportar',
+                fieldLabel: 'Casa de Oración',
                 allowBlank: false,
                 forceSelection : true,
                 emptyText:'Casa...',
@@ -94,13 +112,60 @@ Phx.vista.RepIngresos=Ext.extend(Phx.frmInterfaz,{
 			grid:true,
 			form:true
 			
-		}
-		  
-
-    ],
+		},
+        {
+            config:{
+                name: 'id_obrero',
+                fieldLabel: 'Obrero',
+                qtip: 'Hermano que lleva la colecta (cuando la entregue al tesorero el estado debe cambiar a entregado)',
+                allowBlank: false,
+                forceSelection : true,
+                emptyText:'Obrero...',
+                store:new Ext.data.JsonStore(
+                {
+                    url: '../../sis_admin/control/Obrero/listarObrero',
+                    id: 'id_obrero',
+                    root: 'datos',
+                    sortInfo:{
+                        field: 'desc_persona',
+                        direction: 'ASC'
+                    },
+                    totalProperty: 'total',
+                    fields: ['id_obrero','desc_persona','desc_tipo_ministerio',
+							'desc_casa_oracion','id_casa_oracion','desc_region',
+							'telefono1','telefono2','celular1','correo'],
+                    // turn on remote sorting
+                    remoteSort: true,
+                    baseParams:{par_filtro:'per.nombre_completo1'}
+                }),
+                valueField: 'id_obrero',
+                tpl:'<tpl for="."><div class="x-combo-list-item"><p>{desc_persona}</p><p>{desc_tipo_ministerio}</p><p>{desc_casa_oracion}</p> </div></tpl>',
+				
+                displayField: 'desc_persona',
+                gdisplayField:'desc_obrero',
+                hiddenName: 'id_obrero',
+                triggerAction: 'all',
+                lazyRender:true,
+                mode:'remote',
+                pageSize:50,
+                queryDelay:500,
+                listWidth:'280',
+                width:210,
+                gwidth:220,
+                minChars:2
+            },
+            type:'ComboBox',
+            bottom_filter: true,
+            filters:{pfiltro:'mov.desc_obrero',type:'string'},
+            id_grupo:1,
+            grid:true,
+            form:true
+        }
+	
+	],
     labelSubmit: '<i class="fa fa-check"></i> Aplicar Filtro',
     
-   
+    title: 'Filtro de mayores',
     // Funcion guardar del formulario
     onSubmit: function(o) {
     	var me = this;
@@ -112,7 +177,7 @@ Phx.vista.RepIngresos=Ext.extend(Phx.frmInterfaz,{
              Phx.CP.loadingShow(); 
 			 Ext.Ajax.request({
 				
-				url:'../../sis_admin/control/Movimiento/reporteOtrosIngresos',
+				url:'../../sis_admin/control/Movimiento/reporteCbteRendicion',
 				params: parametros,
 				success:this.successSinc,
 				failure: this.conexionFailure,
@@ -138,15 +203,7 @@ Phx.vista.RepIngresos=Ext.extend(Phx.frmInterfaz,{
         }
         window.open('../../../lib/lib_control/Intermediario.php?r='+nomRep+'&t='+new Date().toLocaleTimeString())
 	
-						
-	
-       
-       
-	},
-    iniciarEventos: function(){
-    	
-    }
-    
-    
+		 
+	}
 })    
 </script>

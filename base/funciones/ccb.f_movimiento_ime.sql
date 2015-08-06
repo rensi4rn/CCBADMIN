@@ -456,6 +456,103 @@ BEGIN
 		end;
     
     
+     /*********************************    
+ 	#TRANSACCION:  'CCB_MOVOTRING_INS'
+ 	#DESCRIPCION:	Insercion de movimientos de otros ingresos, traspasos devoluciones
+ 	#AUTOR:		rensi	
+ 	#FECHA:		03-04-2015 00:22:36
+	***********************************/
+
+	elsif(p_transaccion='CCB_MOVOTRING_INS')then
+					
+        begin
+              --TODO si el concepto es egreso_inicial_por_rendir   verificar que solo exista uno por gestion para la casa de oración
+            
+            
+               select 
+                ep.estado_periodo,
+                ep.id_estado_periodo
+              into
+                v_estado_periodo,
+                v_id_estado_periodo
+              from ccb.testado_periodo ep 
+              where ep.id_casa_oracion = v_parametros.id_casa_oracion
+                   and  v_parametros.fecha::date BETWEEN  ep.fecha_ini::date and ep.fecha_fin::dATE;  
+              
+              
+              IF v_estado_periodo = 'cerrado' THEN
+                  raise exception 'el periodo correspondiente se encuentra cerrado';
+              END IF;
+        
+        
+        	--Sentencia de la insercion
+        	insert into ccb.tmovimiento(
+                estado_reg,
+                tipo,
+                id_casa_oracion,
+                concepto,
+                obs,
+                fecha,
+                id_estado_periodo,
+                fecha_reg,
+                id_usuario_reg,
+                fecha_mod,
+                id_usuario_mod,
+                id_obrero,
+                estado,
+                tipo_documento,
+                num_documento,
+                id_ot
+          	) values(
+				'activo',
+                v_parametros.tipo,
+                v_parametros.id_casa_oracion,
+                v_parametros.concepto,
+                v_parametros.obs,
+                v_parametros.fecha,
+                v_id_estado_periodo,
+                now(),
+                p_id_usuario,
+                now(),
+                p_id_usuario,
+                v_parametros.id_obrero,
+                v_parametros.estado,
+                v_parametros.tipo_documento,
+                v_parametros.num_documento,
+                v_parametros.id_ot
+							
+			)RETURNING id_movimiento into v_id_movimiento;
+            
+            
+            INSERT INTO 
+              ccb.tmovimiento_det(
+                id_usuario_reg,
+                fecha_reg,
+                estado_reg,
+                id_tipo_movimiento,
+                id_movimiento,
+                monto
+              ) 
+              VALUES (
+                p_id_usuario,
+                now(),
+                'activo',
+                v_parametros.id_tipo_movimiento,
+                v_id_movimiento,
+                COALESCE(v_parametros.monto,0)
+               );
+             
+           
+			--raise exception 'ssss  %', v_id_movimiento;
+			--Definicion de la respuesta
+			v_resp = pxp.f_agrega_clave(v_resp,'mensaje','insercion de otros ingrsos con exito (id_movimiento'||v_id_movimiento||')'); 
+            v_resp = pxp.f_agrega_clave(v_resp,'id_movimiento',v_id_movimiento::varchar);
+
+            --Devuelve la respuesta
+            return v_resp;
+
+		end;
+    
     
     /*********************************    
  	#TRANSACCION:  'CCB_MOV_MOD'
@@ -635,7 +732,71 @@ BEGIN
             --Devuelve la respuesta
             return v_resp;
             
+		end;
+    
+    /*********************************    
+ 	#TRANSACCION:  'CCB_MOVOINGRE_MOD'
+ 	#DESCRIPCION:	Modificacion de de otros ingresos
+ 	#AUTOR:		admin	
+ 	#FECHA:		03-04-2015 00:22:36
+	***********************************/
+
+	elsif(p_transaccion='CCB_MOVOINGRE_MOD')then
+
+		begin
+              select 
+                ep.estado_periodo,
+                ep.id_estado_periodo
+              into
+                v_estado_periodo,
+                v_id_estado_periodo
+              from ccb.testado_periodo ep 
+              where ep.id_casa_oracion = v_parametros.id_casa_oracion
+                   and  v_parametros.fecha::date BETWEEN  ep.fecha_ini::date and ep.fecha_fin::dATE;  
+              
+              
+              IF v_estado_periodo = 'cerrado' THEN
+                  raise exception 'el periodo correspondiente se encuentra cerrado';
+              END IF;
+        
+        
+        
+			--Sentencia de la modificacion
+			update ccb.tmovimiento set
+              tipo = v_parametros.tipo,
+              id_casa_oracion = v_parametros.id_casa_oracion,
+              concepto = v_parametros.concepto,
+              obs = v_parametros.obs,
+              fecha = v_parametros.fecha,
+              id_estado_periodo = v_id_estado_periodo,
+              fecha_mod = now(),
+              id_usuario_mod = p_id_usuario,
+             id_obrero = v_parametros.id_obrero,
+             estado = v_parametros.estado,
+             tipo_documento = v_parametros.tipo_documento,
+             num_documento = v_parametros.num_documento,
+             id_ot = v_parametros.id_ot
+			where id_movimiento=v_parametros.id_movimiento;
+            
+            
+            update ccb.tmovimiento_det set
+			 monto = COALESCE(v_parametros.monto,0),
+			 fecha_mod = now(),
+			 id_usuario_mod = p_id_usuario,
+             id_tipo_movimiento = v_parametros.id_tipo_movimiento
+			where id_movimiento_det=v_parametros.id_movimiento_det;
+            
+            
+            --Definicion de la respuesta
+            v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Movimientos de otros ingresos  modificado'); 
+            v_resp = pxp.f_agrega_clave(v_resp,'id_movimiento',v_parametros.id_movimiento::varchar);
+               
+            --Devuelve la respuesta
+            return v_resp;
+            
 		end;  
+        
+          
 	/*********************************    
  	#TRANSACCION:  'CCB_MOV_ELI'
  	#DESCRIPCION:	Eliminacion de registros
@@ -737,9 +898,9 @@ BEGIN
              /*
                  I)   determinar SALDOS
                  II)  determinar INGESOS
-                 III) determinar ingreso por trapasos
+                 III) determinar ingreso por traspasos
                  III)' determinar ingresos por devoluciones (se saldo contra rendición)
-                 IV)  determinar egresos por trapasos
+                 IV)  determinar egresos por traspasos
                  V)   determinar egresos de la adminsitracion 
                  VI)  determinar saldos del mes en la administracion
                  

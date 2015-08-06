@@ -138,7 +138,7 @@ BEGIN
     
     
     IF p_codigo_balance = 'ingreso_traspasos' then      
-          v_consulta = v_consulta_ingreso ||' and ' ||v_filtro||'  and mov.concepto = ''ingreso_trapaso'' ';
+          v_consulta = v_consulta_ingreso ||' and ' ||v_filtro||'  and mov.concepto = ''ingreso_traspaso'' ';
     ELSIF p_codigo_balance = 'devolucion' then      
           v_consulta = v_consulta_ingreso ||' and ' ||v_filtro||'  and mov.concepto = ''devolucion'' ';
     ELSIF p_codigo_balance = 'ingreso_colectas' then

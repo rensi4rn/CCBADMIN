@@ -1,7 +1,7 @@
 <?php
 
 // Extend the TCPDF class to create custom MultiRow
-class REgresos extends  ReportePDF {
+class RIngresos extends  ReportePDF {
 	var $datos_titulo;
 	var $datos_detalle;
 	var $ancho_hoja;
@@ -20,11 +20,11 @@ class REgresos extends  ReportePDF {
 	
 	function Header() {
 		//cabecera del reporte
-		$this->Image(dirname(__FILE__).'/../../lib/imagenes/logos/logo.png', 10,5,45,20);
+		$this->Image(dirname(__FILE__).'/../../lib/imagenes/logos/logo.png', 10,5,40,20);
 		$this->ln(5);
 		$this->SetFont('','BU',12);
 		
-		$this->Cell(0,5,"Egresos del Mes de ".$this->datos_titulo['mes']." de ".$this->datos_titulo['gestion'],0,1,'C');
+		$this->Cell(0,5,"Traspasos y Devoluciones del Mes de ".$this->datos_titulo['mes']." de ".$this->datos_titulo['gestion'],0,1,'C');
 		$this->Ln(1);
 		$this->Cell(0,5,"Casa de Oración: ".$this->datos_detalle[0]['desc_casa_oracion'],0,1,'C');
 		
@@ -125,21 +125,14 @@ class REgresos extends  ReportePDF {
         //define formato tipo de recibo
 		$tipo = $this->getTipoDoc($val['tipo_documento']);	
 		//formato de fecha
-		
-		$temp = '';
-		
 		$newDate = date("d-m-Y", strtotime($val['fecha']));
 		
-		if ($val['concepto'] == 'rendicion' or $val['concepto'] == 'contra_rendicion'){
-			$temp = " \n Firmado por: ".$val['desc_obrero'];
-		}
-		
-		if( isset($val['desc_ingas']) && $val['desc_ingas'] != ''){
-			$obs = trim($val['obs'])."
-		       (".trim($val['desc_ingas']).")\n".$temp;
+		if( isset($val['desc_obrero']) && $val['desc_obrero'] != ''){
+			$obs = trim($val['obs']).'
+		       (Firmado por: '.trim($val['desc_obrero']).')';
 		}
 		else{
-			$obs = trim($val['obs']).$temp;
+			$obs = trim($val['obs']);
 		}
 		
 		
@@ -197,7 +190,7 @@ class REgresos extends  ReportePDF {
 			        $tipo = 'Rec Piedad';
 			    }
 				else{
-				   $tipo = $val['tipo_documento'];	
+				   $tipo = $tipo_documento;	
 				}
 		     }	
 		} 

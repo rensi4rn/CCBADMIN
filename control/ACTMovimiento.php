@@ -11,7 +11,9 @@ require_once(dirname(__FILE__).'/../../lib/lib_reporte/PlantillasHTML.php');
 require_once(dirname(__FILE__).'/../../lib/lib_reporte/smarty/ksmarty.php');
 require_once dirname(__FILE__).'/../../pxp/lib/lib_reporte/ReportePDFFormulario.php';
 require_once(dirname(__FILE__).'/../reportes/REgresos.php');
+require_once(dirname(__FILE__).'/../reportes/RIngresos.php');
 require_once(dirname(__FILE__).'/../reportes/RColectas.php');
+require_once(dirname(__FILE__).'/../reportes/RCbteRendicion.php');
 
 class ACTMovimiento extends ACTbase{    
 			
@@ -57,7 +59,9 @@ class ACTMovimiento extends ACTbase{
 		}
 		
 		
+		 $this->objParam->addFiltro("mov.concepto  not in (''devolucion'',''ingreso_traspaso'')"); 
 		
+		  
 		 if($this->objParam->getParametro('tipo')!=''){
                     $this->objParam->addFiltro("mov.tipo = ''".$this->objParam->getParametro('tipo')."''");   
           }
@@ -169,6 +173,63 @@ class ACTMovimiento extends ACTbase{
 		}
 		$this->res->imprimirRespuesta($this->res->generarJson());
 	}
+
+	function listarMovimientoOtrosIngresos(){
+		
+		
+		 if($this->objParam->getParametro('tipolist')=='mobile'){
+            $this->objParam->defecto('ordenacion','mov.fecha');
+            $this->objParam->defecto('dir_ordenacion','desc');
+         }	
+		 else{
+		    $this->objParam->defecto('ordenacion','id_movimiento');
+            $this->objParam->defecto('dir_ordenacion','asc');	
+		 }
+		
+		 if($this->objParam->getParametro('tipo')!=''){
+                    $this->objParam->addFiltro("mov.tipo = ''".$this->objParam->getParametro('tipo')."''");   
+          }
+          
+         if($this->objParam->getParametro('id_estado_periodo')!=''){
+                $this->objParam->addFiltro("mov.id_estado_periodo = ".$this->objParam->getParametro('id_estado_periodo'));   
+         }
+         
+         if($this->objParam->getParametro('id_casa_oracion')!=''){
+                $this->objParam->addFiltro("mov.id_casa_oracion = ".$this->objParam->getParametro('id_casa_oracion'));   
+         }
+		 
+		 if($this->objParam->getParametro('id_gestion')!=''){
+                $this->objParam->addFiltro("mov.id_gestion = ".$this->objParam->getParametro('id_gestion'));   
+         }
+        
+		
+		if($this->objParam->getParametro('tipo_concepto')=='ingreso'){
+                $this->objParam->addFiltro("mov.concepto  in (''devolucion'',''ingreso_traspaso'')");   
+        }
+		
+		
+		if($this->objParam->getParametro('tipoReporte')=='excel_grid' || $this->objParam->getParametro('tipoReporte')=='pdf_grid'){
+			$this->objReporte = new Reporte($this->objParam,$this);
+			$this->res = $this->objReporte->generarReporteListado('MODMovimiento','listarMovimientoEgreso');
+		} else{
+			$this->objFunc=$this->create('MODMovimiento');
+			
+			$this->res=$this->objFunc->listarMovimientoOtrosIngresos($this->objParam);
+		}
+		
+		if($this->objParam->getParametro('tipolist')!='mobile'){
+	            //adicionar una fila al resultado con el summario
+				$temp = Array();
+				$temp['total_monto'] = $this->res->extraData['total_monto'];
+				$temp['tipo_reg'] = 'summary';
+				$temp['id_movimiento'] = 0;				
+				$this->res->total++;				
+				$this->res->addLastRecDatos($temp);		
+		}
+		$this->res->imprimirRespuesta($this->res->generarJson());
+	}
+	
+	
 	function listarMovimientoDinamico(){
         
         if($this->objParam->getParametro('tipoReporte')=='excel_grid' || $this->objParam->getParametro('tipoReporte')=='pdf_grid'){
@@ -214,6 +275,16 @@ class ACTMovimiento extends ACTbase{
 			$this->res=$this->objFunc->insertarMovimientoEgreso($this->objParam);			
 		} else{			
 			$this->res=$this->objFunc->modificarMovimientoEgreso($this->objParam);
+		}
+		$this->res->imprimirRespuesta($this->res->generarJson());
+	}
+	
+	function insertarMovimientoOtrosIngresos(){
+		$this->objFunc=$this->create('MODMovimiento');	
+		if($this->objParam->insertar('id_movimiento')){
+			$this->res=$this->objFunc->insertarMovimientoOtrosIngresos($this->objParam);			
+		} else{			
+			$this->res=$this->objFunc->modificarMovimientoOtrosIngresos($this->objParam);
 		}
 		$this->res->imprimirRespuesta($this->res->generarJson());
 	}
@@ -384,6 +455,155 @@ class ACTMovimiento extends ACTbase{
 		
 		$reporte = new RColectas($this->objParam);
 		$reporte->datosHeader($dataSource->getDatos(),  $dataSource->extraData);
+		//$this->objReporteFormato->renderDatos($this->res2->datos);
+		
+		$reporte->generarReporte();
+		$reporte->output($reporte->url_archivo,'F');
+		
+		$this->mensajeExito=new Mensaje();
+		$this->mensajeExito->setMensaje('EXITO','Reporte.php','Reporte generado','Se generó con éxito el reporte: '.$nombreArchivo,'control');
+		$this->mensajeExito->setArchivoGenerado($nombreArchivo);
+		$this->mensajeExito->imprimirRespuesta($this->mensajeExito->generarJson());
+		
+	}
+
+   function recuperarDatosOtrosIngresos(){
+    	
+		$this->objFunc = $this->create('MODMovimiento');
+		$cbteHeader = $this->objFunc->listarOtrosIngresosMes($this->objParam);
+		if($cbteHeader->getTipo() == 'EXITO'){
+				
+			return $cbteHeader;
+		}
+        else{
+		    $cbteHeader->imprimirRespuesta($cbteHeader->generarJson());
+			exit;
+		}              
+		
+    }
+	
+	function reporteOtrosIngresos(){
+			
+		$nombreArchivo = uniqid(md5(session_id()).'Egresos') . '.pdf'; 
+		$dataSource = $this->recuperarDatosOtrosIngresos();	
+		
+		
+		//parametros basicos
+		$tamano = 'LETTER';
+		$orientacion = 'P';
+		$titulo = 'Egresos';
+		
+		$this->objParam->addParametro('orientacion',$orientacion);
+		$this->objParam->addParametro('tamano',$tamano);		
+		$this->objParam->addParametro('titulo_archivo',$titulo);	
+        
+		$this->objParam->addParametro('nombre_archivo',$nombreArchivo);
+		//Instancia la clase de pdf
+		
+		$reporte = new RIngresos($this->objParam);
+		$reporte->datosHeader($dataSource->getDatos(),  $dataSource->extraData);
+		//$this->objReporteFormato->renderDatos($this->res2->datos);
+		
+		$reporte->generarReporte();
+		$reporte->output($reporte->url_archivo,'F');
+		
+		$this->mensajeExito=new Mensaje();
+		$this->mensajeExito->setMensaje('EXITO','Reporte.php','Reporte generado','Se generó con éxito el reporte: '.$nombreArchivo,'control');
+		$this->mensajeExito->setArchivoGenerado($nombreArchivo);
+		$this->mensajeExito->imprimirRespuesta($this->mensajeExito->generarJson());
+		
+	}
+
+
+   function recuperarSaldosPorRendir(){
+    	
+		$this->objFunc = $this->create('MODMovimiento');
+		$cbteHeader = $this->objFunc->saldosPorRendirObreroMes($this->objParam);
+		if($cbteHeader->getTipo() == 'EXITO'){
+				
+			return $cbteHeader;
+		}
+        else{
+		    $cbteHeader->imprimirRespuesta($cbteHeader->generarJson());
+			exit;
+		}              
+		
+    }
+
+  function recuperarRendiciones(){
+    	
+		$this->objFunc = $this->create('MODMovimiento');
+		$cbteHeader = $this->objFunc->listarRendicionesObreroMes($this->objParam);
+		if($cbteHeader->getTipo() == 'EXITO'){
+				
+			return $cbteHeader;
+		}
+        else{
+		    $cbteHeader->imprimirRespuesta($cbteHeader->generarJson());
+			exit;
+		}              
+		
+    }
+  
+   function listarDevolucionesObreroMes(){
+    	
+		$this->objFunc = $this->create('MODMovimiento');
+		$cbteHeader = $this->objFunc->listarDevolucionesObreroMes($this->objParam);
+		if($cbteHeader->getTipo() == 'EXITO'){
+				
+			return $cbteHeader;
+		}
+        else{
+		    $cbteHeader->imprimirRespuesta($cbteHeader->generarJson());
+			exit;
+		}              
+		
+    }
+
+
+    function listarEgresosContraRendicionMes(){
+    	
+		$this->objFunc = $this->create('MODMovimiento');
+		$cbteHeader = $this->objFunc->listarEgresosContraRendicionMes($this->objParam);
+		if($cbteHeader->getTipo() == 'EXITO'){
+				
+			return $cbteHeader;
+		}
+        else{
+		    $cbteHeader->imprimirRespuesta($cbteHeader->generarJson());
+			exit;
+		}              
+		
+    }
+
+
+
+	
+	function reporteCbteRendicion(){
+			
+		$nombreArchivo = uniqid(md5(session_id()).'Egresos') . '.pdf'; 
+		$dataSourceSaldos = $this->recuperarSaldosPorRendir();	
+		$dataSourceRendiciones = $this->recuperarRendiciones();	
+		$dataSourceDevoluciones = $this->listarDevolucionesObreroMes();	
+		$dataSourceEgresos = $this->listarEgresosContraRendicionMes();	
+		
+		
+		//parametros basicos
+		$tamano = 'LETTER';
+		$orientacion = 'P';
+		$titulo = 'Egresos';
+		
+		$this->objParam->addParametro('orientacion',$orientacion);
+		$this->objParam->addParametro('tamano',$tamano);		
+		$this->objParam->addParametro('titulo_archivo',$titulo);	
+        
+		$this->objParam->addParametro('nombre_archivo',$nombreArchivo);
+		//Instancia la clase de pdf
+		
+		$reporte = new RCbteRendicion($this->objParam);
+		//$reporte->datosHeader($dataSource->getDatos(),  $dataSource->extraData);
+		$reporte->datosHeader($dataSourceSaldos,  $dataSourceRendiciones, $dataSourceDevoluciones,$dataSourceRendiciones->extraData, $dataSourceEgresos);
+		
 		//$this->objReporteFormato->renderDatos($this->res2->datos);
 		
 		$reporte->generarReporte();
