@@ -15,12 +15,14 @@ class RAgenda extends  ReportePDF {
 	var $total_activo;
 	var $total_pasigo;
 	var $total_patrimonio;
+	var $comunicado;
 	
-	function datosHeader ( $detalle, $desde, $hasta) {
+	function datosHeader ( $detalle, $desde, $hasta, $comunicado) {
 		$this->ancho_hoja = $this->getPageWidth()-PDF_MARGIN_LEFT-PDF_MARGIN_RIGHT-10;
 		$this->datos_detalle = $detalle;
 		$this->desde = $desde;
 		$this->hasta = $hasta;
+		$this->comunicado = $comunicado;
 		
 		$this->SetMargins(5, 20, 10);
 		
@@ -217,8 +219,46 @@ class RAgenda extends  ReportePDF {
 		}	
 		$this->cerrarDet();		
 		$this->ln();
+		
+		if( isset($this->comunicado) &&  $this->comunicado != ''){
+			$this->imprimirComunicado();			
+		}
 	}
 	
+	
+	function imprimirComunicado(){
+		
+		
+		        $this->ln();
+				
+			   $this->SetFont('','B',9);
+		       $this->Cell(97,3.5,'Comunicados','',0,'C');
+			   $this->Cell(8,3.5,'','',0,'C');
+			   $this->Cell(97,3.5,'Comunicados','',0,'C');
+			   $this->ln();
+			   
+			   	$this->SetFont('','',9);
+				$conf_par_tablewidths=array(97,10,97);
+		        $conf_par_tablealigns=array('L','L','L');
+		        $conf_par_tablenumbers=array(0,0,0,0);
+		        $conf_tableborders=array('LTR','L','LTR');
+		        $conf_tabletextcolor=array();
+			   	
+				$this->tablewidths=$conf_par_tablewidths;
+	            $this->tablealigns=$conf_par_tablealigns;
+	            $this->tablenumbers=$conf_par_tablenumbers;
+	            $this->tableborders=$conf_tableborders;
+	            $this->tabletextcolor=$conf_tabletextcolor;
+				
+			   	 $RowArray = array('obs'  =>  $this->comunicado,
+								   'esp'  =>  '',
+								   'obs2'  => $this->comunicado); 
+			   	 $this-> MultiRow($RowArray,false,0);
+				 $this->cerrarDet();		
+		         $this->ln();
+			   
+		
+	}
 	
 	function calText($text, $tam){
 		

@@ -250,27 +250,22 @@ Phx.vista.RepAgenda=Ext.extend(Phx.frmInterfaz,{
 			type:'Field',
 			valorInicial: 'evento',
 			form:true 
+		},
+		{
+			config:{
+				name: 'comunicado',
+				fieldLabel: 'Comunicado',
+				qtip:'Texto del comunicado que se imprime al final de la agenda',
+				allowBlank: false,
+				anchor: '80%',
+				gwidth: 100,
+				maxLength:500
+			},
+			type:'TextArea',
+			id_grupo:1,
+			form:true
 		}
 		
-		/*
-		{
-            config:{
-                name: 'tipo_orden',
-                fieldLabel: 'Ordenación',
-                allowBlank: false,
-                anchor: '40%',
-                gwidth: 80,
-                typeAhead: true,
-                triggerAction: 'all',
-                lazyRender:true,
-                mode: 'local',
-                store:['evento','fecha']
-            },
-            type:'ComboBox',
-            valorInicial: 'fecha',
-            id_grupo:1,
-            form:true
-        }*/
 		  
 
     ],

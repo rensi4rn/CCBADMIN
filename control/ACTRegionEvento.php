@@ -161,8 +161,8 @@ class ACTRegionEvento extends ACTbase{
 		//Instancia la clase de pdf
 		
 		$reporte = new RAgenda($this->objParam);
-		$reporte->datosHeader($dataSource, $this->objParam->getParametro('desde'),$this->objParam->getParametro('hasta'));
-		
+		$reporte->datosHeader($dataSource, $this->objParam->getParametro('desde'),$this->objParam->getParametro('hasta'), $this->objParam->getParametro('comunicado'));
+			
 		$reporte->generarReporte();
 		$reporte->output($reporte->url_archivo,'F');
 		
@@ -238,7 +238,7 @@ class ACTRegionEvento extends ACTbase{
 			
 			$reporte = new RAgendaAnual($this->objParam);
 			$reporte->datosHeader($dataSource, $this->objParam->getParametro('desde'),$this->objParam->getParametro('hasta'));
-			
+		
 			$reporte->generarCasasOracion();
 			
 			$dataSource = $this->recuperarDatosAgendaAnual();
