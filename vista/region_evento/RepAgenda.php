@@ -256,10 +256,10 @@ Phx.vista.RepAgenda=Ext.extend(Phx.frmInterfaz,{
 				name: 'comunicado',
 				fieldLabel: 'Comunicado',
 				qtip:'Texto del comunicado que se imprime al final de la agenda',
-				allowBlank: false,
+				allowBlank: true,
 				anchor: '80%',
 				gwidth: 100,
-				maxLength:500
+				maxLength:50000
 			},
 			type:'TextArea',
 			id_grupo:1,
