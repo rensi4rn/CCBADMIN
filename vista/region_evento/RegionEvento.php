@@ -251,9 +251,17 @@ Phx.vista.RegionEvento=Ext.extend(Phx.gridInterfaz,{
 				fieldLabel: 'Fecha',
 				allowBlank: false,
 				anchor: '80%',
-				gwidth: 100,
+				gwidth: 180,
 				format: 'd/m/Y', 
-				renderer:function (value,p,record){return value?value.dateFormat('d/m/Y'):''}
+				renderer:function (value,p,record){
+					 var days = ['Dom','Lun','Mar','Mie','Jue','Vie','Sab'],
+					     sday = days[value.getDay()],
+					     sdate = value?value.dateFormat('d/m/Y'):'';
+					 
+   
+                     return String.format('{0}  ({1})', sdate,  sday);
+ 					
+					}
 			},
 			type:'DateField',
 			filters:{pfiltro:'rege.fecha_programada',type:'date'},
