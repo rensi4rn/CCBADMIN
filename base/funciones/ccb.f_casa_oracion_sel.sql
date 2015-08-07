@@ -209,7 +209,7 @@ BEGIN
             v_lugares = '0';
             v_filtro =  ' ';
             
-            IF  pxp.f_existe_parametro(p_tabla,'id_lugar')  THEN
+           IF  pxp.f_existe_parametro(p_tabla,'id_lugar')  THEN
             
                IF v_parametros.id_lugar is not null THEN
                   WITH RECURSIVE lugar_rec (id_lugar, id_lugar_fk, nombre) AS (
@@ -233,13 +233,7 @@ BEGIN
            END IF;
            
            
-           IF  pxp.f_existe_parametro(p_tabla,'id_eventos')  THEN
-             IF v_parametros.id_eventos is not null and v_parametros.id_eventos != '' THEN
-                v_filtro = v_filtro||' id_evento in ('||v_parametros.id_eventos||') and ';
-             END IF;
-           END IF;
-           
-           
+        
            
            --filtro de regiones
            IF  pxp.f_existe_parametro(p_tabla,'id_regiones')  THEN

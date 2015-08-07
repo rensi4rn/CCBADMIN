@@ -585,7 +585,7 @@ BEGIN
            --filtro de eventos
            IF  pxp.f_existe_parametro(p_tabla,'id_eventos')  THEN
              IF v_parametros.id_eventos is not null and v_parametros.id_eventos != '' THEN
-                v_filtro = v_filtro||' re,id_evento in ('||v_parametros.id_eventos||') and ';
+                v_filtro = v_filtro||' re.id_evento in ('||v_parametros.id_eventos||') and ';
              END IF;
            END IF;
            
