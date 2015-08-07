@@ -423,6 +423,97 @@ class MODRegionEvento extends MODbase{
 		//Devuelve la respuesta
 		return $this->respuesta;
 	}
+
+
+    function listarResumenBautizoSantaCena(){
+		//Definicion de variables para ejecucion del procedimientp
+		$this->procedimiento='ccb.f_region_evento_sel';
+		$this->transaccion='CCB_REGESCRES_SEL';
+		$this->tipo_procedimiento='SEL';//tipo de transaccion
+		$this->setCount(false);	
+		
+		//Define los parametros para la funcion
+		$this->setParametro('hasta','hasta','date');
+		$this->setParametro('id_regiones','id_regiones','varchar');
+		$this->setParametro('tipo_evento','tipo_evento','varchar');
+		
+				
+		//Definicion de la lista del resultado del query
+		$this->captura('fecha_programada','date');
+		$this->captura('estado','varchar');
+		$this->captura('id_region_evento','int4');
+		$this->captura('id_casa_oracion','integer');
+		$this->captura('id_region','int4');
+		$this->captura('nombre_region','varchar');
+		$this->captura('nombre_co','varchar');
+		$this->captura('cantidad_hermano','INTEGER');		
+		$this->captura('cantidad_hermana','INTEGER');		
+		$this->captura('id_gestion','int4');		
+		$this->captura('gestion','varchar');
+		$this->captura('id_detalle_evento_hermano','int4');
+		$this->captura('id_detalle_evento_hermana','int4');
+		$this->captura('id_evento','INTEGER');
+		$this->captura('codigo','varchar');
+		$this->captura('nombre','varchar');
+		$this->captura('id_usuario_mod','integer');
+		$this->captura('cuenta','varchar');
+		$this->captura('hora','time');
+		$this->captura('id_obrero','int4');
+		$this->captura('desc_obrero','text');
+		$this->captura('id_lugar','int4');
+		$this->captura('nombre_lugar','varchar');
+		
+		
+		
+  
+  
+		
+		//Ejecuta la instruccion
+		$this->armarConsulta();
+		$this->ejecutarConsulta();
+		
+		//Devuelve la respuesta
+		return $this->respuesta;
+	}
+
+    function listarResumenBautizoSantaCenaConsolidado(){
+		//Definicion de variables para ejecucion del procedimientp
+		$this->procedimiento='ccb.f_region_evento_sel';
+		$this->transaccion='CCB_RECONBSC_SEL';
+		$this->tipo_procedimiento='SEL';//tipo de transaccion
+		$this->setCount(false);	
+		
+		//Define los parametros para la funcion
+		$this->setParametro('hasta','hasta','date');
+		$this->setParametro('id_regiones','id_regiones','varchar');
+		$this->setParametro('tipo_evento','tipo_evento','varchar');
+		
+				
+		//Definicion de la lista del resultado del query
+		
+		$this->captura('id_casa_oracion','integer');
+		$this->captura('id_region','int4');
+		$this->captura('nombre_region','varchar');
+		$this->captura('nombre_co','varchar');
+		$this->captura('cantidad_hermano','INTEGER');		
+		$this->captura('cantidad_hermana','INTEGER');		
+		$this->captura('id_gestion','int4');		
+		$this->captura('gestion','varchar');
+		$this->captura('codigo','varchar');
+		$this->captura('nombre','varchar');
+		
+		
+		
+		
+		
+		
+		//Ejecuta la instruccion
+		$this->armarConsulta();
+		$this->ejecutarConsulta();
+		
+		//Devuelve la respuesta
+		return $this->respuesta;
+	}
 			
 }
 ?>

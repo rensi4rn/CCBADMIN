@@ -1646,3 +1646,76 @@ AS
   
 
 /********************************************F-DEP-RAC-ADMIN-0-12/11/2015*************************************/
+
+/********************************************I-DEP-RAC-ADMIN-0-22/02/2016*************************************/
+
+--------------- SQL ---------------
+
+CREATE OR REPLACE VIEW ccb.vevento_bautizo_santa_cena(
+    fecha_programada,
+    estado,
+    id_region_evento,
+    id_casa_oracion,
+    id_region,
+    nombre_region,
+    nombre_co,
+    cantidad_hermano,
+    cantidad_hermana,
+    id_gestion,
+    gestion,
+    id_detalle_evento_hermano,
+    id_detalle_evento_hermana,
+    id_evento,
+    codigo,
+    nombre,
+    id_usuario_mod,
+    cuenta,
+    hora,
+    id_obrero,
+    desc_obrero)
+AS
+  SELECT re.fecha_programada,
+         re.estado,
+         re.id_region_evento,
+         re.id_casa_oracion,
+         reg.id_region,
+         reg.nombre AS nombre_region,
+         co.nombre AS nombre_co,
+         deh.cantidad AS cantidad_hermano,
+         dee.cantidad AS cantidad_hermana,
+         ges.id_gestion,
+         ges.gestion,
+         deh.id_detalle_evento AS id_detalle_evento_hermano,
+         dee.id_detalle_evento AS id_detalle_evento_hermana,
+         ev.id_evento,
+         ev.codigo,
+         ev.nombre,
+         re.id_usuario_mod,
+         us.cuenta,
+         re.hora,
+         re.id_obrero,
+         ob.nombre_completo1 AS desc_obrero,
+         lug.id_lugar,
+         lug.nombre as nombre_lugar
+  FROM ccb.tregion_evento re
+       JOIN segu.tusuario us ON us.id_usuario = re.id_usuario_mod
+       JOIN ccb.tregion reg ON reg.id_region = re.id_region
+       JOIN ccb.tcasa_oracion co ON co.id_casa_oracion = re.id_casa_oracion
+       JOIN param.tlugar lug on lug.id_lugar = co.id_lugar
+       JOIN ccb.tdetalle_evento deh ON deh.id_region_evento =
+         re.id_region_evento
+       JOIN ccb.ttipo_ministerio tm ON tm.id_tipo_ministerio =
+         deh.id_tipo_ministerio AND tm.codigo::text = 'hermano'::text
+       JOIN ccb.tdetalle_evento dee ON dee.id_region_evento =
+         re.id_region_evento
+       JOIN ccb.ttipo_ministerio tm2 ON tm2.id_tipo_ministerio =
+         dee.id_tipo_ministerio AND tm2.codigo::text = 'hermana'::text
+       JOIN ccb.tevento ev ON ev.id_evento = re.id_evento
+       JOIN ccb.tgestion ges ON ges.id_gestion = re.id_gestion
+       LEFT JOIN ccb.vobrero ob ON ob.id_obrero = re.id_obrero
+  WHERE (ev.codigo::text = ANY (ARRAY [ 'bautizo'::text, 'santacena'::text ]))
+  AND
+        re.tipo_registro::text = 'detalle'::text;
+        
+/********************************************F-DEP-RAC-ADMIN-0-22/02/2016*************************************/
+       

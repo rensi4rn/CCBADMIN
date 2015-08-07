@@ -727,5 +727,10 @@ select pxp.f_insert_testructura_gui ('RESINEG', 'MOVECO');
 
 /********************************************F-DAT-RAC-CCB-1-19/02/2016********************************************/
 
+/********************************************I-DAT-RAC-CCB-1-22/02/2016********************************************/
 
+select pxp.f_insert_tgui ('Resumen Espiritual', 'REsumen espiritual , bautizos y santas cenas', 'RESBAUSAC', 'si', 10, 'sis_admin/vista/region_evento/RepResumenEve.php', 3, '', 'RepResumenEve', 'CCB');
 
+select pxp.f_insert_testructura_gui ('RESBAUSAC', 'CAREVE');
+
+/********************************************F-DAT-RAC-CCB-1-22/02/2016********************************************/

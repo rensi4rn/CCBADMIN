@@ -36,6 +36,7 @@ DECLARE
     v_tipolist			varchar;
     v_filtro 			varchar;
     v_order 			varchar;
+    v_id_gestion		integer;
 			    
 BEGIN
 
@@ -629,6 +630,140 @@ BEGIN
 			return v_consulta;
 						
 		end;
+    
+    /*********************************    
+ 	#TRANSACCION:  'CCB_REGESCRES_SEL'
+ 	#DESCRIPCION:	Consulta de santa cenas y bautizos para resumen
+ 	#AUTOR:		admin	
+ 	#FECHA:		13-01-2013 14:31:26
+	***********************************/
+
+	elsif(p_transaccion='CCB_REGESCRES_SEL')then
+     				
+    	begin
+    		
+           
+            
+            --obtenemos la gestion a partir  de la fecha
+            select 
+              g.id_gestion
+            into
+              v_id_gestion
+            from ccb.tgestion g  
+            where  v_parametros.hasta::date BETWEEN  ('01/01/'||g.gestion)::date and ('31/12/'||g.gestion)::date;
+            
+            
+            IF v_id_gestion is NULL THEN
+              raise exception 'No se encontro una gestión registrada para la fecha %',v_parametros.fecha; 
+            END IF;
+            
+            
+            
+            --Sentencia de la consulta
+			v_consulta:='SELECT 
+                                eve.fecha_programada,
+                                eve.estado,
+                                eve.id_region_evento,
+                                eve.id_casa_oracion,
+                                eve.id_region,
+                                eve.nombre_region,
+                                eve.nombre_co,
+                                eve.cantidad_hermano::int4,
+                                eve.cantidad_hermana::int4,
+                                eve.id_gestion,
+                                eve.gestion,
+                                eve.id_detalle_evento_hermano,
+                                eve.id_detalle_evento_hermana,
+                                eve.id_evento,
+                                eve.codigo,
+                                eve.nombre,
+                                eve.id_usuario_mod,
+                                eve.cuenta,
+                                eve.hora,
+                                id_obrero,
+                                desc_obrero,
+                                eve.id_lugar,
+                                eve.nombre_lugar
+                          FROM 
+                            ccb.vevento_bautizo_santa_cena eve
+                            
+                        where     eve.id_region in ('||COALESCE(v_parametros.id_regiones,'0')||')
+                             and  eve.id_gestion = '||COALESCE(v_id_gestion,0)::Varchar||'
+                             and eve.codigo::text = '''||v_parametros.tipo_evento||''' 
+			              order  by eve.nombre_region ,eve.fecha_programada, eve.nombre_co ';
+           
+			--Devuelve la respuesta
+			return v_consulta;
+						
+		end;
+     /*********************************    
+ 	#TRANSACCION:  'CCB_RECONBSC_SEL'
+ 	#DESCRIPCION:	Consulta de santa cenas y bautizos para resumen consolidado
+ 	#AUTOR:		admin	
+ 	#FECHA:		13-01-2013 14:31:26
+	***********************************/
+
+	elsif(p_transaccion='CCB_RECONBSC_SEL')then
+     				
+    	begin
+    		
+           
+            
+            --obtenemos la gestion a partir  de la fecha
+            select 
+              g.id_gestion
+            into
+              v_id_gestion
+            from ccb.tgestion g  
+            where  v_parametros.hasta::date BETWEEN  ('01/01/'||g.gestion)::date and ('31/12/'||g.gestion)::date;
+            
+            
+            IF v_id_gestion is NULL THEN
+              raise exception 'No se encontro una gestión registrada para la fecha %',v_parametros.fecha; 
+            END IF;
+            
+            
+            
+            --Sentencia de la consulta
+			v_consulta:='SELECT 
+                               
+                               
+                              
+                                eve.id_casa_oracion,
+                                eve.id_region,
+                                eve.nombre_region,
+                                eve.nombre_co,
+                                sum(eve.cantidad_hermano)::int4,
+                                sum(eve.cantidad_hermana)::int4,
+                                eve.id_gestion,
+                                eve.gestion,
+                                eve.codigo,
+                                eve.nombre
+                          FROM 
+                            ccb.vevento_bautizo_santa_cena eve
+                            
+                           
+                            
+                        where     eve.id_region in ('||COALESCE(v_parametros.id_regiones,'0')||')
+                             and  eve.id_gestion = '||COALESCE(v_id_gestion,0)::Varchar||'
+                             and eve.codigo::text = '''||v_parametros.tipo_evento||''' 
+			            group by
+                                eve.id_casa_oracion,
+                                eve.id_region,
+                                eve.nombre_region,
+                                eve.nombre_co,
+                                eve.id_gestion,
+                                eve.gestion,
+                                eve.codigo,
+                                eve.nombre
+                        order  by eve.nombre_region , eve.nombre_co ';
+           
+			--Devuelve la respuesta
+            raise notice '%',v_consulta;
+			return v_consulta;
+						
+		end;
+    
     else
 					     
 		raise exception 'Transaccion inexistente';

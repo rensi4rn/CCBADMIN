@@ -12,6 +12,8 @@ require_once(dirname(__FILE__).'/../../lib/lib_reporte/smarty/ksmarty.php');
 require_once dirname(__FILE__).'/../../pxp/lib/lib_reporte/ReportePDFFormulario.php';
 require_once(dirname(__FILE__).'/../reportes/RAgenda.php');
 require_once(dirname(__FILE__).'/../reportes/RAgendaAnual.php');
+require_once(dirname(__FILE__).'/../reportes/RResumenEve.php');
+require_once(dirname(__FILE__).'/../reportes/RResumenEveCon.php');
 
 
 class ACTRegionEvento extends ACTbase{    
@@ -282,6 +284,72 @@ class ACTRegionEvento extends ACTbase{
 			$this->mensajeExito->imprimirRespuesta($this->mensajeExito->generarJson());
 		
 	}
+
+    function recuperarDatosResumen($tipo_imp){
+    	
+		$this->objFunc = $this->create('MODRegionEvento');
+		
+		if($tipo_imp == 'detallado'){
+			$cbteHeader = $this->objFunc->listarResumenBautizoSantaCena($this->objParam);
+		}
+		else{
+			$cbteHeader = $this->objFunc->listarResumenBautizoSantaCenaConsolidado($this->objParam);
+		}
+		
+		if($cbteHeader->getTipo() == 'EXITO'){
+				
+			return $cbteHeader;
+		}
+        else{
+		    $cbteHeader->imprimirRespuesta($cbteHeader->generarJson());
+			exit;
+		}              
+		
+    }
+	
+	 
+	
+	
+	
+	function reporteResumen(){
+			
+		$nombreArchivo = uniqid(md5(session_id()).'Egresos') . '.pdf'; 
+		
+		$dataSource = $this->recuperarDatosResumen($this->objParam->getParametro('tipo_imp'));	
+		
+		
+		//parametros basicos
+		$tamano = 'LETTER';
+		$orientacion = 'P';		
+		$titulo = 'Consolidado';
+		
+		
+		$this->objParam->addParametro('orientacion',$orientacion);
+		$this->objParam->addParametro('tamano',$tamano);		
+		$this->objParam->addParametro('titulo_archivo',$titulo);	
+        
+		$this->objParam->addParametro('nombre_archivo',$nombreArchivo);
+		//Instancia la clase de pdf
+		if($this->objParam->getParametro('tipo_imp') == 'detallado'){
+			$reporte = new RResumenEve($this->objParam);   
+		}
+		else{
+			$reporte = new RResumenEveCon($this->objParam);   
+		}
+		
+        $reporte->datosHeader($dataSource->getDatos(),  $dataSource->extraData);
+		//$this->objReporteFormato->renderDatos($this->res2->datos);
+		
+		$reporte->generarReporte();
+		$reporte->output($reporte->url_archivo,'F');
+		
+		$this->mensajeExito=new Mensaje();
+		$this->mensajeExito->setMensaje('EXITO','Reporte.php','Reporte generado','Se generó con éxito el reporte: '.$nombreArchivo,'control');
+		$this->mensajeExito->setArchivoGenerado($nombreArchivo);
+		$this->mensajeExito->imprimirRespuesta($this->mensajeExito->generarJson());
+		
+	}
+
 	
 	
 	
