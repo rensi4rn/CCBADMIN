@@ -59,6 +59,7 @@ DECLARE
     v_estado_periodo_ant			varchar;
     v_id_estado_periodo_ant			integer;
     v_ingreso_devolucion			numeric;
+    v_saldo_adm_inicial				numeric;
   
 BEGIN
 
@@ -204,10 +205,12 @@ BEGIN
             
             
             
+            v_saldo_adm_inicial = v_ingreso_inicial - v_egreso_inicial_por_rendir;
+            
             --Definicion de la respuesta
             v_resp = pxp.f_agrega_clave(v_resp,'mensaje','saldos calculados'); 
             v_resp = pxp.f_agrega_clave(v_resp,'v_ingreso_colectas',v_ingreso_colectas::varchar);
-            v_resp = pxp.f_agrega_clave(v_resp,'v_ingreso_traspasos',v_ingreso_traspasos::varchar);
+             v_resp = pxp.f_agrega_clave(v_resp,'v_ingreso_traspasos',v_ingreso_traspasos::varchar);
             v_resp = pxp.f_agrega_clave(v_resp,'v_ingreso_devolucion',v_ingreso_devolucion::varchar);
            
             
@@ -222,6 +225,7 @@ BEGIN
             v_resp = pxp.f_agrega_clave(v_resp,'v_saldo_efectivo',v_saldo_efectivo::varchar);
             v_resp = pxp.f_agrega_clave(v_resp,'v_saldo_adm',v_saldo_adm::varchar);
             v_resp = pxp.f_agrega_clave(v_resp,'v_sado_x_rendir',v_sado_x_rendir::varchar);
+            v_resp = pxp.f_agrega_clave(v_resp,'v_saldo_adm_inicial',v_saldo_adm_inicial::varchar);
     
    
     return  v_resp;

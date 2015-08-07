@@ -15,6 +15,8 @@ require_once(dirname(__FILE__).'/../reportes/RIngresos.php');
 require_once(dirname(__FILE__).'/../reportes/RColectas.php');
 require_once(dirname(__FILE__).'/../reportes/RCbteRendicion.php');
 require_once(dirname(__FILE__).'/../reportes/RResumen.php');
+require_once(dirname(__FILE__).'/../reportes/RResumenDet.php');
+
 
 class ACTMovimiento extends ACTbase{    
 			
@@ -646,8 +648,11 @@ class ACTMovimiento extends ACTbase{
 		
 		//parametros basicos
 		$tamano = 'LETTER';
-		$orientacion = 'P';
+		$orientacion = 'L';
 		$titulo = 'Consolidado';
+		if($this->objParam->getParametro('tipo_imp')=='consolidado'){			
+		    $orientacion = 'P';		
+		}
 		
 		$this->objParam->addParametro('orientacion',$orientacion);
 		$this->objParam->addParametro('tamano',$tamano);		
@@ -656,7 +661,13 @@ class ACTMovimiento extends ACTbase{
 		$this->objParam->addParametro('nombre_archivo',$nombreArchivo);
 		//Instancia la clase de pdf
 		
-		$reporte = new RResumen($this->objParam);
+		if($this->objParam->getParametro('tipo_imp')=='consolidado'){
+               $reporte = new RResumen($this->objParam);   
+         }
+		else{
+               $reporte = new RResumenDet($this->objParam);   
+         }
+		
 		$reporte->datosHeader($dataSource->getDatos(),  $dataSource->extraData);
 		//$this->objReporteFormato->renderDatos($this->res2->datos);
 		

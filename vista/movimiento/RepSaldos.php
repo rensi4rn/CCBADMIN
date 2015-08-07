@@ -348,11 +348,12 @@ Phx.vista.RepSaldos=Ext.extend(Phx.frmInterfaz,{
        console.log(reg);
        var deco = reg.ROOT.datos,
        	   plantilla = "<div style='overflow-y: initial;'><br><b>CUENTA DEL PRIMER DIA DEL AÑO  A LA FECHA SEÑALADA</b><br><p> \
+       					Ingreso  Inicial  considera:  el saldo en adminsitración + saldo por rendir,  al 31 de diciembre de la gestion anterior </br>\
        					Ingreso  Inicial: {0} </br>\
 						<b>Ingreso por Colectas: {1}</b></br>\
 						Ingreso por Devolucion: {2}</br>\
 						Ingreso por Traspasos: {3}</br>\
-						Ingreso Total =  (Ingreso por Traspasos) + (Ingreso por colectas) + (Ingreso  Inicial) + (Devoluciones)</br>\
+						Ingreso Total =  (Ingreso por Traspasos) + (Ingreso por colectas) + (Ingreso  Inicial)</br>\
 						Ingreso Total: {4}</br></br>\
 						Egresos por operación: {5}</br>\
 						Egresos inicial por rendir: {6}</br>\
@@ -363,7 +364,7 @@ Phx.vista.RepSaldos=Ext.extend(Phx.frmInterfaz,{
 						<b>Egreso Efectivo: {10}</br></b></br>\
 						Saldo en efectivo =  (Ingreso Total) - (Egreso Efectivo) - (Egresos por Traspaso)</br>\
 						Saldo en efectivo: {11}</br></br>\
-						Saldo en la administración =  (Ingreso Total)  - (Egresos por Traspaso) - (Egresos por operación) - (Egresos contra rendición)</br>\
+						Saldo en la administración =  (Ingreso Total)  + (Ingreso por Devolución) - (Egresos por Traspaso) - (Egresos por operación) - (Egresos contra rendición)- (Egresos inicial por rendir)<</br>\
 						<b>Saldo en la administración: {12}</b></br></br>\
 						Saldo por Rendir =  (Egresos inicial por rendir) + (Egresos contra rendición)  - (Rendiciones) - (devoluciones)</br>\
 						Saldo por Rendir: {13}</br></br></div>";

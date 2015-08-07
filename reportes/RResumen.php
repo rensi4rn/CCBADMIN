@@ -172,7 +172,7 @@ class RResumen extends  ReportePDF {
 		$RowArray = array(
             			'nro'  => $count,
                         'casa' => "\t\t\t\t\t\t".$val['nombre_casa_oracion'],
-                        'inicio' => $val['ingreso_inicial'],
+                        'inicio' => $val2['ingreso_inicial'],
                         'ingreso' => $val2['ingreso'],
                         'egreso' => $val2['egreso'],
                         'final' => $val2['saldo_adm']);
@@ -213,13 +213,15 @@ class RResumen extends  ReportePDF {
 		$retorno['saldo_adm'] =  $retorno['ingreso_total'] + $val['devolucion'] - $val['egreso_traspaso'] - $val['egreso_operacion'] - $val['egresos_contra_rendicion']- $val['egreso_inicial_por_rendir'];
 		$retorno['ingreso'] = $val['ingreso_colectas'] + $val['ingreso_traspasos'] - $val['egreso_traspaso'];
 		$retorno['egreso'] = $val['egreso_operacion'] + $val['egresos_contra_rendicion'] - $val['devolucion'];
+		$retorno['ingreso_inicial'] = $val['ingreso_inicial'] - $val['egreso_inicial_por_rendir'];
 		
-		$this->s1 = $this->s1 + $val['ingreso_inicial'];
+		
+		$this->s1 = $this->s1 + $retorno['ingreso_inicial'];
 		$this->s2 = $this->s2 + $retorno['ingreso'];
 		$this->s3 = $this->s3 + $retorno['egreso'];
 		$this->s4 = $this->s4 + $retorno['saldo_adm'];
 		
-		$this->t1 = $this->t1 + $val['ingreso_inicial'];
+		$this->t1 = $this->t1 + $retorno['ingreso_inicial'];
 		$this->t2 = $this->t2 + $retorno['ingreso'];
 		$this->t3 = $this->t3 + $retorno['egreso'];
 		$this->t4 = $this->t4 + $retorno['saldo_adm'];
