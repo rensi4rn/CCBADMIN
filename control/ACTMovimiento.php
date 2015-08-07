@@ -14,6 +14,7 @@ require_once(dirname(__FILE__).'/../reportes/REgresos.php');
 require_once(dirname(__FILE__).'/../reportes/RIngresos.php');
 require_once(dirname(__FILE__).'/../reportes/RColectas.php');
 require_once(dirname(__FILE__).'/../reportes/RCbteRendicion.php');
+require_once(dirname(__FILE__).'/../reportes/RResumen.php');
 
 class ACTMovimiento extends ACTbase{    
 			
@@ -294,6 +295,10 @@ class ACTMovimiento extends ACTbase{
 		$this->res=$this->objFunc->calcularSaldos($this->objParam);
 		$this->res->imprimirRespuesta($this->res->generarJson());
 	}
+	
+	
+	
+	
 	function comprobanteOfrendas(){
 		$this->objFunc=$this->create('MODMovimiento');	
 		$this->res=$this->objFunc->comprobanteOfrendas($this->objParam);
@@ -604,6 +609,55 @@ class ACTMovimiento extends ACTbase{
 		//$reporte->datosHeader($dataSource->getDatos(),  $dataSource->extraData);
 		$reporte->datosHeader($dataSourceSaldos,  $dataSourceRendiciones, $dataSourceDevoluciones,$dataSourceRendiciones->extraData, $dataSourceEgresos);
 		
+		//$this->objReporteFormato->renderDatos($this->res2->datos);
+		
+		$reporte->generarReporte();
+		$reporte->output($reporte->url_archivo,'F');
+		
+		$this->mensajeExito=new Mensaje();
+		$this->mensajeExito->setMensaje('EXITO','Reporte.php','Reporte generado','Se generó con éxito el reporte: '.$nombreArchivo,'control');
+		$this->mensajeExito->setArchivoGenerado($nombreArchivo);
+		$this->mensajeExito->imprimirRespuesta($this->mensajeExito->generarJson());
+		
+	}
+
+    function recuperarDatosResumen(){
+    	
+		$this->objFunc = $this->create('MODMovimiento');
+		$cbteHeader = $this->objFunc->reporteResumen($this->objParam);
+		if($cbteHeader->getTipo() == 'EXITO'){
+				
+			return $cbteHeader;
+		}
+        else{
+		    $cbteHeader->imprimirRespuesta($cbteHeader->generarJson());
+			exit;
+		}              
+		
+    }
+	
+	
+	
+	function reporteResumen(){
+			
+		$nombreArchivo = uniqid(md5(session_id()).'Egresos') . '.pdf'; 
+		$dataSource = $this->recuperarDatosResumen();	
+		
+		
+		//parametros basicos
+		$tamano = 'LETTER';
+		$orientacion = 'P';
+		$titulo = 'Consolidado';
+		
+		$this->objParam->addParametro('orientacion',$orientacion);
+		$this->objParam->addParametro('tamano',$tamano);		
+		$this->objParam->addParametro('titulo_archivo',$titulo);	
+        
+		$this->objParam->addParametro('nombre_archivo',$nombreArchivo);
+		//Instancia la clase de pdf
+		
+		$reporte = new RResumen($this->objParam);
+		$reporte->datosHeader($dataSource->getDatos(),  $dataSource->extraData);
 		//$this->objReporteFormato->renderDatos($this->res2->datos);
 		
 		$reporte->generarReporte();

@@ -26,8 +26,7 @@ class RAgenda extends  ReportePDF {
 		$this->comunicado = $comunicado;
 		
 		$this->tipo_imp =  $this->objParam->getParametro('tipo_imp');
-		//$this->SetMargins(5, 20, 10);
-		$this->SetMargins(5, 20, 10);
+		$this->SetMargins(5, 22, 10);
 		
 		
 		
@@ -35,9 +34,13 @@ class RAgenda extends  ReportePDF {
 	
 	function Header() {
 		
-		//$this->Image(dirname(__FILE__).'/../../lib/imagenes/logos/logo.png', 10,5,45,20);
+		$this->Image(dirname(__FILE__).'/../../lib/imagenes/logos/logo.jpg', 60,5,32.4,14.4);
 		
-		$titulo = 'CONGREGACIÓN CRISTIANA EN BOLIVIA';
+		if($this->tipo_imp == 'doble'){
+		   $this->Image(dirname(__FILE__).'/../../lib/imagenes/logos/logo.jpg', 115,5,32.4,14.4);
+		}
+		
+		$titulo = 'Agenda CCB';
 		$titulo2 = 'Del '.$this->desde.' al '.$this->hasta;	
 			
 		//cabecera del reporte

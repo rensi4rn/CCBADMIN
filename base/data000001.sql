@@ -717,3 +717,15 @@ select pxp.f_insert_testructura_gui ('REPCOL', 'MOVECO');
 
 /********************************************F-DAT-RAC-CCB-1-25/10/2015********************************************/
 
+
+
+/********************************************I-DAT-RAC-CCB-1-19/02/2016********************************************/
+
+
+select pxp.f_insert_tgui ('Resumen de Ingresos y Egresos', 'Resumen de Ingresos y Egresos', 'RESINEG', 'si', 11, 'sis_admin/vista/movimiento/RepResumen.php', 3, '', 'RepResumen', 'CCB');
+select pxp.f_insert_testructura_gui ('RESINEG', 'MOVECO');
+
+/********************************************F-DAT-RAC-CCB-1-19/02/2016********************************************/
+
+
+

@@ -116,10 +116,6 @@ BEGIN
                                                                          p_id_ot);
                                                                          
                                                                          
-            -- determinar el total ingreso  (v_ingreso_total =  v_ingreso_traspasos + v_ingreso_colectas + v_ingreso_inicial )
-            
-            v_ingreso_total =  v_ingreso_traspasos + v_ingreso_colectas + v_ingreso_inicial + v_ingreso_devolucion;
-            
             
             
             -- deterimnar egresos por operacion  (v_egreso_operacion)
@@ -178,17 +174,32 @@ BEGIN
                                                                          p_id_ot);
             
             
+            ------------------------------------------------------------------------------------
+            --  EL ingreso inicial  debe incluer el saldo en efectivo en la administracion
+            --  mas los montos no rendidos de año pasado lo que este año viene a ser
+            --  (v_egreso_inicial_por_rendir) que no es un dinero en manos de la administración
+            --  TODO revisar como se calcula el ingreso inicial
+            --------------------------------------------------------------------------------------
             
-            -- determinar total egresos efectivo  (v_egreso_efectivo = v_egreso_operacion + v_egresos_rendidos)
+            
+            -- determinar el total ingreso  (v_ingreso_total =  v_ingreso_traspasos + v_ingreso_colectas + v_ingreso_inicial )
+             -- REVISADO OK,  --mo licluye las devoluciones por que  seria un doble ingreso
+            v_ingreso_total =  v_ingreso_traspasos + v_ingreso_colectas + v_ingreso_inicial;
+            
+            
+            
+            -- REVISADO OK,   determinar total egresos efectivo  (v_egreso_efectivo = v_egreso_operacion + v_egresos_rendidos)
             v_egreso_efectivo = v_egreso_operacion + v_egresos_rendidos;
            
+       
             -- determinar saldo efectivo (v_saldo_efectivo =  v_ingreso_total - v_egreso_efectivo - v_egreso_traspaso)
+            -- REVISADO OK,
             v_saldo_efectivo =  v_ingreso_total - v_egreso_efectivo - v_egreso_traspaso;
             
             -- determinar saldo administracion (v_saldo_adm =  v_ingreso_total  - v_egreso_traspaso - v_egreso_operacion - v_egresos_contra_rendicion)
-            v_saldo_adm =  v_ingreso_total  - v_egreso_traspaso - v_egreso_operacion - v_egresos_contra_rendicion;
+            v_saldo_adm =  v_ingreso_total + v_ingreso_devolucion  - v_egreso_traspaso - v_egreso_operacion - v_egresos_contra_rendicion - v_egreso_inicial_por_rendir;
             
-            -- determinar saldo que falta por rendir  (v_sado_x_rendir =  v_egreso_inicial_por_rendir + v_egresos_contra_rendicion  - v_egresos_rendidos - v_ingreso_devolucion)
+            -- REVISADO OK,   determinar saldo que falta por rendir  (v_sado_x_rendir =  v_egreso_inicial_por_rendir + v_egresos_contra_rendicion  - v_egresos_rendidos - v_ingreso_devolucion)
             v_sado_x_rendir =  v_egreso_inicial_por_rendir + v_egresos_contra_rendicion  - v_egresos_rendidos - v_ingreso_devolucion;
             
             
