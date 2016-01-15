@@ -59,7 +59,7 @@ BEGIN
 						from ccb.tgestion ges
 						inner join segu.tusuario usu1 on usu1.id_usuario = ges.id_usuario_reg
 						left join segu.tusuario usu2 on usu2.id_usuario = ges.id_usuario_mod
-				        where  ';
+				        where ges.estado_reg = ''activo'' and ';
 			
 			--Definicion de la respuesta
 			v_consulta:=v_consulta||v_parametros.filtro;
@@ -85,7 +85,7 @@ BEGIN
 					    from ccb.tgestion ges
 					    inner join segu.tusuario usu1 on usu1.id_usuario = ges.id_usuario_reg
 						left join segu.tusuario usu2 on usu2.id_usuario = ges.id_usuario_mod
-					    where ';
+					    where ges.estado_reg = ''activo'' and ';
 			
 			--Definicion de la respuesta		    
 			v_consulta:=v_consulta||v_parametros.filtro;
