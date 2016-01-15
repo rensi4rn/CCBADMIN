@@ -5,4 +5,4 @@ Sistema para la administración de la CCB,
 tiene funcionalidad para 
 agenda, directorio, ingresos, egresos, reportes
 
-Se instala sobre el framework PXP 
+Se instala sobre el framework PXP  (https://github.com/kplian/pxp) 
