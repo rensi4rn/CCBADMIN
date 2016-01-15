@@ -111,9 +111,11 @@ BEGIN
 	elsif(p_transaccion='CCB_GES_ELI')then
 
 		begin
-			--Sentencia de la eliminacion
-			delete from ccb.tgestion
-            where id_gestion=v_parametros.id_gestion;
+			
+            --Sentencia de la modificacion
+			update ccb.tgestion set
+			  estado_reg = 'inactivo'
+			where id_gestion=v_parametros.id_gestion;
                
             --Definicion de la respuesta
             v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Gestión eliminado(a)'); 
