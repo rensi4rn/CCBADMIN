@@ -20,7 +20,7 @@ class REgresos extends  ReportePDF {
 	
 	function Header() {
 		//cabecera del reporte
-		//$this->Image(dirname(__FILE__).'/../../lib/imagenes/logos/logo.png', 10,5,45,20);
+		$this->Image(dirname(__FILE__).'/../../lib/imagenes/logos/logo.jpg', 10,5,45,20);
 		$this->ln(5);
 		$this->SetFont('','BU',12);
 		
