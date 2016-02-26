@@ -38,7 +38,7 @@ class RResumenEve extends  ReportePDF {
 		$this->Cell(0,5,"INFORME ESPIRITUAL",0,1,'C');		
 		$this->Ln(1);
 		
-		if($this->objParam->getParametro('hasta') == 'bautizo'){
+		if($this->objParam->getParametro('tipo_evento') == 'bautizo'){
 			$this->Cell(0,5,"BAUTISMOS",0,1,'C');	
 		}
 		else {
