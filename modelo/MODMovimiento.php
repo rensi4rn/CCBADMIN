@@ -569,6 +569,7 @@ class MODMovimiento extends MODbase{
 		//Define los parametros para la funcion
 		$this->setParametro('hasta','hasta','date');
 		$this->setParametro('id_regiones','id_regiones','varchar');
+		$this->setParametro('colectas','colectas','varchar');
 		
 		$this->captura('id_casa_oracion','int4');		
 		$this->captura('nombre_casa_oracion','varchar');
@@ -595,6 +596,49 @@ class MODMovimiento extends MODbase{
 		//Devuelve la respuesta
 		return $this->respuesta;
 	}
+
+     function reporteResumenDetallado(){
+		//Definicion de variables para ejecucion del procedimiento
+		$this->procedimiento='ccb.f_movimiento_record_sel';
+		$this->transaccion='CCB_MOVRESDET_REP';
+		$this->tipo_procedimiento='SEL';//tipo de transaccion
+		$this->setCount(false);	
+		$this->setTipoRetorno('record');
+		
+		//Define los parametros para la funcion
+		$this->setParametro('hasta','hasta','date');
+		$this->setParametro('id_regiones','id_regiones','varchar');
+		$this->setParametro('colectas','colectas','varchar');
+		
+		$this->captura('id_casa_oracion','int4');		
+		$this->captura('nombre_casa_oracion','varchar');
+		$this->captura('id_region','int4');
+		$this->captura('nombre_region','varchar');		
+		$this->captura('id_lugar','int4');
+		$this->captura('nombre_lugar','varchar');
+		$this->captura('id_tipo_movimiento','int4');
+        $this->captura('nombre_colecta','varchar');
+        $this->captura('codigo_colecta','varchar');		
+		$this->captura('ingreso_traspasos','numeric');
+		$this->captura('devolucion','numeric');
+		$this->captura('ingreso_colectas','numeric');
+		$this->captura('ingreso_inicial','numeric');
+		$this->captura('egreso_operacion','numeric');
+		$this->captura('egreso_traspaso','numeric');
+		$this->captura('egresos_contra_rendicion','numeric');
+		$this->captura('egresos_rendidos','numeric');
+		$this->captura('egreso_inicial_por_rendir','numeric');	
+		
+		
+		
+		//Ejecuta la instruccion
+		$this->armarConsulta();
+		$this->ejecutarConsulta();
+
+		//Devuelve la respuesta
+		return $this->respuesta;
+	 }
+
 	
 	 function comprobanteOfrendas(){
 		//Definicion de variables para ejecucion del procedimiento

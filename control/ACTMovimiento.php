@@ -16,6 +16,7 @@ require_once(dirname(__FILE__).'/../reportes/RColectas.php');
 require_once(dirname(__FILE__).'/../reportes/RCbteRendicion.php');
 require_once(dirname(__FILE__).'/../reportes/RResumen.php');
 require_once(dirname(__FILE__).'/../reportes/RResumenDet.php');
+require_once(dirname(__FILE__).'/../reportes/RResumenDetXColecta.php');
 
 
 class ACTMovimiento extends ACTbase{    
@@ -623,12 +624,20 @@ class ACTMovimiento extends ACTbase{
 		
 	}
 
-    function recuperarDatosResumen(){
+    function recuperarDatosResumen($colectas){
     	
 		$this->objFunc = $this->create('MODMovimiento');
-		$cbteHeader = $this->objFunc->reporteResumen($this->objParam);
-		if($cbteHeader->getTipo() == 'EXITO'){
-				
+		
+		if($colectas == 'consolidado'){
+			$cbteHeader = $this->objFunc->reporteResumen($this->objParam);
+		}
+		else{
+			$cbteHeader = $this->objFunc->reporteResumenDetallado($this->objParam);
+		}
+		
+		
+		
+		if($cbteHeader->getTipo() == 'EXITO'){				
 			return $cbteHeader;
 		}
         else{
@@ -643,7 +652,7 @@ class ACTMovimiento extends ACTbase{
 	function reporteResumen(){
 			
 		$nombreArchivo = uniqid(md5(session_id()).'Egresos') . '.pdf'; 
-		$dataSource = $this->recuperarDatosResumen();	
+		$dataSource = $this->recuperarDatosResumen($this->objParam->getParametro('colectas'));	
 		
 		
 		//parametros basicos
@@ -665,8 +674,15 @@ class ACTMovimiento extends ACTbase{
                $reporte = new RResumen($this->objParam);   
          }
 		else{
-               $reporte = new RResumenDet($this->objParam);   
-         }
+               	
+               if($this->objParam->getParametro('colectas')=='consolidado'){	
+                 $reporte = new RResumenDet($this->objParam); 
+			   }
+			   else{
+			   	  $reporte = new RResumenDetXColecta($this->objParam); 
+			   }  
+         
+		}
 		
 		$reporte->datosHeader($dataSource->getDatos(),  $dataSource->extraData);
 		//$this->objReporteFormato->renderDatos($this->res2->datos);

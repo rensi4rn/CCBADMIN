@@ -119,6 +119,31 @@ Phx.vista.RepResumen=Ext.extend(Phx.frmInterfaz,{
             valorInicial:'doble',
             form:true
         },
+        {
+            config:{
+                name: 'colectas',
+                fieldLabel: 'Colectas',
+                allowBlank: false,
+                qtip:'Muesta las colectas divididas o consolidadas',
+                emptyText:'Tipo Obligacion',
+                store:new Ext.data.ArrayStore({
+                            fields: ['variable', 'valor'],
+                            data : [  ['consolidado','Consolidado'],
+                                      ['dividido','Detallado']]
+                                    }),
+                valueField: 'variable',
+                value:'consolidado',
+                displayField: 'valor',
+                forceSelection: true,
+                triggerAction: 'all',
+                lazyRender: true,
+                mode: 'local',
+                width:210,
+            },
+            type:'ComboBox',
+            valorInicial:'consolidado',
+            form:true
+        }
 		
 		  
 
