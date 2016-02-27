@@ -141,7 +141,7 @@ class RResumenCODet extends  ReportePDF {
 		
 		$RowArray = array(
             			'nro'  => 'Nro',
-                        'casa' => 'Región/Casa Oración',
+                        'casa' => 'Mes/Colecta',
                         's1' => 'Inicial',    //ingreso_inicial
                         's2' => 'Colectas',        //ingreso_colectas
                         's3' => 'Traspaso',           //ingreso_traspasos
