@@ -665,7 +665,7 @@ BEGIN
 			
 			--Definicion de la respuesta
 			
-			v_consulta:=v_consulta||'  order by tc.prioridad ASC, mov.fecha ASC, mov.id_movimiento_det desc';
+			v_consulta:=v_consulta||'  order by tc.prioridad ASC, mov.fecha ASC, mov.id_movimiento_det ASC';
            
 			--Devuelve la respuesta
 			return v_consulta;

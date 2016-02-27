@@ -17,6 +17,8 @@ require_once(dirname(__FILE__).'/../reportes/RCbteRendicion.php');
 require_once(dirname(__FILE__).'/../reportes/RResumen.php');
 require_once(dirname(__FILE__).'/../reportes/RResumenDet.php');
 require_once(dirname(__FILE__).'/../reportes/RResumenDetXColecta.php');
+require_once(dirname(__FILE__).'/../reportes/RResumenXColecta.php');
+
 
 
 class ACTMovimiento extends ACTbase{    
@@ -671,7 +673,13 @@ class ACTMovimiento extends ACTbase{
 		//Instancia la clase de pdf
 		
 		if($this->objParam->getParametro('tipo_imp')=='consolidado'){
-               $reporte = new RResumen($this->objParam);   
+             
+			   if($this->objParam->getParametro('colectas')=='consolidado'){	
+                 $reporte = new RResumen($this->objParam); 
+			   }
+			   else{
+			   	  $reporte = new RResumenXColecta($this->objParam); 
+			   }   
          }
 		else{
                	

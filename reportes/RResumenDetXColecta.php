@@ -261,7 +261,6 @@ class RResumenDetXColecta extends  ReportePDF {
 				$this->imprimirCasaOracion($val["nombre_casa_oracion"],$fill);
 				$fill = !$fill;
 				$sw1 = 1;
-				//$sw = 1;
 				$ult_casa = $val["nombre_casa_oracion"];
 			}
 			
@@ -546,21 +545,7 @@ class RResumenDetXColecta extends  ReportePDF {
 		$this->getNumLines($row['cell1data'], 80);
 		
 		if (($startY + 4 * 6) + $dimensions['bm'] > ($dimensions['hk'])) {
-		    /*	
-			$k = 	($startY + 4 * 6) + $dimensions['bm'] - ($dimensions['hk']);
-			for($i=0;$i<=k;$i++){
-				
-				//if($this->total!= 0){
-					
-				$this->ln();
-				$this->ln();
-				$this->ln();
-				$this->ln();  
-				
-				
-				 //$this->AddPage();
-			    
-			} */
+		    
 			$this->AddPage();
 		    $this->generarCabecera();
 		    
