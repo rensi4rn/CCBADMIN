@@ -402,7 +402,7 @@ class RResumenXColecta extends  ReportePDF {
 		$startY = $this->GetY();
 		$this->getNumLines($row['cell1data'], 80);
 		
-		if (($startY + 4 * 6) + $dimensions['bm'] > ($dimensions['hk'])) {
+		if (($startY + 10 * 6) + $dimensions['bm'] > ($dimensions['hk'])) {
 		    
 			$this->AddPage();
 		    $this->generarCabecera();
