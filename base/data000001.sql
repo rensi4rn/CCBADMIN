@@ -734,3 +734,15 @@ select pxp.f_insert_tgui ('Resumen Espiritual', 'REsumen espiritual , bautizos y
 select pxp.f_insert_testructura_gui ('RESBAUSAC', 'CAREVE');
 
 /********************************************F-DAT-RAC-CCB-1-22/02/2016********************************************/
+
+
+
+
+/********************************************I-DAT-RAC-CCB-1-01/04/2016********************************************/
+
+select pxp.f_insert_tgui ('Reporte Económico por Casas de Oración', 'Reporte Económico por Casas de Oración', 'REXCO', 'si', 15, 'sis_admin/vista/movimiento/RepResumenCODet.php', 3, '', 'RepResumenCODet', 'CCB');
+select pxp.f_insert_testructura_gui ('REXCO', 'MOVECO');
+
+/********************************************F-DAT-RAC-CCB-1-01/04/2016********************************************/
+
+
