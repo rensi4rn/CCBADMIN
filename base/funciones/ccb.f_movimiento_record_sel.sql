@@ -294,9 +294,140 @@ BEGIN
              
              
              END LOOP;
-  
+   /*********************************    
+ 	#TRANSACCION:  'CCB_MOVRESCO_REP'
+ 	#DESCRIPCION:	consulta recursivamente la colectas por mes 
+ 	#AUTOR:		rac	
+ 	#FECHA:		16-03-2012 17:06:17
+	***********************************/
 
+	 ELSEIF(p_transaccion='CCB_MOVRESCO_REP')then
+     
+        --obtenemos la gestion a partir  de la fecha
+        select 
+          g.id_gestion
+        into
+          v_id_gestion
+        from ccb.tgestion g  
+        where  v_parametros.fecha::date BETWEEN  ('01/01/'||g.gestion)::date and ('31/12/'||g.gestion)::date;
+            
+            
+        IF v_id_gestion is NULL THEN
+          raise exception 'No se encontro una gestión registrada para la fecha %',v_parametros.fecha; 
+        END IF;
+
+        FOR v_registros in (
+        					select 
+                              ep.mes,
+                              ep.num_mes,
+                              tm.nombre as nombre_colecta,
+                              tm.codigo as codigo_colecta,
+                              co.id_casa_oracion,
+                              co.nombre as nombre_casa_oracion,
+                              re.id_region,
+                              re.nombre as nombre_region,
+                              lu.id_lugar,
+                              lu.nombre as nombre_lugar,
+                              tm.id_tipo_movimiento,
+                              
+                              ccb.f_calculo_saldos_inicial(ep.id_estado_periodo, 
+                                                              NULL, 
+                                                              NULL, 
+                                                              NULL, 
+                                                              tm.id_tipo_movimiento, 
+                                                              NULL)::numeric as ingreso_inicial,
+                              
+                              
+                              
+                              ccb.f_determina_balance_periodo('ingreso_colectas',
+                                                                                  ep.id_estado_periodo, 
+                                                                                  NULL, --.id_lugar, 
+                                                                                  1, 
+                                                                                  NULL, --.id_region, 
+                                                                                  NULL, --id_obrero, 
+                                                                                  tm.id_tipo_movimiento, --id_tipo_movimiento, 
+                                                                                  NULL) as ingreso_colectas,
+                                                                                  
+                                                                                  
+                                ccb.f_determina_balance_periodo('egreso_inicial_por_rendir',
+                                                                                  ep.id_estado_periodo, 
+                                                                                  NULL, --.id_lugar, 
+                                                                                  1, 
+                                                                                  NULL, --.id_region, 
+                                                                                  NULL, --id_obrero, 
+                                                                                  tm.id_tipo_movimiento, --id_tipo_movimiento, 
+                                                                                  NULL) as egreso_inicial_por_rendir,
+                                                                                  
+                                                                                                                                      
+                              ccb.f_determina_balance_periodo('ingreso_traspasos',
+                                                                                  ep.id_estado_periodo, 
+                                                                                  NULL, --.id_lugar, 
+                                                                                  1, 
+                                                                                  NULL, --.id_region, 
+                                                                                  NULL, --id_obrero, 
+                                                                                  tm.id_tipo_movimiento, --id_tipo_movimiento, 
+                                                                                  NULL) as ingreso_traspasos,
+                              ccb.f_determina_balance_periodo('devolucion',
+                                                                                  ep.id_estado_periodo, 
+                                                                                  NULL, --.id_lugar, 
+                                                                                  1, 
+                                                                                  NULL, --.id_region, 
+                                                                                  NULL, --id_obrero, 
+                                                                                  tm.id_tipo_movimiento, --id_tipo_movimiento, 
+                                                                                  NULL) as ingreso_devolucion,
+                              ccb.f_determina_balance_periodo('egreso_traspaso',
+                                                                                  ep.id_estado_periodo, 
+                                                                                  NULL, --.id_lugar, 
+                                                                                  1, 
+                                                                                  NULL, --.id_region, 
+                                                                                  NULL, --id_obrero, 
+                                                                                  tm.id_tipo_movimiento, --id_tipo_movimiento, 
+                                                                                  NULL) as egreso_traspaso,
+                              ccb.f_determina_balance_periodo('egreso_operacion',
+                                                                                  ep.id_estado_periodo, 
+                                                                                  NULL, --.id_lugar, 
+                                                                                  1, 
+                                                                                  NULL, --.id_region, 
+                                                                                  NULL, --id_obrero, 
+                                                                                  tm.id_tipo_movimiento, --id_tipo_movimiento, 
+                                                                                  NULL) as egreso_operacion,
+                              ccb.f_determina_balance_periodo('egresos_contra_rendicion',
+                                                                                  ep.id_estado_periodo, 
+                                                                                  NULL, --.id_lugar, 
+                                                                                  1, 
+                                                                                  NULL, --.id_region, 
+                                                                                  NULL, --id_obrero, 
+                                                                                  tm.id_tipo_movimiento, --id_tipo_movimiento, 
+                                                                                  NULL) as egresos_contra_rendicion,
+                                                                                  
+                             ccb.f_determina_balance_periodo('egresos_rendidos',
+                                                                                  ep.id_estado_periodo, 
+                                                                                  NULL, --.id_lugar, 
+                                                                                  1, 
+                                                                                  NULL, --.id_region, 
+                                                                                  NULL, --id_obrero, 
+                                                                                  tm.id_tipo_movimiento, --id_tipo_movimiento, 
+                                                                                  NULL) as egresos_rendidos                                                     
+                       from ccb.tcasa_oracion co,
+                            ccb.ttipo_movimiento tm,
+                            ccb.tregion re,
+                            param.tlugar lu
+                            ,ccb.testado_periodo ep
+                       where 
+                                   re.id_region = co.id_region  and
+                                   lu.id_lugar = co.id_lugar  and
+                                   co.id_casa_oracion =  v_parametros.id_casa_oracion 
+                                   and ep.id_gestion = v_id_gestion
+                                   and ep.id_casa_oracion = co.id_casa_oracion
+                             order by ep.num_mes asc,
+                                      re.nombre,
+                                      lu.nombre,
+                                      co.nombre,
+                                      tm.id_tipo_movimiento)LOOP
         
+                  RETURN NEXT v_registros;
+        
+        END LOOP;
 
      END IF;
 

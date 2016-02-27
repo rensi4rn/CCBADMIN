@@ -1055,6 +1055,53 @@ class MODMovimiento extends MODbase{
 		//Devuelve la respuesta
 		return $this->respuesta;
 	}
+
+  function reporteResumenCO(){
+		//Definicion de variables para ejecucion del procedimiento
+		$this->procedimiento='ccb.f_movimiento_record_sel';
+		$this->transaccion='CCB_MOVRESCO_REP';
+		$this->tipo_procedimiento='SEL';//tipo de transaccion
+		$this->setCount(false);	
+		$this->setTipoRetorno('record');
+		
+		//Define los parametros para la funcion
+		$this->setParametro('fecha','fecha','date');
+		$this->setParametro('id_casa_oracion','id_casa_oracion','integer');
+		
+		
+		
+		
+		$this->captura('mes','VARCHAR');
+        $this->captura('num_mes','INTEGER');
+        $this->captura('nombre_colecta','VARCHAR');
+        $this->captura('codigo_colecta','VARCHAR');
+        $this->captura('id_casa_oracion','INTEGER');
+        $this->captura('nombre_casa_oracion','VARCHAR');
+        $this->captura('id_region','INTEGER');
+        $this->captura('nombre_region','VARCHAR');
+        $this->captura('id_lugar','INTEGER');
+        $this->captura('nombre_lugar','VARCHAR');
+        $this->captura('id_tipo_movimiento','INTEGER');
+		
+		$this->captura('ingreso_inicial','numeric');
+		$this->captura('ingreso_colectas','numeric');
+		$this->captura('egreso_inicial_por_rendir','numeric');
+		$this->captura('ingreso_traspasos','numeric');
+		$this->captura('ingreso_devolucion','numeric');
+		$this->captura('egreso_traspaso','numeric');
+		$this->captura('egreso_operacion','numeric');
+		$this->captura('egresos_contra_rendicion','numeric');
+		$this->captura('egresos_rendidos','numeric');
+		
+		
+		
+		//Ejecuta la instruccion
+		$this->armarConsulta();
+		$this->ejecutarConsulta();
+
+		//Devuelve la respuesta
+		return $this->respuesta;
+	}
 	 
 	 
 	 
