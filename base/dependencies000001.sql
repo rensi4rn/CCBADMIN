@@ -1722,10 +1722,28 @@ AS
 
 /********************************************I-DEP-RAC-ADMIN-0-01/06/2016*************************************/
 
---------------- SQL ---------------
-
 CREATE OR REPLACE VIEW ccb.vcalendario(
-
+    event,
+    title,
+    start,
+    "end",
+    desc_evento,
+    desc_region,
+    desc_casa_oracion,
+    tipo_registro,
+    desc_lugar,
+    hora,
+    id_lugar,
+    fecha_programada,
+    css,
+    id_region_evento,
+    id_obrero,
+    desc_obrero,
+    id_casa_oracion,
+    id_region,
+    id_evento,
+    desc_gestion,
+    id_gestion)
 AS
   SELECT (rege.id_region_evento::character varying::text || ' - '::text) ||
     COALESCE(rege.hora::character varying, '19:00:00'::character varying)::text
@@ -1761,7 +1779,7 @@ AS
          co.id_casa_oracion,
          reg.id_region,
          eve.id_evento,
-         ges.gestion as desc_gestion,
+         ges.gestion AS desc_gestion,
          ges.id_gestion
   FROM ccb.tregion_evento rege
        JOIN ccb.tgestion ges ON ges.id_gestion = rege.id_gestion
@@ -1772,7 +1790,6 @@ AS
        JOIN param.tlugar lug ON lug.id_lugar = co.id_lugar
        LEFT JOIN ccb.vobrero ob ON ob.id_obrero = rege.id_obrero
   WHERE rege.tipo_registro::text = 'detalle'::text;
-    
     
 /********************************************F-DEP-RAC-ADMIN-0-01/06/2016*************************************/
       
