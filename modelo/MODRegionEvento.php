@@ -311,7 +311,15 @@ class MODRegionEvento extends MODbase{
 		$this->captura('css','text');
 		$this->captura('id_region_evento','int4');
 		$this->captura('id_obrero','int4');
-		$this->captura('desc_obrero','text');
+		$this->captura('desc_obrero','text');		
+		$this->captura('id_casa_oracion','int4');
+        $this->captura('id_region','int4');
+        $this->captura('id_evento','int4');
+        $this->captura('desc_gestion','varchar');
+        $this->captura('id_gestion','int4');
+		
+		
+				
 		
 		
 		

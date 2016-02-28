@@ -63,12 +63,17 @@ class ACTRegionEvento extends ACTbase{
 		}
 
         if($this->objParam->getParametro('id_gestion')!=''){
-			    	$this->objParam->addFiltro("eve.id_gestion = ".$this->objParam->getParametro('id_gestion'));	
+			  $this->objParam->addFiltro("eve.id_gestion = ".$this->objParam->getParametro('id_gestion'));	
 		}
 		
 		if($this->objParam->getParametro('codigo')!=''){
-			    	$this->objParam->addFiltro("eve.codigo = ''".$this->objParam->getParametro('codigo'))."''";	
+			  $this->objParam->addFiltro("eve.codigo = ''".$this->objParam->getParametro('codigo'))."''";	
 		}
+
+        if($this->objParam->getParametro('id_region_evento')!=''){
+			  $this->objParam->addFiltro("eve.id_region_evento = ".$this->objParam->getParametro('id_region_evento'));	
+		}
+		
 		
 		$this->objParam->defecto('dir_ordenacion','asc');
 		if($this->objParam->getParametro('tipoReporte')=='excel_grid' || $this->objParam->getParametro('tipoReporte')=='pdf_grid'){

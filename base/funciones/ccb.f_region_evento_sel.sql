@@ -388,7 +388,12 @@ BEGIN
                             css,
                             id_region_evento,
                             id_obrero,
-                            COALESCE(desc_obrero,''n/d'')
+                            COALESCE(desc_obrero,''n/d''),
+                            id_casa_oracion,
+                            id_region,
+                            id_evento,
+                            desc_gestion,
+                            id_gestion
                           FROM 
                             ccb.vcalendario
                         where   (fecha_programada  BETWEEN  '''||v_fecha_ini::varchar||'''::date and '''||v_fecha_fin::varchar||'''::date)  
