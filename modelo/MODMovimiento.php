@@ -122,7 +122,9 @@ class MODMovimiento extends MODbase{
 		$this->tipo_procedimiento='SEL';//tipo de transaccion
 		
 		//captura parametros adicionales para el count
-		$this->capturaCount('total_monto','numeric');
+		$this->capturaCount('total_monto_doc','numeric');
+		$this->capturaCount('total_monto','numeric');		
+		$this->capturaCount('total_monto_retencion','numeric');
 		
 		//Definicion de la lista del resultado del query
 		$this->captura('id_movimiento','int4');
@@ -157,6 +159,10 @@ class MODMovimiento extends MODbase{
 		$this->captura('desc_orden','varchar');
 		$this->captura('id_concepto_ingas','integer');
 		$this->captura('desc_ingas','varchar');
+		$this->captura('monto_doc','numeric');
+		$this->captura('monto_retencion','numeric');
+		
+		
 		
 		//Ejecuta la instruccion
 		$this->armarConsulta();
@@ -417,6 +423,11 @@ class MODMovimiento extends MODbase{
 		$this->setParametro('id_ot','id_ot','int4');
 		$this->setParametro('id_concepto_ingas','id_concepto_ingas','int4');
 		
+		
+		
+		$this->setParametro('monto_doc','monto_doc','numeric');
+		$this->setParametro('monto_retencion','monto_retencion','numeric');
+		
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();
@@ -450,6 +461,8 @@ class MODMovimiento extends MODbase{
 		$this->setParametro('estado','estado','varchar');
 		$this->setParametro('id_ot','id_ot','int4');
 		$this->setParametro('id_concepto_ingas','id_concepto_ingas','int4');
+		$this->setParametro('monto_doc','monto_doc','numeric');
+		$this->setParametro('monto_retencion','monto_retencion','numeric');
 		
 
 		//Ejecuta la instruccion

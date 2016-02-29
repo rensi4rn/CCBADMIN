@@ -1,6 +1,6 @@
 --------------- SQL ---------------
 
-CREATE OR REPLACE FUNCTION ccb.ft_cbte_periodo_sel (
+CREATE OR REPLACE FUNCTION ccb.ft_tipo_documento_ccb_sel (
   p_administrador integer,
   p_id_usuario integer,
   p_tabla varchar,
@@ -10,10 +10,10 @@ RETURNS varchar AS
 $body$
 /**************************************************************************
  SISTEMA:		ADMCCB
- FUNCION: 		ccb.ft_cbte_periodo_sel
- DESCRIPCION:   Funcion que devuelve conjuntos de registros de las consultas relacionadas con la tabla 'ccb.tcbte_periodo'
+ FUNCION: 		ccb.ft_tipo_documento_ccb_sel
+ DESCRIPCION:   Funcion que devuelve conjuntos de registros de las consultas relacionadas con la tabla 'ccb.ttipo_documento_ccb'
  AUTOR: 		 (admin)
- FECHA:	        28-02-2016 13:24:52
+ FECHA:	        29-02-2016 09:49:41
  COMENTARIOS:	
 ***************************************************************************
  HISTORIAL DE MODIFICACIONES:
@@ -32,41 +32,39 @@ DECLARE
 			    
 BEGIN
 
-	v_nombre_funcion = 'ccb.ft_cbte_periodo_sel';
+	v_nombre_funcion = 'ccb.ft_tipo_documento_ccb_sel';
     v_parametros = pxp.f_get_record(p_tabla);
 
 	/*********************************    
- 	#TRANSACCION:  'CCB_CBP_SEL'
+ 	#TRANSACCION:  'CCB_TID_SEL'
  	#DESCRIPCION:	Consulta de datos
  	#AUTOR:		admin	
- 	#FECHA:		28-02-2016 13:24:52
+ 	#FECHA:		29-02-2016 09:49:41
 	***********************************/
 
-	if(p_transaccion='CCB_CBP_SEL')then
+	if(p_transaccion='CCB_TID_SEL')then
      				
     	begin
     		--Sentencia de la consulta
-			v_consulta:='select 
-                        cbp.id_cbte_periodo,
-						cbp.id_estado_periodo,
-						cbp.estado_reg,
-						cbp.id_tipo_cbte,
-						cbp.id_int_comprobante,
-						cbp.id_usuario_reg,
-						cbp.usuario_ai,
-						cbp.fecha_reg,
-						cbp.id_usuario_ai,
-						cbp.fecha_mod,
-						cbp.id_usuario_mod,
-						usu1.cuenta as usr_reg,
-						usu2.cuenta as usr_mod,
-                        cbt.nro_cbte,
-                        tc.descripcion as desc_tipo_cbte 
-						from ccb.tcbte_periodo cbp                        
-						inner join segu.tusuario usu1 on usu1.id_usuario = cbp.id_usuario_reg
-                        inner join ccb.ttipo_cbte tc on tc.id_tipo_cbte = cbp.id_tipo_cbte
-                        left join conta.tint_comprobante cbt on cbt.id_int_comprobante = cbp.id_int_comprobante                        
-						left join segu.tusuario usu2 on usu2.id_usuario = cbp.id_usuario_mod
+			v_consulta:='select
+                            tid.id_tipo_documento_ccb,
+                            tid.codigo,
+                            tid.estado_reg,
+                            tid.nombre,
+                            tid.id_plantilla,
+                            tid.id_usuario_reg,
+                            tid.usuario_ai,
+                            tid.fecha_reg,
+                            tid.id_usuario_ai,
+                            tid.fecha_mod,
+                            tid.id_usuario_mod,
+                            usu1.cuenta as usr_reg,
+                            usu2.cuenta as usr_mod,
+                            p.desc_plantilla	
+                        from ccb.ttipo_documento_ccb tid
+                        inner join segu.tusuario usu1 on usu1.id_usuario = tid.id_usuario_reg
+                        inner join param.tplantilla p on p.id_plantilla = tid.id_plantilla
+                        left join segu.tusuario usu2 on usu2.id_usuario = tid.id_usuario_mod
 				        where  ';
 			
 			--Definicion de la respuesta
@@ -79,22 +77,21 @@ BEGIN
 		end;
 
 	/*********************************    
- 	#TRANSACCION:  'CCB_CBP_CONT'
+ 	#TRANSACCION:  'CCB_TID_CONT'
  	#DESCRIPCION:	Conteo de registros
  	#AUTOR:		admin	
- 	#FECHA:		28-02-2016 13:24:52
+ 	#FECHA:		29-02-2016 09:49:41
 	***********************************/
 
-	elsif(p_transaccion='CCB_CBP_CONT')then
+	elsif(p_transaccion='CCB_TID_CONT')then
 
 		begin
 			--Sentencia de la consulta de conteo de registros
-			v_consulta:='select count(id_cbte_periodo)
-					    from ccb.tcbte_periodo cbp                        
-						inner join segu.tusuario usu1 on usu1.id_usuario = cbp.id_usuario_reg
-                        inner join ccb.ttipo_cbte tc on tc.id_tipo_cbte = cbp.id_tipo_cbte
-                        left join conta.tint_comprobante cbt on cbt.id_int_comprobante = cbp.id_int_comprobante                        
-						left join segu.tusuario usu2 on usu2.id_usuario = cbp.id_usuario_mod
+			v_consulta:='select count(id_tipo_documento_ccb)
+			            from ccb.ttipo_documento_ccb tid
+                        inner join segu.tusuario usu1 on usu1.id_usuario = tid.id_usuario_reg
+                        inner join param.tplantilla p on p.id_plantilla = tid.id_plantilla
+                        left join segu.tusuario usu2 on usu2.id_usuario = tid.id_usuario_mod
 				        where ';
 			
 			--Definicion de la respuesta		    

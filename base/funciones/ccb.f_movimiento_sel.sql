@@ -255,7 +255,9 @@ BEGIN
                               mov.id_ot,
                               COALESCE(mov.desc_orden,'''') as desc_orden,
                               mov.id_concepto_ingas,
-                              COALESCE(mov.desc_ingas,'''') as desc_ingas
+                              COALESCE(mov.desc_ingas,'''') as desc_ingas,
+                              monto_doc,
+                              monto_retencion
                             FROM 
                               ccb.vmovimiento_egreso  mov
                           WHERE ';
@@ -282,7 +284,9 @@ BEGIN
 			--Sentencia de la consulta de conteo de registros
 			v_consulta:='select 
                           count(mov.id_movimiento),
-                          sum(mov.monto) as total_monto
+                           sum(mov.monto_doc) as total_monto_doc,
+                           sum(mov.monto) as total_monto,
+                           sum(mov.monto_retencion) as total_monto_retencion
                           FROM 
                               ccb.vmovimiento_egreso  mov
                         WHERE ';

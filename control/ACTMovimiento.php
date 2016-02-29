@@ -176,6 +176,8 @@ class ACTMovimiento extends ACTbase{
 	            //adicionar una fila al resultado con el summario
 				$temp = Array();
 				$temp['total_monto'] = $this->res->extraData['total_monto'];
+				$temp['total_monto_doc'] = $this->res->extraData['total_monto_doc'];
+				$temp['total_monto_retencion'] = $this->res->extraData['total_monto_retencion'];
 				$temp['tipo_reg'] = 'summary';
 				$temp['id_movimiento'] = 0;				
 				$this->res->total++;				

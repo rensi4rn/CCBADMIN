@@ -454,7 +454,9 @@ BEGIN
                 id_tipo_movimiento,
                 id_movimiento,
                 monto,
-                id_concepto_ingas
+                id_concepto_ingas,
+                monto_doc,
+                monto_retencion
               ) 
               VALUES (
                 p_id_usuario,
@@ -463,8 +465,19 @@ BEGIN
                 v_parametros.id_tipo_movimiento,
                 v_id_movimiento,
                 COALESCE(v_parametros.monto,0),
-                v_parametros.id_concepto_ingas
+                v_parametros.id_concepto_ingas,
+                v_parametros.monto_doc,
+                v_parametros.monto_retencion
                );
+               
+               
+               -- calcular saldo a la fecha
+               
+               
+               -- calcular saldo final
+               
+               
+               --abos tiene que ser positvo si  no lavar error
              
            
 			--raise exception 'ssss  %', v_id_movimiento;

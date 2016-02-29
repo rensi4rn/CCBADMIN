@@ -1811,9 +1811,18 @@ inner join param.tgestion go on go.gestion::varchar = ges.gestion::varchar ;
 
 
 
---------------- SQL ---------------
 
-CREATE OR REPLACE VIEW ccb.vcabecera_cbte (
+/********************************************F-DEP-RAC-ADMIN-0-01/06/2016*************************************/
+  
+
+
+
+
+/********************************************I-DEP-RAC-ADMIN-0-08/06/2016*************************************/
+  
+
+
+CREATE OR REPLACE VIEW ccb.vcabecera_cbte(
     id_region,
     region,
     obs,
@@ -1828,30 +1837,28 @@ CREATE OR REPLACE VIEW ccb.vcabecera_cbte (
     casa_oracion,
     id_moneda)
 AS
- SELECT regi.id_region,
-    regi.nombre AS region,
-    regi.obs,
-    regi.id_depto_contable,
-    dep.nombre AS desc_depto,
-    ep.id_estado_periodo,
-    ges.id_gestion,
-    ges.id_gestion_ccb,
-    ges.gestion,
-    ep.fecha_fin,
-    co.id_casa_oracion,
-    co.nombre AS casa_oracion,
-    param.f_get_moneda_base() AS id_moneda
-   FROM ccb.testado_periodo ep
-     JOIN ccb.tcasa_oracion co ON co.id_casa_oracion = ep.id_casa_oracion
-     JOIN ccb.vgestion ges ON ges.id_gestion_ccb = ep.id_gestion
-     JOIN ccb.tregion regi ON co.id_region = regi.id_region
-     JOIN segu.tusuario usu1 ON usu1.id_usuario = regi.id_usuario_reg
-     LEFT JOIN param.tdepto dep ON dep.id_depto = regi.id_depto_contable;
-
-
---------------- SQL ---------------
-
-CREATE OR REPLACE VIEW ccb.vcbte_det_colectas (
+  SELECT regi.id_region,
+         regi.nombre AS region,
+         regi.obs,
+         regi.id_depto_contable,
+         dep.nombre AS desc_depto,
+         ep.id_estado_periodo,
+         ges.id_gestion,
+         ges.id_gestion_ccb,
+         ges.gestion,
+         ep.fecha_fin,
+         co.id_casa_oracion,
+         co.nombre AS casa_oracion,
+         param.f_get_moneda_base() AS id_moneda
+  FROM ccb.testado_periodo ep
+       JOIN ccb.tcasa_oracion co ON co.id_casa_oracion = ep.id_casa_oracion
+       JOIN ccb.vgestion ges ON ges.id_gestion_ccb = ep.id_gestion
+       JOIN ccb.tregion regi ON co.id_region = regi.id_region
+       JOIN segu.tusuario usu1 ON usu1.id_usuario = regi.id_usuario_reg
+       LEFT JOIN param.tdepto dep ON dep.id_depto = regi.id_depto_contable;
+       
+    
+CREATE OR REPLACE VIEW ccb.vcbte_det_colectas(
     id_estado_periodo,
     id_tipo_movimiento,
     desc_tipo_movimiento,
@@ -1859,17 +1866,83 @@ CREATE OR REPLACE VIEW ccb.vcbte_det_colectas (
     obs,
     monto)
 AS
- SELECT m.id_estado_periodo,
-    m.id_tipo_movimiento,
-    m.desc_tipo_movimiento,
-    m.id_ot,
-    m.obs,
-    sum(m.monto) AS monto
-   FROM ccb.vmovimiento_ingreso_x_colecta m
-  WHERE m.concepto::text = ANY (ARRAY['colecta_jovenes'::character varying::text, 'colecta_adultos'::character varying::text])
-  GROUP BY m.id_estado_periodo, m.id_tipo_movimiento, m.desc_tipo_movimiento, m.id_ot, m.obs;
-
-/********************************************F-DEP-RAC-ADMIN-0-01/06/2016*************************************/
+  SELECT m.id_estado_periodo,
+         m.id_tipo_movimiento,
+         m.desc_tipo_movimiento,
+         m.id_ot,
+         m.obs,
+         sum(m.monto) AS monto
+  FROM ccb.vmovimiento_ingreso_x_colecta m
+  WHERE m.concepto::text = ANY (ARRAY [ 'colecta_jovenes'::character varying::
+    text, 'colecta_adultos'::character varying::text ])
+  GROUP BY m.id_estado_periodo,
+           m.id_tipo_movimiento,
+           m.desc_tipo_movimiento,
+           m.id_ot,
+           m.obs;
+           
+              
+       
+CREATE OR REPLACE VIEW ccb.vcbte_det_gastos(
+    id_estado_periodo,
+    id_tipo_movimiento,
+    desc_tipo_movimiento,
+    id_ot,
+    obs,
+    tipo_documento,
+    monto,
+    monto_doc,
+    monto_retencion,
+    id_concepto_ingas,
+    id_plantilla,
+    glosa)
+AS
+  SELECT m.id_estado_periodo,
+         m.id_tipo_movimiento,
+         m.desc_tipo_movimiento,
+         m.id_ot,
+         m.obs,
+         m.tipo_documento,
+         m.monto,
+         m.monto_doc,
+         m.monto_retencion,
+         m.id_concepto_ingas,
+         td.id_plantilla,
+         (((((((('['::text || td.nombre::text) || ' - '::text) ||
+           m.num_documento::text) || '] '::text) || btrim(m.desc_ingas::text))
+           || ' ('::text) || btrim(m.obs)) || ' ) Colecta de  '::text) ||
+           m.desc_tipo_movimiento::text AS glosa
+  FROM ccb.vmovimiento_egreso m
+       JOIN ccb.ttipo_documento_ccb td ON m.tipo_documento::text = td.codigo::
+         text
+  WHERE m.concepto::text = ANY (ARRAY [ 'operacion'::text ]);
   
 
+CREATE OR REPLACE VIEW ccb.vcbte_det_gastos_haber(
+    id_estado_periodo,
+    id_tipo_movimiento,
+    desc_tipo_movimiento,
+    id_ot,
+    monto_doc,
+    monto,
+    monto_retencion)
+AS
+  SELECT m.id_estado_periodo,
+         m.id_tipo_movimiento,
+         m.desc_tipo_movimiento,
+         m.id_ot,
+         sum(m.monto_doc) AS monto_doc,
+         sum(m.monto) AS monto,
+         sum(m.monto_retencion) AS monto_retencion
+  FROM ccb.vmovimiento_egreso m
+  WHERE m.concepto::text = ANY (ARRAY [ 'operacion'::text ])
+  GROUP BY m.id_estado_periodo,
+           m.id_tipo_movimiento,
+           m.desc_tipo_movimiento,
+           m.id_ot;
 
+
+
+
+/********************************************I-DEP-RAC-ADMIN-0-08/06/2016*************************************/
+ 

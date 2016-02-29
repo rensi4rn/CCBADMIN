@@ -782,6 +782,40 @@ IS 'identifica donde se contabiliza los comprobantes de la region';
 
 
 
+/***********************************I-SCP-RAC-CCB-2-05/08/2016****************************************/
 
+
+CREATE TABLE ccb.ttipo_documento_ccb (
+  id_tipo_documento_ccb SERIAL NOT NULL,
+  codigo VARCHAR,
+  nombre VARCHAR,
+  id_plantilla INTEGER,
+  PRIMARY KEY(id_tipo_documento_ccb)
+) INHERITS( pxp.tbase);
+
+COMMENT ON COLUMN ccb.ttipo_documento_ccb.id_plantilla
+IS 'identifica la plantilla de calculo para contabilizar';
+
+
+--------------- SQL ---------------
+
+ALTER TABLE ccb.tmovimiento_det
+  ADD COLUMN monto_doc NUMERIC;
+
+COMMENT ON COLUMN ccb.tmovimiento_det.monto_doc
+IS 'monto que figura en documento';
+
+--------------- SQL ---------------
+
+ALTER TABLE ccb.tmovimiento_det
+  ADD COLUMN monto_retencion NUMERIC DEFAULT 0 NOT NULL;
+
+COMMENT ON COLUMN ccb.tmovimiento_det.monto_retencion
+IS 'monto de retencion caso servicios o bienes';
+
+
+
+
+/***********************************F-SCP-RAC-CCB-2-05/08/2016****************************************/
 
 

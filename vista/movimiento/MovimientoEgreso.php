@@ -11,10 +11,14 @@ header("content-type: text/javascript; charset=UTF-8");
 ?>
 <script>
 Phx.vista.MovimientoEgreso=Ext.extend(Phx.gridInterfaz,{
+	
+	 fheight:'70%',
+     fwidth: '70%',
 
 	constructor:function(config){
 	    
 		this.maestro=config.maestro;
+		this.buildGrupos();
 		this.initButtons=[this.cmbTipo,this.cmbCasaOracion,this.cmbGestion,this.cmbEstadoPeriodo];
     	//llama al constructor de la clase padre
 		Phx.vista.MovimientoEgreso.superclass.constructor.call(this,config);
@@ -155,88 +159,38 @@ Phx.vista.MovimientoEgreso=Ext.extend(Phx.gridInterfaz,{
             Phx.vista.MovimientoEgreso.superclass.onButtonAct.call(this);
         }
     },
-    iniciarEventos:function(){
-		
-		//Eventos
-		
-		this.Cmp.concepto.on('change', 
-		   function(cmb){
-		   	console.log('valor ..', cmb.getValue())
-		   	  if(cmb.getValue() == 'operacion'){
-		   	  	this.mostrarComponente(this.Cmp.id_concepto_ingas)
-		   	  	this.Cmp.id_concepto_ingas.allowBlank = false;
-		   	  }
-		   	  else{
-		   	  	this.ocultarComponente(this.Cmp.id_concepto_ingas)
-		   	  	this.Cmp.id_concepto_ingas.allowBlank = true;
-		   	  	this.Cmp.id_concepto_ingas.reset();
-		   	  }
+    
+    
+    
+	
+	calculaMontos:function(){		
+		var tipodoc = this.Cmp.tipo_documento.getValue();
+		var monto_doc = this.Cmp.monto_doc.getValue();
+		if(tipodoc == 'recibo_bien'){			
+			
+			var retencion = monto_doc*0.08;
+			retencion = Math.round(retencion * 100) / 100;
+			this.Cmp.monto_retencion.setValue(retencion);		   	
+		   	this.Cmp.monto.setValue(monto_doc - retencion);
 		   	
-		   },this);	
-		
-		
+		}
+		else{
+			if(tipodoc == 'recibo_servicio'){				
+				
+				var retencion = monto_doc*0.155;
+				retencion = Math.round(retencion * 100) / 100;
+				this.Cmp.monto_retencion.setValue(retencion);		   	
+			   	this.Cmp.monto.setValue(monto_doc - retencion);
+			   	
+			}
+			else{
+				 this.Cmp.monto.setValue(monto_doc);
+		   	     this.Cmp.monto_retencion.setValue(0);
+			}
+		}
 		
 	},
-    onButtonNew:function(){
-        
-        
-         if(!this.validarFiltros()){
-             alert('Especifique los filtros antes');
-        }
-         else{
-              Phx.vista.MovimientoEgreso.superclass.onButtonNew.call(this);
-              this.getComponente('fecha').setMinValue(this.fecha_min);
-              this.getComponente('fecha').setMaxValue(this.fecha_max);
-              this.ocultarComponente(this.Cmp.id_concepto_ingas);
-         }
-        
-    },
-    onButtonEdit:function(){
-        
-        
-         if(!this.validarFiltros()){
-             alert('Especifique los filtros antes');
-        }
-         else{
-              Phx.vista.MovimientoEgreso.superclass.onButtonEdit.call(this);
-              
-              
-              if(this.Cmp.concepto.getValue() == 'operacion'){
-		   	  	this.mostrarComponente(this.Cmp.id_concepto_ingas)
-		   	  	this.Cmp.id_concepto_ingas.allowBlank = false;
-		   	  }
-		   	  else{
-		   	  	 this.ocultarComponente(this.Cmp.id_concepto_ingas)
-		   	  	 this.Cmp.id_concepto_ingas.allowBlank = true;
-		   	  	 this.Cmp.id_concepto_ingas.reset();
-		   	  }
-		   	  
-		   	var con = this.Cmp.concepto.getValue();
-		   	 
-		   	if(con == 'contra_rendicion'){
-		      this.Cmp.tipo_documento.store.loadData(this.documentoContraRendicion)
-		    }
-		    if(con == 'egreso_traspaso'){
-		        this.Cmp.tipo_documento.store.loadData(this.documentoTrapaso)
-		    }
-		    if(con == 'operacion'){
-		        this.Cmp.tipo_documento.store.loadData(this.documentoEgreso)
-		    }
-		    if(con == 'egreso_inicial_por_rendir'){
-		        this.Cmp.tipo_documento.store.loadData(this.documentoContraRendicion)
-		    }
-         }
-        
-    },
-    
-     loadValoresIniciales:function()
-    {
-        Phx.vista.MovimientoEgreso.superclass.loadValoresIniciales.call(this);
-        this.getComponente('tipo').setValue(this.cmbTipo.getValue());
-        this.getComponente('id_casa_oracion').setValue(this.cmbCasaOracion.getValue());  
-        this.getComponente('id_estado_periodo').setValue(this.cmbEstadoPeriodo.getValue());   
-        
-    },
+   
     
     
 	cmbTipo: new Ext.form.ComboBox({
@@ -350,8 +304,9 @@ Phx.vista.MovimientoEgreso=Ext.extend(Phx.gridInterfaz,{
                 queryDelay:500,
                 listWidth:'280',
                 width:80
-            }),      
-			
+            }),
+            
+   
 	Atributos:[
 		{
 			//configuracion del componente
@@ -404,7 +359,7 @@ Phx.vista.MovimientoEgreso=Ext.extend(Phx.gridInterfaz,{
 			type:'DateField',
 			filters:{pfiltro:'mov.fecha',type:'date'},
 			bottom_filter: true,
-			id_grupo:1,
+			id_grupo:0,
 			grid:true,
 			form:true
 		},
@@ -421,6 +376,7 @@ Phx.vista.MovimientoEgreso=Ext.extend(Phx.gridInterfaz,{
                     displayField:'valor',
                     valueField:'variable',
                     mode: 'local',
+                    anchor: '80%',
                     gwidth: 100,
                     renderer:function (value, p, record){
                         var dato='';
@@ -481,6 +437,7 @@ Phx.vista.MovimientoEgreso=Ext.extend(Phx.gridInterfaz,{
                 pageSize:50,
                 queryDelay:500,
                 listWidth:'280',
+                anchor: '80%',
                 width:200,
                 gwidth:120,
                 minChars:2
@@ -488,7 +445,7 @@ Phx.vista.MovimientoEgreso=Ext.extend(Phx.gridInterfaz,{
             type:'ComboBox',
             bottom_filter: true,
             filters:{pfiltro:'mov.desc_tipo_movimiento',type:'string'},
-            id_grupo:1,
+            id_grupo:0,
             grid:true,
             form:true
         },
@@ -529,6 +486,7 @@ Phx.vista.MovimientoEgreso=Ext.extend(Phx.gridInterfaz,{
                 pageSize:50,
                 queryDelay:500,
                 listWidth:'280',
+                anchor: '80%',
                 width:210,
                 gwidth:160,
                 minChars:2
@@ -536,7 +494,7 @@ Phx.vista.MovimientoEgreso=Ext.extend(Phx.gridInterfaz,{
             type:'ComboBox',
             bottom_filter: true,
             filters:{pfiltro:'mov.desc_obrero',type:'string'},
-            id_grupo:1,
+            id_grupo:0,
             grid:true,
             form:true
         },                    
@@ -600,7 +558,7 @@ Phx.vista.MovimientoEgreso=Ext.extend(Phx.gridInterfaz,{
 			type:'TextArea',
 			filters:{pfiltro:'mov.obs',type:'string'},
 			bottom_filter: true,
-			id_grupo:1,
+			id_grupo:0,
 			grid:true,
 			form:true
 		},
@@ -618,12 +576,70 @@ Phx.vista.MovimientoEgreso=Ext.extend(Phx.gridInterfaz,{
 		
 		{
 			config:{
-				name: 'monto',
+				name: 'tipo_documento',
+				fieldLabel: 'Tipo Documento',
+				qtip: 'Documento de respaldo,  factura o recibo',
+				allowBlank: false,
+				anchor: '80%',
+				gwidth: 100,
+				store:new Ext.data.ArrayStore({
+                            fields: ['variable', 'valor'],
+                            data : []}),
+				
+				maxLength:500,	
+							
+				typeAhead: true,
+                triggerAction: 'all',
+                lazyRender:true,
+                displayField:'valor',
+                valueField:'variable',
+                mode: 'local'
+			},
+			type:'ComboBox',
+			filters:{pfiltro:'mov.tipo_documento',type:'string'},
+			bottom_filter: true,
+			id_grupo:0,
+			grid:true,
+			form:true
+		},
+		
+		{
+			config:{
+				name: 'monto_doc',
 				fieldLabel: 'Monto',
 				allowBlank: false,
 				anchor: '80%',
 				gwidth: 100,
 				minValue :0,
+				maxLength:1245186,
+				renderer:function (value, p, record){
+                            if(record.data.tipo_reg=='summary'){
+                                 return String.format('<b><font color="green">{0}</font></b>', record.data.total_monto_doc);
+                            }
+                            else{
+                                return String.format('{0}', value);
+                            }
+                        
+                        }
+				
+			},
+			type:'NumberField',
+			valorInicial: 0,
+			bottom_filter: true,
+			filters:{pfiltro:'mov.monto',type:'numeric'},
+			id_grupo:0,
+			grid:true,
+			form:true
+		},
+		{
+			config:{
+				name: 'monto',
+				fieldLabel: 'Monto Liquido',
+				allowBlank: false,
+				anchor: '80%',
+				gwidth: 100,
+				minValue :0,
+				readOnly: true,
 				maxLength:1245186,
 				renderer:function (value, p, record){
                             if(record.data.tipo_reg=='summary'){
@@ -640,38 +656,41 @@ Phx.vista.MovimientoEgreso=Ext.extend(Phx.gridInterfaz,{
 			valorInicial: 0,
 			bottom_filter: true,
 			filters:{pfiltro:'mov.monto',type:'numeric'},
-			id_grupo:1,
+			id_grupo:0,
 			grid:true,
-			egrid:true,
 			form:true
 		},
 		{
 			config:{
-				name: 'tipo_documento',
-				fieldLabel: 'Tipo Documento',
-				qtip: 'Documento de respaldo,  factura o recibo',
+				name: 'monto_retencion',
+				fieldLabel: 'Retenciones',
 				allowBlank: false,
 				anchor: '80%',
 				gwidth: 100,
-				store:new Ext.data.ArrayStore({
-                            fields: ['variable', 'valor'],
-                            data : []}),
+				minValue :0,
+				readOnly: true,
+				maxLength:1245186,
+				renderer:function (value, p, record){
+                            if(record.data.tipo_reg=='summary'){
+                                 return String.format('<b><font color="green">{0}</font></b>', record.data.total_monto_retencion);
+                            }
+                            else{
+                                return String.format('{0}', value);
+                            }
+                        
+                        }
 				
-				maxLength:500,				
-				typeAhead: true,
-                triggerAction: 'all',
-                lazyRender:true,
-                displayField:'valor',
-                valueField:'variable',
-                mode: 'local'
 			},
-			type:'ComboBox',
-			filters:{pfiltro:'mov.tipo_documento',type:'string'},
+			type:'NumberField',
+			valorInicial: 0,
 			bottom_filter: true,
-			id_grupo:1,
+			filters:{pfiltro:'mov.monto_retencion',type:'numeric'},
+			id_grupo:0,
 			grid:true,
 			form:true
 		},
+		
+		
         
 		{
 			config:{
@@ -686,7 +705,7 @@ Phx.vista.MovimientoEgreso=Ext.extend(Phx.gridInterfaz,{
 			type:'TextField',
 			filters:{pfiltro:'mov.num_documento',type:'string'},
 			bottom_filter: true,
-			id_grupo:1,
+			id_grupo:0,
 			grid:true,
 			form:true
 		},
@@ -707,13 +726,14 @@ Phx.vista.MovimientoEgreso=Ext.extend(Phx.gridInterfaz,{
 	       		lazyRender:true,
 	       		forceSelection : true,
 				mode: 'local',
+				anchor: '80%',
 				maxLength:500
 			},
 			type:'ComboBox',
 			filters:{pfiltro:'mov.estado',type:'string'},
 			bottom_filter: true,
 			valorInicial: 'pendiente',
-			id_grupo:1,
+			id_grupo:0,
 			grid:true,
 			form:true
 		},
@@ -752,7 +772,7 @@ Phx.vista.MovimientoEgreso=Ext.extend(Phx.gridInterfaz,{
 			},
 			type:'DateField',
 			filters:{pfiltro:'mov.fecha_reg',type:'date'},
-			id_grupo:1,
+			id_grupo:0,
 			grid:true,
 			form:false
 		},
@@ -767,7 +787,7 @@ Phx.vista.MovimientoEgreso=Ext.extend(Phx.gridInterfaz,{
 			},
 			type:'NumberField',
 			filters:{pfiltro:'usu1.cuenta',type:'string'},
-			id_grupo:1,
+			id_grupo:0,
 			grid:true,
 			form:false
 		},
@@ -782,7 +802,7 @@ Phx.vista.MovimientoEgreso=Ext.extend(Phx.gridInterfaz,{
             },
             type:'TextField',
             filters:{pfiltro:'mov.estado_reg',type:'string'},
-            id_grupo:1,
+            id_grupo:0,
             grid:true,
             form:false
         },
@@ -798,7 +818,7 @@ Phx.vista.MovimientoEgreso=Ext.extend(Phx.gridInterfaz,{
 			},
 			type:'DateField',
 			filters:{pfiltro:'mov.fecha_mod',type:'date'},
-			id_grupo:1,
+			id_grupo:0,
 			grid:true,
 			form:false
 		},
@@ -813,7 +833,7 @@ Phx.vista.MovimientoEgreso=Ext.extend(Phx.gridInterfaz,{
 			},
 			type:'NumberField',
 			filters:{pfiltro:'usu2.cuenta',type:'string'},
-			id_grupo:1,
+			id_grupo:0,
 			grid:true,
 			form:false
 		}
@@ -842,13 +862,109 @@ Phx.vista.MovimientoEgreso=Ext.extend(Phx.gridInterfaz,{
 		'id_tipo_movimiento' ,
         'id_movimiento_det',
         'monto',
+        'total_monto_doc','total_monto_retencion',
         'total_monto','tipo_reg','tipo_documento','num_documento',
         'id_obrero',
 	    'desc_obrero',
-	    'estado','desc_tipo_movimiento','id_ot','desc_orden','id_concepto_ingas','desc_ingas'
+	    'estado',
+	    'desc_tipo_movimiento',
+	    'id_ot','desc_orden','id_concepto_ingas','desc_ingas','monto_doc','monto_retencion'
 		
 		
 	],
+	
+	successSave:function(resp){
+		this.store.rejectChanges();
+		Phx.CP.loadingHide();
+		if(resp.argument && resp.argument.news){
+			if(resp.argument.def == 'reset'){
+			  //this.form.getForm().reset();
+			  this.onButtonNew();
+			}
+			
+			
+			
+			this.loadValoresIniciales();
+			
+			this.calcularSaldos();
+		}
+		else{
+			this.window.hide();
+		}
+
+		this.reload();
+
+	},
+	
+	onButtonNew:function(){        
+        
+         if(!this.validarFiltros()){
+             alert('Especifique los filtros antes');
+        }
+         else{
+              
+              Phx.vista.MovimientoEgreso.superclass.onButtonNew.call(this);
+              this.getComponente('fecha').setMinValue(this.fecha_min);
+              this.getComponente('fecha').setMaxValue(this.fecha_max);
+              this.getComponente('fecha').setValue(this.fecha_min);
+              this.ocultarComponente(this.Cmp.id_concepto_ingas);              
+              this.Cmp.monto_doc.disable();
+         }
+         
+        
+    },
+    onButtonEdit:function(){
+        
+        
+        if(!this.validarFiltros()){
+             alert('Especifique los filtros antes');
+        }
+        else{
+              Phx.vista.MovimientoEgreso.superclass.onButtonEdit.call(this);
+              
+              
+              if(this.Cmp.concepto.getValue() == 'operacion'){
+		   	  	this.mostrarComponente(this.Cmp.id_concepto_ingas)
+		   	  	this.Cmp.id_concepto_ingas.allowBlank = false;
+		   	  }
+		   	  else{
+		   	  	 this.ocultarComponente(this.Cmp.id_concepto_ingas)
+		   	  	 this.Cmp.id_concepto_ingas.allowBlank = true;
+		   	  	 this.Cmp.id_concepto_ingas.reset();
+		   	  }
+		   	  
+		   	var con = this.Cmp.concepto.getValue();
+		   	 
+		   	if(con == 'contra_rendicion'){
+		      this.Cmp.tipo_documento.store.loadData(this.documentoContraRendicion)
+		    }
+		    if(con == 'egreso_traspaso'){
+		        this.Cmp.tipo_documento.store.loadData(this.documentoTrapaso)
+		    }
+		    if(con == 'operacion'){
+		        this.Cmp.tipo_documento.store.loadData(this.documentoEgreso)
+		    }
+		    if(con == 'egreso_inicial_por_rendir'){
+		        this.Cmp.tipo_documento.store.loadData(this.documentoContraRendicion)
+		    }
+		    
+		    this.Cmp.monto_doc.enable();
+		    
+		    
+         }
+         this.resetPanel();
+        
+    },
+    
+    loadValoresIniciales:function()
+    {
+        Phx.vista.MovimientoEgreso.superclass.loadValoresIniciales.call(this);
+        this.getComponente('tipo').setValue(this.cmbTipo.getValue());
+        this.getComponente('id_casa_oracion').setValue(this.cmbCasaOracion.getValue());  
+        this.getComponente('id_estado_periodo').setValue(this.cmbEstadoPeriodo.getValue()); 
+       
+        
+    },
 	
 	
 	
@@ -865,8 +981,209 @@ Phx.vista.MovimientoEgreso=Ext.extend(Phx.gridInterfaz,{
          return tb 
      }, 
      
-    
+      buildGrupos: function(){ 
+    	var me = this;
+    	this.panelResumen = new Ext.Panel({  
+    		    padding: '0 0 0 20',
+    		    html: 'Saldos ....',
+    		    split: true, 
+    		    layout:  'fit' });
+    	me.Grupos = [{
+                        	xtype: 'fieldset',
+	                        border: false,
+	                        split: true,
+	                        layout: 'column',
+	                        autoScroll: true,
+	                        autoHeight: true,
+	                        collapseFirst : false,
+	                        collapsible: true,
+	                        collapseMode : 'mini',
+	                        width: '100%',
+	                        padding: '0 0 0 10',
+	    	                items:[
+		    	                   {
+							        bodyStyle: 'padding-right:5px;',
+							        width: '60%',
+							        autoHeight: true,
+							        border: true,
+							        items:[
+			    	                   {
+			                            xtype: 'fieldset',
+			                            frame: true,
+			                            border: false,
+			                            layout: 'form',	
+			                            title: 'Tipo',
+			                            width: '100%',
+			                            
+			                            //margins: '0 0 0 5',
+			                            padding: '0 0 0 10',
+			                            bodyStyle: 'padding-left:5px;',
+			                            id_grupo: 0,
+			                            items: [],
+			                         }]
+			                     },
+			                     {
+			                      bodyStyle: 'padding-right:5px;',
+			                      width: '40%',
+			                      border: true,
+			                      autoHeight: true,
+							      items: [me.panelResumen]
+		                         }
+    	                      ]
+    	                  }];	
+    	     
+                  
+	},
+    		
      
+     	
+     validarParamSaldos:function(){
+	    if( this.Cmp.fecha.isValid()&& this.Cmp.id_tipo_movimiento.isValid()){
+	        return true;
+	    }
+	    else{
+	        return false;
+	    }
+	    
+
+     },
+     
+     calcularSaldos(){
+     	var me = this;
+     	if (me.validarParamSaldos()) {
+     		
+     		
+     	     var parametros = {
+	     	  	fecha: this.fecha_max,
+	     	  	id_lugar: undefined,
+	     	  	id_region: undefined,
+	     	  	id_obrero: undefined,
+	     	  	id_ot: undefined,
+	     	  	id_casa_oracion: this.cmbCasaOracion.getValue(),
+	     	  	id_tipo_movimiento: this.Cmp.id_tipo_movimiento.getValue()
+     	  	 };   	 
+
+             console.log('parametros ....', parametros);
+             Phx.CP.loadingShow(); 
+			 Ext.Ajax.request({
+				
+				url:'../../sis_admin/control/Movimiento/calcularSaldos',
+				params: parametros,
+				success:this.successSinc,
+				failure: this.conexionFailure,
+				timeout:this.timeout,
+				scope:this
+			});    
+        }
+     },
+     
+     resetPanel(){
+     	this.panelResumen.update("");
+     	
+     },
+     successSinc :function(resp){
+		       Phx.CP.loadingHide();
+		       var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
+		        if (reg.ROOT.error) {
+		            alert('error al procesar');
+		            return
+		       } 
+		       console.log(reg);
+		       var deco = reg.ROOT.datos,
+		       	   plantilla = "<div style='overflow-y: initial;'><br><b>CUENTA DEL PRIMER DIA DEL AÑO  A LA FECHA SEÑALADA</b><br><p> \
+		       					Ingreso  Inicial  considera:  el saldo en adminsitración + saldo por rendir,  al 31 de diciembre de la gestion anterior </br>\
+		       					Ingreso  Inicial: {0} </br>\
+								<b>Ingreso por Colectas: {1}</b></br>\
+								Ingreso por Devolucion: {2}</br>\
+								Ingreso por Traspasos: {3}</br>\
+								Ingreso Total =  (Ingreso por Traspasos) + (Ingreso por colectas) + (Ingreso  Inicial)</br>\
+								Ingreso Total: {4}</br></br>\
+								Egresos por operación: {5}</br>\
+								Egresos inicial por rendir: {6}</br>\
+								Egresos contra rendición: {7}</br>\
+								Rendiciones: {8}</br>\
+								Egresos por Traspaso: {9}</br></br>\
+								Egreso Efectivo = (Egresos por operación) + (Rendiciones)</br>\
+								<b>Egreso Efectivo: {10}</br></b></br>\
+								Saldo en efectivo =  (Ingreso Total) - (Egreso Efectivo) - (Egresos por Traspaso)</br>\
+								<b>Saldo en efectivo: {11}</font></b></br></br>\
+								Saldo en la administración =  (Ingreso Total)  + (Ingreso por Devolución) - (Egresos por Traspaso) - (Egresos por operación) - (Egresos contra rendición)- (Egresos inicial por rendir)</br>\
+								<b><font color='red'>Saldo en la administración: {12}</font></b></br></br>\
+								Saldo por Rendir =  (Egresos inicial por rendir) + (Egresos contra rendición)  - (Rendiciones) - (devoluciones)</br>\
+								Saldo por Rendir: {13}</br></br></div>";
+		       
+			   this.panelResumen.update( String.format(plantilla,
+			                                           deco.v_ingreso_inicial, 
+			                                           deco.v_ingreso_colectas,
+			                                           deco.v_ingreso_devolucion,
+			                                           deco.v_ingreso_traspasos,
+			                                           deco.v_ingreso_total,
+			                                           deco.v_egreso_operacion ,
+			                                           deco.v_egreso_inicial_por_rendir,
+			                                           deco.v_egresos_contra_rendicion,
+			                                           deco.v_egresos_rendidos,
+			                                           deco.v_egreso_traspaso,
+			                                           deco.v_egreso_efectivo,
+			                                           deco.v_saldo_efectivo,
+			                                           deco.v_saldo_adm,
+			                                           deco.v_sado_x_rendir
+			                                           
+			                                           ));
+	},
+     
+    
+     iniciarEventos:function(){
+		
+		//Eventos
+		
+		this.Cmp.concepto.on('change', 
+		   function(cmb){
+		   	console.log('valor ..', cmb.getValue())
+		   	  if(cmb.getValue() == 'operacion'){
+		   	  	this.mostrarComponente(this.Cmp.id_concepto_ingas)
+		   	  	this.Cmp.id_concepto_ingas.allowBlank = false;
+		   	  }
+		   	  else{
+		   	  	this.ocultarComponente(this.Cmp.id_concepto_ingas)
+		   	  	this.Cmp.id_concepto_ingas.allowBlank = true;
+		   	  	this.Cmp.id_concepto_ingas.reset();
+		   	  }
+		   	
+		   },this);	
+		   
+		this.Cmp.tipo_documento.on('select', 
+		   function(cmb){
+		   	     console.log('valor ..', cmb.getValue())
+		   	     this.Cmp.monto_doc.enable();
+		   	     this.Cmp.monto_doc.setValue(0);
+		   	     this.Cmp.monto.setValue(0);
+		   	     this.Cmp.monto_retencion.setValue(0);
+		   	  
+		   },this);	
+		   
+		this.Cmp.monto_doc.on('change', 
+		   function(cmb){		   	    
+		   	  this.calculaMontos()
+		   },this);
+		   
+		   	
+		 this.Cmp.fecha.on('change', 
+		   function(cmb){		   	    
+		   	 this.calcularSaldos()
+		   },this);
+		   
+		  this.Cmp.id_tipo_movimiento.on('select', 
+		   function(cmb){		   	    
+		   	 this.calcularSaldos()
+		   },this);  
+		     
+		   
+		   
+		      
+		
+		
+		
+	},
     
 	
 	
@@ -879,6 +1196,8 @@ Phx.vista.MovimientoEgreso=Ext.extend(Phx.gridInterfaz,{
 	},
 	bdel:true,
 	bsave:true
+	
+	
 	}
 )
 </script>

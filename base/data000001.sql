@@ -757,4 +757,10 @@ select pxp.f_insert_testructura_gui ('TCBTE', 'PAR');
 /********************************************F-DAT-RAC-CCB-1-04/08/2016********************************************/
 
 
+/********************************************I-DAT-RAC-CCB-1-08/08/2016********************************************/
+
+select pxp.f_insert_tgui ('Tipo Documento', 'Tipo Documento', 'TDOC', 'si', 11, 'sis_admin/vista/tipo_documento_ccb/TipoDocumentoCcb.php', 3, '', 'TipoDocumentoCcb', 'CCB');
+select pxp.f_insert_testructura_gui ('TDOC', 'PAR');
+
+/********************************************F-DAT-RAC-CCB-1-08/08/2016********************************************/
 
