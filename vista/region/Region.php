@@ -61,6 +61,41 @@ Phx.vista.Region=Ext.extend(Phx.gridInterfaz,{
 			grid:true,
 			form:true
 		},
+		
+		
+		{
+			config : {
+				name : 'id_depto_contable',
+				hiddenName : 'id_depto_contable',
+				url : '../../sis_parametros/control/Depto/listarDepto',
+				origen : 'DEPTO',
+				allowBlank : true,
+				fieldLabel : 'Depto',
+				gdisplayField : 'desc_depto', //dibuja el campo extra de la consulta al hacer un inner join con orra tabla
+				width : 250,
+				gwidth : 180,
+				//triggerAction : 'all',
+				//lazyRender : true,
+				//mode : 'remote',
+				baseParams : {
+					estado : 'activo',
+					codigo_subsistema : 'CONTA'
+				}, //parametros adicionales que se le pasan al store
+				renderer : function(value, p, record) {
+					return String.format('{0}', record.data['desc_depto']);
+				}
+			},
+			type : 'ComboRec',
+			id_grupo : 0,
+			filters : {
+				pfiltro : 'dep.nombre',
+				type : 'string'
+			},
+			grid : true,
+			form : true
+		},
+		
+		
 		{
 			config:{
 				name: 'estado_reg',
@@ -153,7 +188,7 @@ Phx.vista.Region=Ext.extend(Phx.gridInterfaz,{
 		{name:'fecha_mod', type: 'date', dateFormat:'Y-m-d H:i:s.u'},
 		{name:'id_usuario_mod', type: 'numeric'},
 		{name:'usr_reg', type: 'string'},
-		{name:'usr_mod', type: 'string'},
+		{name:'usr_mod', type: 'string'},'id_depto_contable','desc_depto'
 		
 	],
 		

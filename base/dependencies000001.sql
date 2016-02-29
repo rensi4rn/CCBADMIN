@@ -1793,3 +1793,83 @@ AS
     
 /********************************************F-DEP-RAC-ADMIN-0-01/06/2016*************************************/
       
+
+
+/********************************************I-DEP-RAC-ADMIN-0-01/06/2016*************************************/
+  
+
+--------------- SQL ---------------
+
+CREATE VIEW ccb.vgestion 
+AS 
+select 
+ges.id_gestion as id_gestion_ccb,
+ges.gestion,
+go.id_gestion
+from ccb.tgestion ges 
+inner join param.tgestion go on go.gestion::varchar = ges.gestion::varchar ;
+
+
+
+--------------- SQL ---------------
+
+CREATE OR REPLACE VIEW ccb.vcabecera_cbte (
+    id_region,
+    region,
+    obs,
+    id_depto_contable,
+    desc_depto,
+    id_estado_periodo,
+    id_gestion,
+    id_gestion_ccb,
+    gestion,
+    fecha_fin,
+    id_casa_oracion,
+    casa_oracion,
+    id_moneda)
+AS
+ SELECT regi.id_region,
+    regi.nombre AS region,
+    regi.obs,
+    regi.id_depto_contable,
+    dep.nombre AS desc_depto,
+    ep.id_estado_periodo,
+    ges.id_gestion,
+    ges.id_gestion_ccb,
+    ges.gestion,
+    ep.fecha_fin,
+    co.id_casa_oracion,
+    co.nombre AS casa_oracion,
+    param.f_get_moneda_base() AS id_moneda
+   FROM ccb.testado_periodo ep
+     JOIN ccb.tcasa_oracion co ON co.id_casa_oracion = ep.id_casa_oracion
+     JOIN ccb.vgestion ges ON ges.id_gestion_ccb = ep.id_gestion
+     JOIN ccb.tregion regi ON co.id_region = regi.id_region
+     JOIN segu.tusuario usu1 ON usu1.id_usuario = regi.id_usuario_reg
+     LEFT JOIN param.tdepto dep ON dep.id_depto = regi.id_depto_contable;
+
+
+--------------- SQL ---------------
+
+CREATE OR REPLACE VIEW ccb.vcbte_det_colectas (
+    id_estado_periodo,
+    id_tipo_movimiento,
+    desc_tipo_movimiento,
+    id_ot,
+    obs,
+    monto)
+AS
+ SELECT m.id_estado_periodo,
+    m.id_tipo_movimiento,
+    m.desc_tipo_movimiento,
+    m.id_ot,
+    m.obs,
+    sum(m.monto) AS monto
+   FROM ccb.vmovimiento_ingreso_x_colecta m
+  WHERE m.concepto::text = ANY (ARRAY['colecta_jovenes'::character varying::text, 'colecta_adultos'::character varying::text])
+  GROUP BY m.id_estado_periodo, m.id_tipo_movimiento, m.desc_tipo_movimiento, m.id_ot, m.obs;
+
+/********************************************F-DEP-RAC-ADMIN-0-01/06/2016*************************************/
+  
+
+

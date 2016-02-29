@@ -56,10 +56,13 @@ BEGIN
 						regi.fecha_mod,
 						regi.id_usuario_mod,
 						usu1.cuenta as usr_reg,
-						usu2.cuenta as usr_mod	
-						from ccb.tregion regi
+						usu2.cuenta as usr_mod	,
+                        regi.id_depto_contable,
+                        dep.nombre as desc_depto						
+                        from ccb.tregion regi
 						inner join segu.tusuario usu1 on usu1.id_usuario = regi.id_usuario_reg
 						left join segu.tusuario usu2 on usu2.id_usuario = regi.id_usuario_mod
+                        left join param.tdepto dep on dep.id_depto = regi.id_depto_contable
 				        where  ';
 			
 			--Definicion de la respuesta
@@ -83,10 +86,11 @@ BEGIN
 		begin
 			--Sentencia de la consulta de conteo de registros
 			v_consulta:='select count(id_region)
-					    from ccb.tregion regi
-					    inner join segu.tusuario usu1 on usu1.id_usuario = regi.id_usuario_reg
+					    from ccb.tregion regi                        
+						inner join segu.tusuario usu1 on usu1.id_usuario = regi.id_usuario_reg
 						left join segu.tusuario usu2 on usu2.id_usuario = regi.id_usuario_mod
-					    where ';
+                        left join param.tdepto dep on dep.id_depto = regi.id_depto_contable
+				        where ';
 			
 			--Definicion de la respuesta		    
 			v_consulta:=v_consulta||v_parametros.filtro;

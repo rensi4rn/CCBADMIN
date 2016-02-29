@@ -17,18 +17,8 @@ Phx.vista.EstadoPeriodo=Ext.extend(Phx.gridInterfaz,{
 		this.initButtons=[this.cmbGestion];
     	//llama al constructor de la clase padre
 		Phx.vista.EstadoPeriodo.superclass.constructor.call(this,config);
-		this.init();
 		
 		
-		 //si la interface es pestanha este código es para iniciar 
-	      var dataPadre = Phx.CP.getPagina(this.idContenedorPadre).getSelectedData()
-	      if(dataPadre){
-	         this.onEnablePanel(this, dataPadre);
-	      }
-	      else
-	      {
-	         this.bloquearMenus();
-	      }
 	      
 	   this.cmbGestion.on('select',this.capturaFiltros,this); 
 	   
@@ -47,7 +37,18 @@ Phx.vista.EstadoPeriodo=Ext.extend(Phx.gridInterfaz,{
 				handler : this.onBtnAbrirCerrarPeriodo,
 				tooltip : '<b>Abrir o cerrar periodo</b><br/>Cuando el periodo se cierra los usuarios no pueden agregar eventos ni movimientos económicos'
 		});
-		  
+		this.init();  
+		
+		
+		 //si la interface es pestanha este código es para iniciar 
+	      var dataPadre = Phx.CP.getPagina(this.idContenedorPadre).getSelectedData()
+	      if(dataPadre){
+	         this.onEnablePanel(this, dataPadre);
+	      }
+	      else
+	      {
+	         this.bloquearMenus();
+	      }
 	      
 	},
 	cmbGestion:new Ext.form.ComboBox({
@@ -386,6 +387,12 @@ Phx.vista.EstadoPeriodo=Ext.extend(Phx.gridInterfaz,{
 		Phx.vista.EstadoPeriodo.superclass.loadValoresIniciales.call(this);
 		this.getComponente('id_casa_oracion').setValue(this.maestro.id_casa_oracion);
 		this.getComponente('id_gestion').setValue(this.cmbGestion.getValue());		
+	},
+	east:{
+			  url:'../../../sis_admin/vista/cbte_periodo/CbtePeriodo.php',
+			  title:'Cbtes', 
+			  width:'50%',
+			  cls:'CbtePeriodo'
 	},
 	bdel:false,
 	bsave:false,

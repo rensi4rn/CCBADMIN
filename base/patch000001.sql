@@ -735,3 +735,53 @@ ALTER TABLE ccb.ttipo_concepto
 
 /***********************************F-SCP-RAC-CCB-2-04/10/2015****************************************/
 
+
+
+/***********************************I-SCP-RAC-CCB-2-28/07/2016****************************************/
+
+
+
+--------------- SQL ---------------
+
+CREATE TABLE ccb.ttipo_cbte (
+  id_tipo_cbte SERIAL NOT NULL,
+  codigo VARCHAR,
+  descripcion VARCHAR,
+  PRIMARY KEY(id_tipo_cbte)
+) INHERITS (pxp.tbase)
+
+WITH (oids = false);
+
+ALTER TABLE ccb.ttipo_cbte
+  ALTER COLUMN codigo SET STATISTICS 0;
+  
+  --------------- SQL ---------------
+
+CREATE TABLE ccb.tcbte_periodo (
+  id_cbte_periodo SERIAL NOT NULL,
+  id_estado_periodo INTEGER,
+  id_tipo_cbte INTEGER,
+  id_int_comprobante INTEGER,
+  PRIMARY KEY(id_cbte_periodo)
+) INHERITS (pxp.tbase)
+
+WITH (oids = false);
+  
+
+--------------- SQL ---------------
+
+ALTER TABLE ccb.tregion
+  ADD COLUMN id_depto_contable INTEGER;
+
+COMMENT ON COLUMN ccb.tregion.id_depto_contable
+IS 'identifica donde se contabiliza los comprobantes de la region'; 
+  
+
+
+/***********************************F-SCP-RAC-CCB-2-28/07/2016****************************************/
+
+
+
+
+
+

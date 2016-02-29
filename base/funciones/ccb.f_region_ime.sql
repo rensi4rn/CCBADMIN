@@ -56,7 +56,8 @@ BEGIN
 			fecha_reg,
 			id_usuario_reg,
 			fecha_mod,
-			id_usuario_mod
+			id_usuario_mod,
+            id_depto_contable
           	) values(
 			'activo',
 			v_parametros.nombre,
@@ -64,7 +65,8 @@ BEGIN
 			now(),
 			p_id_usuario,
 			null,
-			null
+			null,
+            v_parametros.id_depto_contable
 							
 			)RETURNING id_region into v_id_region;
 			
@@ -92,7 +94,8 @@ BEGIN
 			nombre = v_parametros.nombre,
 			obs = v_parametros.obs,
 			fecha_mod = now(),
-			id_usuario_mod = p_id_usuario
+			id_usuario_mod = p_id_usuario,
+            id_depto_contable = v_parametros.id_depto_contable
 			where id_region=v_parametros.id_region;
                
 			--Definicion de la respuesta

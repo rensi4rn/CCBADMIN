@@ -746,3 +746,15 @@ select pxp.f_insert_testructura_gui ('REXCO', 'MOVECO');
 /********************************************F-DAT-RAC-CCB-1-01/04/2016********************************************/
 
 
+/********************************************I-DAT-RAC-CCB-1-04/08/2016********************************************/
+
+
+
+select pxp.f_insert_tgui ('Tipo Cbte', 'Parametriza los cbte que se pueden generar', 'TCBTE', 'si', 10, 'sis_admin/vista/tipo_cbte/TipoCbte.php', 3, '', 'TipoCbte', 'CCB');
+select pxp.f_insert_testructura_gui ('TCBTE', 'PAR');
+
+
+/********************************************F-DAT-RAC-CCB-1-04/08/2016********************************************/
+
+
+
