@@ -377,7 +377,7 @@ Phx.vista.MovimientoEgreso=Ext.extend(Phx.gridInterfaz,{
                     valueField:'variable',
                     mode: 'local',
                     anchor: '80%',
-                    gwidth: 100,
+                    gwidth: 130,
                     renderer:function (value, p, record){
                         var dato='';
                         dato = (dato==''&&value=='colecta_adultos')?'Colecta de Adultos':dato;
@@ -388,8 +388,25 @@ Phx.vista.MovimientoEgreso=Ext.extend(Phx.gridInterfaz,{
                         dato = (dato==''&&value=='saldo_inicial')?'Saldo Inicial':dato;
                         dato = (dato==''&&value=='ingreso_trapaso')?'Ingreso por Trapaso':dato;
                         dato = (dato==''&&value=='operacion')?'Operacion':dato;
-                        dato = (dato==''&&value=='egreso_traspaso')?'Egreso por Traspaso':dato;
+                        
+                        
+                        if(dato==''&&value=='egreso_traspaso'){
+                        	dato='Egreso por Trapaso';
+                        	console.log('sssss', record.data.id_movimiento_traspaso )
+                        	if(!record.data.id_movimiento_traspaso){
+                        		return String.format('<div title="No tiene traspaso de Ingreso"><font color=red><b>{0}</b></font></div>', dato);
+                        	}
+                        	else{
+                        		return String.format('<div title="traspaso completo"><font color=green>{0}</b></font>', dato);
+                        	}
+                        	
+                        }
+                        
                         return String.format('{0}', dato);
+                        
+                        
+                        
+                        
                     },
             
                     store:new Ext.data.ArrayStore({
@@ -865,7 +882,7 @@ Phx.vista.MovimientoEgreso=Ext.extend(Phx.gridInterfaz,{
         'total_monto_doc','total_monto_retencion',
         'total_monto','tipo_reg','tipo_documento','num_documento',
         'id_obrero',
-	    'desc_obrero',
+	    'desc_obrero','id_movimiento_traspaso',
 	    'estado',
 	    'desc_tipo_movimiento',
 	    'id_ot','desc_orden','id_concepto_ingas','desc_ingas','monto_doc','monto_retencion'
@@ -1175,14 +1192,8 @@ Phx.vista.MovimientoEgreso=Ext.extend(Phx.gridInterfaz,{
 		  this.Cmp.id_tipo_movimiento.on('select', 
 		   function(cmb){		   	    
 		   	 this.calcularSaldos()
-		   },this);  
-		     
+		   },this); 	     
 		   
-		   
-		      
-		
-		
-		
 	},
     
 	

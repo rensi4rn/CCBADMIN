@@ -818,4 +818,24 @@ IS 'monto de retencion caso servicios o bienes';
 
 /***********************************F-SCP-RAC-CCB-2-05/08/2016****************************************/
 
+/***********************************I-SCP-RAC-CCB-2-08/08/2016****************************************/
+
+
+
+--------------- SQL ---------------
+
+ALTER TABLE ccb.tmovimiento
+  ADD COLUMN id_movimiento_traspaso INTEGER;
+
+COMMENT ON COLUMN ccb.tmovimiento.id_movimiento_traspaso
+IS 'identifa el trapaso de contraparte egreso o ingreso';
+
+
+
+
+/***********************************F-SCP-RAC-CCB-2-08/08/2016****************************************/
+
+
+
+
 

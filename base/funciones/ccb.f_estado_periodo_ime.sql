@@ -320,6 +320,31 @@ BEGIN
 			update ccb.testado_periodo set
 			estado_periodo = v_estado_periodo
 			where id_estado_periodo=v_parametros.id_estado_periodo;
+            
+            --raise exception 'llega';
+           
+              IF v_estado_periodo = 'cerrado' THEN
+                 -- para cerrar,  validar que no tenga traspasos pendientes
+                 
+                 IF exists (select 1 
+                             from ccb.tmovimiento m 
+                             where m.id_estado_periodo = v_parametros.id_estado_periodo
+                               and m.id_movimiento_traspaso is null
+                               and m.concepto = 'egreso_traspaso') THEN 
+                               
+                          raise EXCEPTION 'no puede cerrar por que existe un traspaso sin destino'; 
+                 END IF;
+            
+            
+              ELSE
+                 -- para abrir verificar que no tenga comprobantes relacionados 
+            
+                   IF(exists (select 1 from ccb.tcbte_periodo c where c.id_estado_periodo = v_parametros.id_estado_periodo)) THEN
+                      raise exception 'No puede abrir el periodo, por que tiene cbtes relacionados, primero elimine los comprobantes';
+                   END IF; 
+            
+              END IF;
+            
                
 			--Definicion de la respuesta
             v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Periodo modificado(a)'); 

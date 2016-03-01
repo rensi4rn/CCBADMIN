@@ -257,9 +257,10 @@ BEGIN
                               mov.id_concepto_ingas,
                               COALESCE(mov.desc_ingas,'''') as desc_ingas,
                               monto_doc,
-                              monto_retencion
+                              monto_retencion,
+                              id_movimiento_traspaso
                             FROM 
-                              ccb.vmovimiento_egreso  mov
+                              ccb.vmovimiento_egreso_2  mov
                           WHERE ';
 			
 			--Definicion de la respuesta
@@ -288,7 +289,7 @@ BEGIN
                            sum(mov.monto) as total_monto,
                            sum(mov.monto_retencion) as total_monto_retencion
                           FROM 
-                              ccb.vmovimiento_egreso  mov
+                              ccb.vmovimiento_egreso_2  mov
                         WHERE ';
 			
 			--Definicion de la respuesta		    
@@ -300,9 +301,100 @@ BEGIN
 		end;
         
         
+        
+       
+    
+     /*********************************    
+ 	#TRANSACCION:  'CCB_MOVEGT_SEL'
+ 	#DESCRIPCION:	Consulta los movimientos egresos por traspaso
+ 	#AUTOR:		admin	
+ 	#FECHA:		16-03-2013 00:22:36
+	***********************************/
+
+	elsif(p_transaccion='CCB_MOVEGT_SEL')then
+     				
+    	begin
+       -- raise exception 'ssssss';
+    		--Sentencia de la consulta
+			v_consulta:='SELECT 
+                              mov.id_movimiento,
+                              mov.estado_reg,
+                              mov.tipo,
+                              mov.id_casa_oracion,
+                              mov.concepto,
+                              mov.obs,
+                              mov.fecha,
+                              mov.id_estado_periodo,
+                              mov.fecha_reg,
+                              mov.id_usuario_reg,
+                              mov.fecha_mod,
+                              mov.id_usuario_mod,
+                              mov.usr_reg,
+                              mov.usr_mod,
+                              mov.id_tipo_movimiento,
+                              mov.id_movimiento_det,
+                              mov.monto,
+                              mov.id_obrero,
+                              mov.desc_obrero,
+                              mov.estado,
+                              mov.tipo_documento,
+                              mov.num_documento,
+                              mov.desc_tipo_movimiento,
+                              mov.desc_casa_oracion,
+                              mov.mes,
+                              mov.estado_periodo,
+                              mov.id_gestion,
+                              mov.gestion,
+                              mov.id_ot,
+                              COALESCE(mov.desc_orden,'''') as desc_orden,
+                              mov.id_concepto_ingas,
+                              COALESCE(mov.desc_ingas,'''') as desc_ingas,
+                              monto_doc,
+                              monto_retencion,
+                              id_movimiento_traspaso
+                            FROM 
+                              ccb.vtraspaso_egreso  mov
+                          WHERE ';
+			
+			--Definicion de la respuesta
+			v_consulta:=v_consulta||v_parametros.filtro;
+			v_consulta:=v_consulta||' order by ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
+            raise notice '>>  %  <<<', v_consulta;
+			--Devuelve la respuesta
+			return v_consulta;
+						
+		end;
+
+	/*********************************    
+ 	#TRANSACCION:  'CCB_MOVEGT_CONT'
+ 	#DESCRIPCION:	Conteo de registros de egresos por traspaso
+ 	#AUTOR:		admin	
+ 	#FECHA:		16-03-2013 00:22:36
+	***********************************/
+
+	elsif(p_transaccion='CCB_MOVEGT_CONT')then
+
+		begin
+			--Sentencia de la consulta de conteo de registros
+			v_consulta:='select 
+                          count(mov.id_movimiento)
+                          FROM 
+                              ccb.vtraspaso_egreso  mov
+                        WHERE ';
+			
+			--Definicion de la respuesta		    
+			v_consulta:=v_consulta||v_parametros.filtro;
+
+			--Devuelve la respuesta
+			return v_consulta;
+
+		end;
+         
+        
+        
         /*********************************    
  	#TRANSACCION:  'CCB_MOVOTIN_SEL'
- 	#DESCRIPCION:	Consulta los movimientos egresos
+ 	#DESCRIPCION:	Consulta los movimientos otros ingresos
  	#AUTOR:		admin	
  	#FECHA:		06-11-2015 00:22:36
 	***********************************/
@@ -342,16 +434,17 @@ BEGIN
                               mov.id_gestion,
                               mov.gestion,
                               mov.id_ot,
-                              COALESCE(mov.desc_orden,'''') as desc_orden
+                              COALESCE(mov.desc_orden,'''') as desc_orden,
+                              desc_movimiento_traspaso
                             FROM 
-                              ccb.vmovimiento_ingreso_x_colecta  mov
+                              ccb.votros_ingresos  mov
                           WHERE ';
 			
 			--Definicion de la respuesta
 			v_consulta:=v_consulta||v_parametros.filtro;
 			v_consulta:=v_consulta||' order by ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
-            raise notice '>>  %  <<<', v_consulta;
-			--Devuelve la respuesta
+           
+            --Devuelve la respuesta
 			return v_consulta;
 						
 		end;
@@ -371,7 +464,7 @@ BEGIN
                           count(mov.id_movimiento),
                           sum(mov.monto) as total_monto
                           FROM 
-                              ccb.vmovimiento_ingreso_x_colecta  mov
+                              ccb.votros_ingresos  mov
                         WHERE ';
 			
 			--Definicion de la respuesta		    

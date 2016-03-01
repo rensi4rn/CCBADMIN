@@ -41,12 +41,16 @@ Phx.vista.MovimientoOtrosIngresos=Ext.extend(Phx.gridInterfaz,{
 		
 		
 		
+		
+		
 		this.cmbCasaOracion.on('select',function(cm,dat,num){
 		    this.cmbGestion.enable();
 		    this.cmbEstadoPeriodo.reset();
 		    this.store.removeAll();
 		    this.cmbEstadoPeriodo.store.baseParams.id_casa_oracion=cm.getValue();
 		    this.cmbEstadoPeriodo.modificado=true;
+		    this.id_region = dat.data.id_region;
+		    console.log('id_region', this.id_region, dat)
 		    
 		},this);
 		
@@ -69,21 +73,7 @@ Phx.vista.MovimientoOtrosIngresos=Ext.extend(Phx.gridInterfaz,{
          },this);
          
          
-         this.Cmp.concepto.on('select',function(cm,dat,num){
-         	this.Cmp.tipo_documento.reset();
-         	
-		    
-		    if(dat.data.variable == 'ingreso_traspaso'){
-		        
-		        this.Cmp.tipo_documento.store.loadData(this.documentoTraspaso)
-		    }
-		    if(dat.data.variable == 'devolucion'){
-		        this.Cmp.tipo_documento.store.loadData(this.OtrosIngresos)
-		    }
-		    
-		  
-		    
-		},this);
+         
 		 this.iniciarEventos();
 	},
 	 dataOtrosIngresos : [
@@ -102,89 +92,7 @@ Phx.vista.MovimientoOtrosIngresos=Ext.extend(Phx.gridInterfaz,{
      ],
       
       
-	validarFiltros:function(){
-	    if(this.cmbEstadoPeriodo.isValid()&& this.cmbCasaOracion.isValid()&& this.cmbGestion.isValid() && this.cmbTipo.isValid() ){
-	        return true;
-	    }
-	    else{
-	        return false;
-	    }
-	    
-	},
 	
-	 capturaFiltros:function(combo, record, index){
-	    this.store.baseParams.tipo=this.cmbTipo.getValue();
-	    this.store.baseParams.id_casa_oracion=this.cmbCasaOracion.getValue();
-        this.store.baseParams.id_estado_periodo=this.cmbEstadoPeriodo.getValue();
-         this.store.baseParams.tipo_concepto='ingreso';
-        this.store.load({params:{start:0, limit:this.tam_pag}}); 
-            
-        
-    },
-    onButtonAct:function(){
-        if(!this.validarFiltros()){
-            alert('Especifique los filtros antes')
-         }
-        else{
-            this.store.baseParams.tipo=this.cmbTipo.getValue();
-            this.store.baseParams.id_casa_oracion=this.cmbCasaOracion.getValue();
-            this.store.baseParams.id_estado_periodo=this.cmbEstadoPeriodo.getValue();
-            Phx.vista.MovimientoOtrosIngresos.superclass.onButtonAct.call(this);
-        }
-    },
-    iniciarEventos:function(){
-		
-		//Eventos
-		
-		
-		
-		
-		
-	},
-    onButtonNew:function(){
-        
-        
-         if(!this.validarFiltros()){
-             alert('Especifique los filtros antes');
-        }
-         else{
-              Phx.vista.MovimientoOtrosIngresos.superclass.onButtonNew.call(this);
-              this.getComponente('fecha').setMinValue(this.fecha_min);
-              this.getComponente('fecha').setMaxValue(this.fecha_max);
-              
-         }
-        
-    },
-    onButtonEdit:function(){
-        
-        
-         if(!this.validarFiltros()){
-             alert('Especifique los filtros antes');
-        }
-         else{
-              Phx.vista.MovimientoOtrosIngresos.superclass.onButtonEdit.call(this);
-              
-              if(this.Cmp.concepto.getValue() == 'ingreso_traspaso'){
-		         this.Cmp.tipo_documento.store.loadData(this.documentoTraspaso)
-              } 
-              
-              if(this.Cmp.concepto.getValue() == 'devolucion'){
-		         this.Cmp.tipo_documento.store.loadData(this.OtrosIngresos)
-              }
-		    
-		    
-         }
-        
-    },
-    
-     loadValoresIniciales:function()
-    {
-        Phx.vista.MovimientoOtrosIngresos.superclass.loadValoresIniciales.call(this);
-        this.getComponente('tipo').setValue(this.cmbTipo.getValue());
-        this.getComponente('id_casa_oracion').setValue(this.cmbCasaOracion.getValue());  
-        this.getComponente('id_estado_periodo').setValue(this.cmbEstadoPeriodo.getValue());   
-        
-    },
     
     
 	cmbTipo: new Ext.form.ComboBox({
@@ -218,7 +126,7 @@ Phx.vista.MovimientoOtrosIngresos=Ext.extend(Phx.gridInterfaz,{
                         direction: 'ASC'
                     },
                     totalProperty: 'total',
-                    fields: ['id_casa_oracion','codigo','nombre','desc_lugar','desc_region'],
+                    fields: ['id_casa_oracion','codigo','nombre','desc_lugar','desc_region','id_region'],
                     // turn on remote sorting
                     remoteSort: true,     
                     baseParams:{par_filtro:'caor.nombre#reg.nombre#reg.nombre'}
@@ -346,8 +254,8 @@ Phx.vista.MovimientoOtrosIngresos=Ext.extend(Phx.gridInterfaz,{
 				allowBlank: true,
 				anchor: '80%',
 				gwidth: 100,
-						format: 'd/m/Y', 
-						renderer:function (value,p,record){return value?value.dateFormat('d/m/Y'):''}
+				format: 'd/m/Y', 
+				renderer:function (value,p,record){return value?value.dateFormat('d/m/Y'):''}
 			},
 			type:'DateField',
 			filters:{pfiltro:'mov.fecha',type:'date'},
@@ -390,7 +298,82 @@ Phx.vista.MovimientoOtrosIngresos=Ext.extend(Phx.gridInterfaz,{
                     },
                 grid:true,
                 form:true
-        },{
+        },
+        
+        {
+            config:{
+                name: 'id_movimiento_traspaso',
+                fieldLabel: 'Traspaso Egreso (Origen)',
+                qtip: 'Seleccione el trapaso de Egreso correspondiente',
+                allowBlank: false,
+                forceSelection : true,
+                emptyText:'Colecta de ...',
+                store:new Ext.data.JsonStore(
+                {
+                    url: '../../sis_admin/control/Movimiento/listarMovimientoEgresoTraspaso',
+                    id: 'id_movimiento',
+                    root: 'datos',
+                    sortInfo:{
+                        field: 'num_documento',
+                        direction: 'ASC'
+                    },
+                    totalProperty: 'total',
+                    fields: [{name:'id_movimiento', type: 'numeric'},
+								{name:'estado_reg', type: 'string'},
+								{name:'tipo', type: 'string'},
+								{name:'id_casa_oracion', type: 'numeric'},
+								{name:'concepto', type: 'string'},
+								{name:'obs', type: 'string'},
+								{name:'fecha', type: 'date',dateFormat:'Y-m-d'},
+								{name:'id_estado_periodo', type: 'numeric'},
+								{name:'fecha_reg', type: 'date',dateFormat:'Y-m-d H:i:s.u'},
+								{name:'id_usuario_reg', type: 'numeric'},
+								{name:'fecha_mod', type: 'date',dateFormat:'Y-m-d H:i:s.u'},
+								{name:'id_usuario_mod', type: 'numeric'},
+								{name:'usr_reg', type: 'string'},
+								{name:'usr_mod', type: 'string'},
+								'id_tipo_movimiento' ,
+						        'id_movimiento_det',
+						        'monto',
+						        'total_monto_doc','total_monto_retencion',
+						        'total_monto','tipo_reg','tipo_documento','num_documento',
+						        'id_obrero',
+							    'desc_obrero','id_movimiento_traspaso',
+							    'estado','desc_casa_oracion',
+							    'desc_tipo_movimiento',
+							    'id_ot','desc_orden','id_concepto_ingas','desc_ingas','monto_doc','monto_retencion'],
+                    // turn on remote sorting
+                    remoteSort: true,
+                    baseParams:{par_filtro:'num_documento'}
+                }),
+                valueField: 'id_movimiento',
+                displayField: 'num_documento',
+                gdisplayField:'desc_movimiento_traspaso',                  				
+                hiddenName: 'id_movimiento',
+                
+                tpl:'<tpl for="."><div class="x-combo-list-item"><p><font color="blue">{desc_casa_oracion}</font></p><p>Recibo Nro: {num_documento}</p><p>{obs}</p><p><b>Monto: {monto_doc}$,  de {desc_tipo_movimiento}</b></p> </div></tpl>',
+				 
+				 
+                triggerAction: 'all',
+                lazyRender:true,
+                mode:'remote',
+                pageSize:50,
+                queryDelay:500,
+                listWidth:'280',
+                width:200,
+                gwidth:150,
+                minChars:2
+            },
+            type:'ComboBox',
+            bottom_filter: true,
+            filters:{pfiltro:'mov.desc_movimiento_traspaso',type:'string'},
+            id_grupo:1,
+            grid:true,
+            form:true
+        },
+        
+        
+        {
             config:{
                 name: 'id_tipo_movimiento',
                 fieldLabel: 'Colecta de',
@@ -519,6 +502,7 @@ Phx.vista.MovimientoOtrosIngresos=Ext.extend(Phx.gridInterfaz,{
 				anchor: '80%',
 				gwidth: 100,
 				minValue :0,
+				readOnly: true,
 				maxLength:1245186,
 				renderer:function (value, p, record){
                             if(record.data.tipo_reg=='summary'){
@@ -572,6 +556,7 @@ Phx.vista.MovimientoOtrosIngresos=Ext.extend(Phx.gridInterfaz,{
 			config:{
 				name: 'num_documento',
 				fieldLabel: 'Número Doc',
+				readOnly: true,
 				qtip: 'número del documento de respaldo o número de factura',
 				allowBlank: false,
 				anchor: '80%',
@@ -740,7 +725,7 @@ Phx.vista.MovimientoOtrosIngresos=Ext.extend(Phx.gridInterfaz,{
         'total_monto','tipo_reg','tipo_documento','num_documento',
         'id_obrero',
 	    'desc_obrero',
-	    'estado','desc_tipo_movimiento','id_ot','desc_orden'
+	    'estado','desc_tipo_movimiento','id_ot','desc_orden','desc_movimiento_traspaso'
 		
 		
 	],
@@ -760,12 +745,106 @@ Phx.vista.MovimientoOtrosIngresos=Ext.extend(Phx.gridInterfaz,{
          return tb 
      }, 
      
-    
-     
-    
-	
-	
 	arrayDefaultColumHidden:['fecha_reg','fecha_mod','usr_reg','estado_reg'],
+	
+	
+	validarFiltros:function(){
+	    if(this.cmbEstadoPeriodo.isValid()&& this.cmbCasaOracion.isValid()&& this.cmbGestion.isValid() && this.cmbTipo.isValid() ){
+	        return true;
+	    }
+	    else{
+	        return false;
+	    }
+	    
+	},
+	
+	capturaFiltros:function(combo, record, index){
+	    this.store.baseParams.tipo=this.cmbTipo.getValue();
+	    this.store.baseParams.id_casa_oracion=this.cmbCasaOracion.getValue();
+        this.store.baseParams.id_estado_periodo=this.cmbEstadoPeriodo.getValue();
+        this.store.baseParams.tipo_concepto='ingreso';
+        this.store.load({params:{start:0, limit:this.tam_pag}}); 
+    },
+    onButtonAct:function(){
+        if(!this.validarFiltros()){
+            alert('Especifique los filtros antes')
+         }
+        else{
+            this.store.baseParams.tipo=this.cmbTipo.getValue();
+            this.store.baseParams.id_casa_oracion=this.cmbCasaOracion.getValue();
+            this.store.baseParams.id_estado_periodo=this.cmbEstadoPeriodo.getValue();
+            Phx.vista.MovimientoOtrosIngresos.superclass.onButtonAct.call(this);
+        }
+    },
+    iniciarEventos:function(){
+		//Eventos		
+		this.Cmp.concepto.on('select',function(cm,dat,num){
+         	if(dat.data.variable == 'ingreso_traspaso'){		        
+		        this.Cmp.id_movimiento_traspaso.store.baseParams.tipo='egreso';
+	            this.Cmp.id_movimiento_traspaso.store.baseParams.id_region=this.id_region;
+	            this.Cmp.id_movimiento_traspaso.store.baseParams.tipo_concepto='egreso_traspaso';
+	            this.Cmp.id_movimiento_traspaso.store.baseParams.fecha=this.Cmp.fecha.getValue().dateFormat('d/m/Y');
+	            this.Cmp.id_movimiento_traspaso.modificado = true;
+	            this.mostrarComponente(this.Cmp.id_movimiento_traspaso);
+	            this.Cmp.tipo_documento.store.loadData(this.documentoTraspaso);	           
+	            
+		    }
+		    else{
+		    	this.ocultarComponente(this.Cmp.id_movimiento_traspaso);
+		    	this.Cmp.tipo_documento.store.loadData(this.OtrosIngresos)
+		    }
+		},this);
+		
+		this.Cmp.id_movimiento_traspaso.on('select',function(cm,record,num){
+			this.Cmp.monto.setValue(record.data.monto);
+			this.Cmp.num_documento.setValue(record.data.num_documento);
+			this.Cmp.fecha.setValue(record.data.fecha);
+			this.Cmp.tipo_documento.setValue('recibo');	
+			this.Cmp.obs.setValue(record.data.obs);	
+		},this);
+	},
+    
+	
+	
+	
+	onButtonNew:function(){
+         if(!this.validarFiltros()){
+             alert('Especifique los filtros antes');
+        }
+         else{
+              Phx.vista.MovimientoOtrosIngresos.superclass.onButtonNew.call(this);
+              this.getComponente('fecha').setMinValue(this.fecha_min);
+              this.getComponente('fecha').setMaxValue(this.fecha_max);
+              this.getComponente('fecha').setValue(this.fecha_min);              
+              this.ocultarComponente(this.Cmp.id_movimiento_traspaso);
+         }
+        
+    },
+    onButtonEdit:function(){
+        if(!this.validarFiltros()){
+             alert('Especifique los filtros antes');
+        }
+         else{
+              Phx.vista.MovimientoOtrosIngresos.superclass.onButtonEdit.call(this);
+              
+              if(this.Cmp.concepto.getValue() == 'ingreso_traspaso'){
+		         this.Cmp.tipo_documento.store.loadData(this.documentoTraspaso)
+              } 
+              
+              if(this.Cmp.concepto.getValue() == 'devolucion'){
+		         this.Cmp.tipo_documento.store.loadData(this.OtrosIngresos)
+              }	
+         }
+    },
+    
+     loadValoresIniciales:function()
+    {
+        Phx.vista.MovimientoOtrosIngresos.superclass.loadValoresIniciales.call(this);
+        this.getComponente('tipo').setValue(this.cmbTipo.getValue());
+        this.getComponente('id_casa_oracion').setValue(this.cmbCasaOracion.getValue());  
+        this.getComponente('id_estado_periodo').setValue(this.cmbEstadoPeriodo.getValue());   
+        
+    },
 
 	
 	sortInfo:{
@@ -774,6 +853,5 @@ Phx.vista.MovimientoOtrosIngresos=Ext.extend(Phx.gridInterfaz,{
 	},
 	bdel:true,
 	bsave:true
-	}
-)
+})
 </script>

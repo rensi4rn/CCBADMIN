@@ -537,7 +537,8 @@ BEGIN
                 estado,
                 tipo_documento,
                 num_documento,
-                id_ot
+                id_ot,
+                id_movimiento_traspaso
           	) values(
 				'activo',
                 v_parametros.tipo,
@@ -554,7 +555,8 @@ BEGIN
                 v_parametros.estado,
                 v_parametros.tipo_documento,
                 v_parametros.num_documento,
-                v_parametros.id_ot
+                v_parametros.id_ot,
+                v_parametros.id_movimiento_traspaso
 							
 			)RETURNING id_movimiento into v_id_movimiento;
             
@@ -576,6 +578,18 @@ BEGIN
                 v_id_movimiento,
                 COALESCE(v_parametros.monto,0)
                );
+               
+               
+            IF v_parametros.concepto = 'ingreso_traspaso' THEN
+            
+               -- modificamos el id del movieminto irigunal
+            
+               update ccb.tmovimiento set
+                  id_movimiento_traspaso  = v_id_movimiento --almacena el movimiento en el traspaso de egreso
+               where id_movimiento = v_parametros.id_movimiento_traspaso ;
+            
+            END IF;   
+               
              
            
 			--raise exception 'ssss  %', v_id_movimiento;
@@ -726,6 +740,14 @@ BEGIN
               where ep.id_casa_oracion = v_parametros.id_casa_oracion
                    and  v_parametros.fecha::date BETWEEN  ep.fecha_ini::date and ep.fecha_fin::dATE;  
               
+             
+              select *  into v_registros
+              from ccb.tmovimiento m 
+              where  m.id_movimiento = v_parametros.id_movimiento;
+        
+              IF v_registros.id_movimiento_traspaso is not null and v_registros.concepto = 'egreso_traspaso' THEN
+                raise exception 'NO puede editar, tiene un ingreso por traspaso asociado (id %)', v_registros.id_movimiento_traspaso;
+              END IF;
               
               IF v_estado_periodo = 'cerrado' THEN
                   raise exception 'el periodo correspondiente se encuentra cerrado';
@@ -787,13 +809,20 @@ BEGIN
                 v_id_estado_periodo
               from ccb.testado_periodo ep 
               where ep.id_casa_oracion = v_parametros.id_casa_oracion
-                   and  v_parametros.fecha::date BETWEEN  ep.fecha_ini::date and ep.fecha_fin::dATE;  
-              
+                   and  v_parametros.fecha::date BETWEEN  ep.fecha_ini::date and ep.fecha_fin::dATE; 
+                   
               
               IF v_estado_periodo = 'cerrado' THEN
                   raise exception 'el periodo correspondiente se encuentra cerrado';
               END IF;
-        
+              
+              
+            select 
+              * 
+            into 
+               v_registros 
+            from ccb.tmovimiento m 
+            where m.id_movimiento = v_parametros.id_movimiento; 
         
         
 			--Sentencia de la modificacion
@@ -821,6 +850,37 @@ BEGIN
              id_tipo_movimiento = v_parametros.id_tipo_movimiento
 			where id_movimiento_det=v_parametros.id_movimiento_det;
             
+            IF v_parametros.concepto = 'ingreso_traspaso' THEN
+            
+                 -- modificamos el id del movieminto irigunal
+                IF v_registros.id_movimiento_traspaso != v_parametros.id_movimiento_traspaso THEN                  
+                   
+                   --resetea el anterior
+                   update ccb.tmovimiento set
+                      id_movimiento_traspaso  = NULL --almacena el movimiento en el traspaso de egreso
+                   where id_movimiento = v_registros.id_movimiento_traspaso ; 
+                   
+                   --actuliza el nuevo
+                   update ccb.tmovimiento set
+                     id_movimiento_traspaso  = v_parametros.id_movimiento --almacena el movimiento en el traspaso de egreso
+                   where id_movimiento = v_parametros.id_movimiento_traspaso ;               
+                
+                
+                END IF;
+              
+            ELSE 
+                
+                IF v_registros.concepto = 'ingreso_traspaso' THEN                                     
+                   update ccb.tmovimiento set
+                      id_movimiento_traspaso  = NULL --almacena el movimiento en el traspaso de egreso
+                   where id_movimiento = v_registros.id_movimiento_traspaso;                   
+                
+                END IF;
+                
+            END IF;
+            
+             
+            
             
             --Definicion de la respuesta
             v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Movimientos de otros ingresos  modificado'); 
@@ -846,18 +906,36 @@ BEGIN
         
               select 
                 ep.estado_periodo,
-                ep.id_estado_periodo
+                ep.id_estado_periodo,
+                mov.concepto,
+                mov.id_movimiento_traspaso
               into
-                v_estado_periodo,
-                v_id_estado_periodo
+                
+                v_registros
               from ccb.tmovimiento mov
               inner join ccb.testado_periodo ep  on mov.id_estado_periodo = ep.id_estado_periodo
-              where mov.id_movimiento = v_parametros.id_movimiento;  
+              where mov.id_movimiento = v_parametros.id_movimiento;
+              
+               v_estado_periodo = v_registros.estado_periodo;
+               v_id_estado_periodo = v_registros.id_estado_periodo;
               
               
               IF v_estado_periodo = 'cerrado' THEN
                   raise exception 'No puede borrar el periodo correspondiente se encuentra cerrado';
               END IF;
+              
+            IF v_registros.concepto = 'ingreso_traspaso' THEN
+                   update ccb.tmovimiento set
+                      id_movimiento_traspaso  = NULL --almacena el movimiento en el traspaso de egreso
+                   where id_movimiento = v_registros.id_movimiento_traspaso ;
+            END IF; 
+            
+            IF v_registros.concepto = 'egreso_traspaso' THEN
+                IF v_registros.id_movimiento_traspaso is not null THEN
+                   raise exception 'primero elimine el traspaso  relacionado';
+                END IF;
+            END IF; 
+              
         
             delete from ccb.tmovimiento_det
             where id_movimiento=v_parametros.id_movimiento;
@@ -865,6 +943,8 @@ BEGIN
 			--Sentencia de la eliminacion
 			delete from ccb.tmovimiento
             where id_movimiento=v_parametros.id_movimiento;
+            
+            
                
             --Definicion de la respuesta
             v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Movimientos eliminado(a)'); 

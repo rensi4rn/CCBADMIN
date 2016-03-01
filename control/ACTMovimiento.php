@@ -159,6 +159,9 @@ class ACTMovimiento extends ACTbase{
 		if($this->objParam->getParametro('tipo_concepto')=='egreso'){
                 $this->objParam->addFiltro("mov.concepto  in (''operacion'',''egreso_traspaso'',''contra_rendicion'',''egreso_inicial_por_rendir'')");   
         }
+		elseif($this->objParam->getParametro('tipo_concepto')=='egreso_traspaso'){
+                $this->objParam->addFiltro("mov.concepto  in (''egreso_traspaso'') and id_movimiento_traspaso is null");   
+        }
 		else{
 			    $this->objParam->addFiltro("mov.concepto  in (''rendicion'')");
 		}
@@ -185,6 +188,63 @@ class ACTMovimiento extends ACTbase{
 		}
 		$this->res->imprimirRespuesta($this->res->generarJson());
 	}
+
+    function listarMovimientoEgresoTraspaso(){
+		
+		
+		 if($this->objParam->getParametro('tipolist')=='mobile'){
+            $this->objParam->defecto('ordenacion','mov.fecha');
+            $this->objParam->defecto('dir_ordenacion','desc');
+         }	
+		 else{
+		    $this->objParam->defecto('ordenacion','id_movimiento');
+            $this->objParam->defecto('dir_ordenacion','asc');	
+		 }
+		
+		 if($this->objParam->getParametro('tipo')!=''){
+                    $this->objParam->addFiltro("mov.tipo = ''".$this->objParam->getParametro('tipo')."''");   
+          }
+          
+         if($this->objParam->getParametro('id_estado_periodo')!=''){
+                $this->objParam->addFiltro("mov.id_estado_periodo = ".$this->objParam->getParametro('id_estado_periodo'));   
+         }
+         
+         if($this->objParam->getParametro('id_casa_oracion')!=''){
+                $this->objParam->addFiltro("mov.id_casa_oracion = ".$this->objParam->getParametro('id_casa_oracion'));   
+         }
+		 
+		 if($this->objParam->getParametro('id_gestion')!=''){
+                $this->objParam->addFiltro("mov.id_gestion = ".$this->objParam->getParametro('id_gestion'));   
+         }
+		 
+		 if($this->objParam->getParametro('id_region')!=''){
+                $this->objParam->addFiltro("mov.id_region = ".$this->objParam->getParametro('id_region'));   
+         }
+		 
+		 if($this->objParam->getParametro('fecha')!=''){
+                $this->objParam->addFiltro("''".$this->objParam->getParametro('fecha')."''::Date BETWEEN mov.fecha_ini::Date and mov.fecha_fin::Date");   
+         }
+         
+         
+		
+		if($this->objParam->getParametro('tipo_concepto')=='egreso_traspaso'){
+                $this->objParam->addFiltro("mov.concepto  in (''egreso_traspaso'') and id_movimiento_traspaso is null");   
+        }
+		
+		if($this->objParam->getParametro('tipoReporte')=='excel_grid' || $this->objParam->getParametro('tipoReporte')=='pdf_grid'){
+			$this->objReporte = new Reporte($this->objParam,$this);
+			$this->res = $this->objReporte->generarReporteListado('MODMovimiento','listarMovimientoEgresoTraspaso');
+		} else{
+			$this->objFunc=$this->create('MODMovimiento');
+			
+			$this->res=$this->objFunc->listarMovimientoEgresoTraspaso($this->objParam);
+		}
+		
+		
+		$this->res->imprimirRespuesta($this->res->generarJson());
+	}
+
+
 
 	function listarMovimientoOtrosIngresos(){
 		
