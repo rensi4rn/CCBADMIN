@@ -424,7 +424,8 @@ BEGIN
                 estado,
                 tipo_documento,
                 num_documento,
-                id_ot
+                id_ot,
+                id_cuenta_bancaria
           	) values(
 				'activo',
                 v_parametros.tipo,
@@ -441,7 +442,8 @@ BEGIN
                 v_parametros.estado,
                 v_parametros.tipo_documento,
                 v_parametros.num_documento,
-                v_parametros.id_ot
+                v_parametros.id_ot,
+                v_parametros.id_cuenta_bancaria
 							
 			)RETURNING id_movimiento into v_id_movimiento;
             
@@ -765,12 +767,13 @@ BEGIN
               id_estado_periodo = v_id_estado_periodo,
               fecha_mod = now(),
               id_usuario_mod = p_id_usuario,
-             id_obrero = v_parametros.id_obrero,
-             estado = v_parametros.estado,
-             tipo_documento = v_parametros.tipo_documento,
-             num_documento = v_parametros.num_documento,
-             id_ot = v_parametros.id_ot
-			where id_movimiento=v_parametros.id_movimiento;
+              id_obrero = v_parametros.id_obrero,
+              estado = v_parametros.estado,
+              tipo_documento = v_parametros.tipo_documento,
+              num_documento = v_parametros.num_documento,
+              id_ot = v_parametros.id_ot,
+              id_cuenta_bancaria = v_parametros.id_cuenta_bancaria
+			where id_movimiento = v_parametros.id_movimiento;
             
             
             update ccb.tmovimiento_det set

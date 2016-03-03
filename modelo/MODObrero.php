@@ -113,6 +113,12 @@ class MODObrero extends MODbase{
 		$this->setParametro('obs','obs','text');
 		$this->setParametro('id_tipo_ministerio','id_tipo_ministerio','int4');
 		$this->setParametro('id_persona','id_persona','int4');
+		
+		$this->setParametro('telefono1','telefono1','varchar');
+		$this->setParametro('celular1','celular1','varchar');
+		$this->setParametro('correo','correo','varchar');
+		
+		
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();
@@ -138,6 +144,10 @@ class MODObrero extends MODbase{
 		$this->setParametro('id_tipo_ministerio','id_tipo_ministerio','int4');
 		$this->setParametro('id_persona','id_persona','int4');
 		$this->setParametro('id_casa_oracion','id_casa_oracion','int4');
+		
+		$this->setParametro('telefono1','telefono1','varchar');
+		$this->setParametro('celular1','celular1','varchar');
+		$this->setParametro('correo','correo','varchar');
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();

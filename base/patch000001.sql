@@ -836,6 +836,52 @@ IS 'identifa el trapaso de contraparte egreso o ingreso';
 /***********************************F-SCP-RAC-CCB-2-08/08/2016****************************************/
 
 
+/***********************************I-SCP-RAC-CCB-2-12/08/2016****************************************/
+
+
+--------------- SQL ---------------
+
+CREATE TABLE ccb.tcasa_banco (
+  id_casa_banco SERIAL NOT NULL,
+  id_cuenta_bancaria INTEGER,
+  id_tipo_movimiento INTEGER,
+  id_casa_oracion INTEGER,
+  obs VARCHAR,
+  PRIMARY KEY(id_casa_banco)
+) INHERITS (pxp.tbase)
+
+WITH (oids = false);
+
+
+--------------- SQL ---------------
+
+ALTER TABLE ccb.tmovimiento
+  ADD COLUMN id_cuenta_bancaria INTEGER;
+
+COMMENT ON COLUMN ccb.tmovimiento.id_cuenta_bancaria
+IS 'en caso de depositos hace referencias a la cuenta bancaria todo sea hace el registro';
+
+
+
+/***********************************F-SCP-RAC-CCB-2-12/08/2016****************************************/
+
+
+
+/***********************************I-SCP-RAC-CCB-2-17/08/2016****************************************/
+
+
+--------------- SQL ---------------
+
+ALTER TABLE ccb.tevento
+  ADD COLUMN nacional VARCHAR(3) DEFAULT 'no' NOT NULL;
+
+COMMENT ON COLUMN ccb.tevento.nacional
+IS 'si o no, esto permite en reportes ademas de listar lso de la region, la opcion de incluir lo nacionales';
+
+
+/***********************************F-SCP-RAC-CCB-2-17/08/2016****************************************/
+
+
 
 
 

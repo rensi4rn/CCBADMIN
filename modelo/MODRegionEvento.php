@@ -354,7 +354,8 @@ class MODRegionEvento extends MODbase{
 		$this->setParametro('id_obrero','id_obrero','varchar');
 		$this->setParametro('id_regiones','id_regiones','varchar');
 		$this->setParametro('hasta','hasta','date');
-		$this->setParametro('desde','desde','date');				
+		$this->setParametro('desde','desde','date');
+		$this->setParametro('nacional','nacional','varchar');				
 		//Definicion de la lista del resultado del query
 		$this->captura('id_region_evento','int4');
 		$this->captura('estado_reg','varchar');

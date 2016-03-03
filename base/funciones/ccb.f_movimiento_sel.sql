@@ -258,7 +258,9 @@ BEGIN
                               COALESCE(mov.desc_ingas,'''') as desc_ingas,
                               monto_doc,
                               monto_retencion,
-                              id_movimiento_traspaso
+                              id_movimiento_traspaso,
+                              id_cuenta_bancaria,
+                               COALESCE(desc_cuenta_bancaria,'''') as desc_cuenta_bancaria
                             FROM 
                               ccb.vmovimiento_egreso_2  mov
                           WHERE ';

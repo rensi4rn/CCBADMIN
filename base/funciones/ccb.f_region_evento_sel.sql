@@ -37,6 +37,7 @@ DECLARE
     v_filtro 			varchar;
     v_order 			varchar;
     v_id_gestion		integer;
+    v_filtro_final		varchar;
 			    
 BEGIN
 
@@ -425,8 +426,6 @@ BEGIN
      				
     	begin
         
-            
-    		
             v_inner = '';
             v_lugares = '0';
             v_filtro = '0=0 and';
@@ -501,6 +500,19 @@ BEGIN
            END IF;
            
            
+           IF  pxp.f_existe_parametro(p_tabla,'nacional')  THEN
+             
+             
+             IF v_parametros.nacional is not null and v_parametros.nacional = 'si' THEN
+                v_filtro_final =' 0=0)  or  (eve.nacional = ''si'')) and ';
+             ELSE
+                v_filtro_final =' 0=0)) and ';
+             END IF;
+           
+           
+           END IF;
+           
+           
           
             --Sentencia de la consulta
 			v_consulta:='select
@@ -543,7 +555,7 @@ BEGIN
                           inner join ccb.testado_periodo ep   on  rege.fecha_programada::date BETWEEN  ep.fecha_ini::date and ep.fecha_fin::dATE  and ep.estado_reg = ''activo'' and ep.id_casa_oracion = co.id_casa_oracion
                           left join segu.tusuario usu2 on usu2.id_usuario = rege.id_usuario_mod
                           left join ccb.vobrero ob on ob.id_obrero = rege.id_obrero
-                        where  '||v_filtro||' (rege.fecha_programada  BETWEEN  '''||v_parametros.desde::varchar||'''::date and '''||v_parametros.hasta::varchar||'''::date) ';
+                        where  (('||v_filtro||v_filtro_final||' (rege.fecha_programada  BETWEEN  '''||v_parametros.desde::varchar||'''::date and '''||v_parametros.hasta::varchar||'''::date) ';
 			 
 			--Definicion de la respuesta
 			v_consulta := v_consulta||' order by '||v_order;

@@ -50,33 +50,45 @@ BEGIN
         begin
         	--Sentencia de la insercion
         	insert into ccb.tobrero(
-			estado_reg,
-			id_region,
-			fecha_fin,
-			fecha_ini,
-			obs,
-			id_tipo_ministerio,
-			id_persona,
-			fecha_reg,
-			id_usuario_reg,
-			fecha_mod,
-			id_usuario_mod,
-            id_casa_oracion
+                estado_reg,
+                id_region,
+                fecha_fin,
+                fecha_ini,
+                obs,
+                id_tipo_ministerio,
+                id_persona,
+                fecha_reg,
+                id_usuario_reg,
+                fecha_mod,
+                id_usuario_mod,
+                id_casa_oracion
           	) values(
-			'activo',
-			v_parametros.id_region,
-			v_parametros.fecha_fin,
-			v_parametros.fecha_ini,
-			v_parametros.obs,
-			v_parametros.id_tipo_ministerio,
-			v_parametros.id_persona,
-			now(),
-			p_id_usuario,
-			now(),
-			p_id_usuario,
-            v_parametros.id_casa_oracion
+                'activo',
+                v_parametros.id_region,
+                v_parametros.fecha_fin,
+                v_parametros.fecha_ini,
+                v_parametros.obs,
+                v_parametros.id_tipo_ministerio,
+                v_parametros.id_persona,
+                now(),
+                p_id_usuario,
+                now(),
+                p_id_usuario,
+                v_parametros.id_casa_oracion
 							
 			)RETURNING id_obrero into v_id_obrero;
+            
+            
+             --moficiamoslos dato de la persona
+            UPDATE segu.tpersona 
+                SET 
+                  id_usuario_mod = p_id_usuario,                 
+                  fecha_mod = now(),
+                  correo = v_parametros.correo,
+                  celular1 = v_parametros.celular1,
+                  telefono1 = v_parametros.telefono1
+                WHERE 
+                  id_persona = v_parametros.id_persona;
 			
 			--Definicion de la respuesta
 			v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Obrero almacenado(a) con exito (id_obrero'||v_id_obrero||')'); 
@@ -99,16 +111,28 @@ BEGIN
 		begin
 			--Sentencia de la modificacion
 			update ccb.tobrero set
-			id_region = v_parametros.id_region,
-			fecha_fin = v_parametros.fecha_fin,
-			fecha_ini = v_parametros.fecha_ini,
-			obs = v_parametros.obs,
-			id_tipo_ministerio = v_parametros.id_tipo_ministerio,
-			id_persona = v_parametros.id_persona,
-			fecha_mod = now(),
-			id_usuario_mod = p_id_usuario,
-            id_casa_oracion = v_parametros.id_casa_oracion
+                id_region = v_parametros.id_region,
+                fecha_fin = v_parametros.fecha_fin,
+                fecha_ini = v_parametros.fecha_ini,
+                obs = v_parametros.obs,
+                id_tipo_ministerio = v_parametros.id_tipo_ministerio,
+                id_persona = v_parametros.id_persona,
+                fecha_mod = now(),
+                id_usuario_mod = p_id_usuario,
+                id_casa_oracion = v_parametros.id_casa_oracion
 			where id_obrero=v_parametros.id_obrero;
+            
+            
+            --moficiamoslos dato de la persona
+            UPDATE segu.tpersona 
+                SET 
+                  id_usuario_mod = p_id_usuario,                 
+                  fecha_mod = now(),
+                  correo = v_parametros.correo,
+                  celular1 = v_parametros.celular1,
+                  telefono1 = v_parametros.telefono1
+                WHERE 
+                  id_persona = v_parametros.id_persona;
             
                      
             
@@ -172,6 +196,8 @@ BEGIN
 			--Sentencia de la eliminacion
 			delete from ccb.tobrero
             where id_obrero=v_parametros.id_obrero;
+            
+            -- TODO inactivar obreros eliminados ...
                
             --Definicion de la respuesta
             v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Obrero eliminado(a)'); 

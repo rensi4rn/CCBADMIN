@@ -110,8 +110,8 @@ Phx.vista.MovimientoEgreso=Ext.extend(Phx.gridInterfaz,{
     dataEgreso : [
                 ['operacion', 'Operación '],
                 ['egreso_traspaso', 'Egreso por Traspaso'],
-                ['contra_rendicion', 'Contra rendición'],
-                ['egreso_inicial_por_rendir', 'Saldo por Rendir (año pasado)']
+                ['contra_rendicion', 'Deposito'],
+                //['egreso_inicial_por_rendir', 'Saldo por Rendir (año pasado)']
         
         ],
     
@@ -122,7 +122,7 @@ Phx.vista.MovimientoEgreso=Ext.extend(Phx.gridInterfaz,{
                 ['recibo_sin_retencion', 'Recibo sin retención']
       ],
 	documentoContraRendicion: [
-                ['recibo', 'Recibo por rendir']
+                ['recibo', 'Cbte de Deposito']
       ],
 	documentoTrapaso: [
                 ['recibo', 'Recibo de trapaso']
@@ -161,8 +161,6 @@ Phx.vista.MovimientoEgreso=Ext.extend(Phx.gridInterfaz,{
     },
     
     
-    
-	
 	calculaMontos:function(){		
 		var tipodoc = this.Cmp.tipo_documento.getValue();
 		var monto_doc = this.Cmp.monto_doc.getValue();
@@ -381,7 +379,7 @@ Phx.vista.MovimientoEgreso=Ext.extend(Phx.gridInterfaz,{
                     renderer:function (value, p, record){
                         var dato='';
                         dato = (dato==''&&value=='colecta_adultos')?'Colecta de Adultos':dato;
-                        dato = (dato==''&&value=='contra_rendicion')?'Contra Rendición':dato;
+                        dato = (dato==''&&value=='contra_rendicion')?'Deposito':dato;
                         dato = (dato==''&&value=='colecta_jovenes')?'Colecta de Jovenes':dato;
                         dato = (dato==''&&value=='colecta_especial')?'Colecta Especial':dato;
                         dato = (dato==''&&value=='colecta_especial')?'Colecta Especial':dato;
@@ -466,6 +464,55 @@ Phx.vista.MovimientoEgreso=Ext.extend(Phx.gridInterfaz,{
             grid:true,
             form:true
         },
+		{
+            config:{
+                name: 'id_cuenta_bancaria',
+                fieldLabel: 'Cuenta Bancaria Pago',
+                allowBlank: false,
+                emptyText:'Elija una Cuenta...',
+                store:new Ext.data.JsonStore(
+                {
+                    url: '../../sis_admin/control/CasaBanco/listarCuentaBancaria',
+                    id: 'id_cuenta_bancaria',
+                    root:'datos',
+                    sortInfo:{
+                        field:'id_cuenta_bancaria',
+                        direction:'ASC'
+                    },
+                    totalProperty:'total',
+                    fields: ['id_cuenta_bancaria','nro_cuenta','nombre_institucion','codigo_moneda','centro','denominacion'],
+                    remoteSort: true,
+                    baseParams : {
+						par_filtro :'nro_cuenta'
+					}
+                }),
+                tpl:'<tpl for="."><div class="x-combo-list-item"><p><b>{nro_cuenta}</b></p><p>Moneda: {codigo_moneda}, {nombre_institucion}</p><p>{denominacion}, Centro: {centro}</p></div></tpl>',
+                valueField: 'id_cuenta_bancaria',
+                hiddenValue: 'id_cuenta_bancaria',
+                displayField: 'nro_cuenta',
+                gdisplayField:'desc_cuenta_bancaria',
+                listWidth:'280',
+                forceSelection:true,
+                typeAhead: false,
+                triggerAction: 'all',
+                lazyRender:true,
+                mode:'remote',
+                pageSize:20,
+                queryDelay:500,
+                gwidth: 250,
+                anchor: '80%',
+                minChars:2,
+                renderer:function(value, p, record){return String.format('{0}', record.data['desc_cuenta_bancaria']);}
+             },
+            type:'ComboBox',
+            filters:{pfiltro:'cb.nro_cuenta',type:'string'},
+            id_grupo:1,
+            grid:true,
+            form:true
+        },
+        
+        
+        
         {
             config:{
                 name: 'id_obrero',
@@ -877,7 +924,7 @@ Phx.vista.MovimientoEgreso=Ext.extend(Phx.gridInterfaz,{
 		{name:'usr_reg', type: 'string'},
 		{name:'usr_mod', type: 'string'},
 		'id_tipo_movimiento' ,
-        'id_movimiento_det',
+        'id_movimiento_det','id_cuenta_bancaria','desc_cuenta_bancaria',
         'monto',
         'total_monto_doc','total_monto_retencion',
         'total_monto','tipo_reg','tipo_documento','num_documento',
@@ -912,6 +959,8 @@ Phx.vista.MovimientoEgreso=Ext.extend(Phx.gridInterfaz,{
 		this.reload();
 
 	},
+	
+	
 	
 	onButtonNew:function(){        
         
@@ -1065,6 +1114,15 @@ Phx.vista.MovimientoEgreso=Ext.extend(Phx.gridInterfaz,{
 
      },
      
+     
+     resetCuentaBancaria: function(){
+		
+		this.Cmp.id_cuenta_bancaria.reset();
+ 	  	this.Cmp.id_cuenta_bancaria.store.baseParams.id_casa_oracion = this.cmbCasaOracion.getValue();
+ 	  	this.Cmp.id_cuenta_bancaria.store.baseParams.id_tipo_movimiento = this.Cmp.id_tipo_movimiento.getValue();
+ 	  	this.Cmp.id_cuenta_bancaria.modificado = true;
+	     	  	
+	},
      calcularSaldos(){
      	var me = this;
      	if (me.validarParamSaldos()) {
@@ -1153,7 +1211,7 @@ Phx.vista.MovimientoEgreso=Ext.extend(Phx.gridInterfaz,{
 		
 		//Eventos
 		
-		this.Cmp.concepto.on('change', 
+		this.Cmp.concepto.on('select', 
 		   function(cmb){
 		   	console.log('valor ..', cmb.getValue())
 		   	  if(cmb.getValue() == 'operacion'){
@@ -1165,6 +1223,20 @@ Phx.vista.MovimientoEgreso=Ext.extend(Phx.gridInterfaz,{
 		   	  	this.Cmp.id_concepto_ingas.allowBlank = true;
 		   	  	this.Cmp.id_concepto_ingas.reset();
 		   	  }
+		   	  
+		   	   if(cmb.getValue() == 'contra_rendicion'){
+		   	  	this.mostrarComponente(this.Cmp.id_cuenta_bancaria)
+		   	  	
+		   	  }
+		   	  else{
+		   	  	this.ocultarComponente(this.Cmp.id_cuenta_bancaria)	
+		   	  }
+		   	  
+		   	  this.resetCuentaBancaria();
+		   	  
+		   	  
+		   	  
+		   	  
 		   	
 		   },this);	
 		   
@@ -1187,11 +1259,13 @@ Phx.vista.MovimientoEgreso=Ext.extend(Phx.gridInterfaz,{
 		 this.Cmp.fecha.on('change', 
 		   function(cmb){		   	    
 		   	 this.calcularSaldos()
+		   	
 		   },this);
 		   
 		  this.Cmp.id_tipo_movimiento.on('select', 
 		   function(cmb){		   	    
-		   	 this.calcularSaldos()
+		   	 this.calcularSaldos();
+		   	 this.resetCuentaBancaria();
 		   },this); 	     
 		   
 	},

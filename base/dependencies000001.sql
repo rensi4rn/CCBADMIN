@@ -2034,61 +2034,6 @@ AS
  
  
  
- CREATE OR REPLACE VIEW ccb.vmovimiento_egreso_2
-AS
-  SELECT mov.id_movimiento,
-         mov.estado_reg,
-         mov.tipo,
-         mov.id_casa_oracion,
-         mov.concepto,
-         mov.obs,
-         mov.fecha,
-         mov.id_estado_periodo,
-         mov.fecha_reg,
-         mov.id_usuario_reg,
-         mov.fecha_mod,
-         mov.id_usuario_mod,
-         usu1.cuenta AS usr_reg,
-         usu2.cuenta AS usr_mod,
-         tm1.id_tipo_movimiento,
-         md1.id_movimiento_det,
-         md1.monto,
-         mov.id_obrero,
-         o.nombre_completo1 AS desc_obrero,
-         mov.estado,
-         mov.tipo_documento,
-         mov.num_documento,
-         tm1.nombre AS desc_tipo_movimiento,
-         co.nombre AS desc_casa_oracion,
-         ep.mes,
-         ep.estado_periodo,
-         ges.id_gestion,
-         ges.gestion,
-         co.id_region,
-         co.id_lugar,
-         mov.id_ot,
-         ot.desc_orden,
-         md1.id_concepto_ingas,
-         cig.desc_ingas,
-         round(md1.monto_retencion, 2) AS retenciones,
-         md1.monto_doc,
-         md1.monto_retencion,
-         mov.id_movimiento_traspaso
-  FROM ccb.tmovimiento mov
-       JOIN ccb.tcasa_oracion co ON co.id_casa_oracion = mov.id_casa_oracion
-       JOIN ccb.testado_periodo ep ON ep.id_estado_periodo =
-         mov.id_estado_periodo
-       JOIN ccb.tgestion ges ON ges.id_gestion = ep.id_gestion
-       JOIN segu.tusuario usu1 ON usu1.id_usuario = mov.id_usuario_reg
-       JOIN segu.tusuario usu2 ON usu2.id_usuario = mov.id_usuario_mod
-       JOIN ccb.tmovimiento_det md1 ON md1.id_movimiento = mov.id_movimiento
-       JOIN ccb.ttipo_movimiento tm1 ON tm1.id_tipo_movimiento =
-         md1.id_tipo_movimiento
-       LEFT JOIN ccb.vobrero o ON o.id_obrero = mov.id_obrero
-       LEFT JOIN conta.torden_trabajo ot ON ot.id_orden_trabajo = mov.id_ot
-       LEFT JOIN param.tconcepto_ingas cig ON cig.id_concepto_ingas =
-         md1.id_concepto_ingas
-  WHERE mov.tipo::text = 'egreso'::text;
   
   CREATE OR REPLACE VIEW ccb.votros_ingresos (
     id_movimiento,
@@ -2241,5 +2186,174 @@ SELECT mov.id_movimiento,
 /********************************************F-DEP-RAC-ADMIN-0-10/08/2016*************************************/
  
  
+ /********************************************I-DEP-RAC-ADMIN-0-12/08/2016*************************************/
+ 
+ 
+ 
+ CREATE OR REPLACE VIEW ccb.vmovimiento_egreso_2 (
+    id_movimiento,
+    estado_reg,
+    tipo,
+    id_casa_oracion,
+    concepto,
+    obs,
+    fecha,
+    id_estado_periodo,
+    fecha_reg,
+    id_usuario_reg,
+    fecha_mod,
+    id_usuario_mod,
+    usr_reg,
+    usr_mod,
+    id_tipo_movimiento,
+    id_movimiento_det,
+    monto,
+    id_obrero,
+    desc_obrero,
+    estado,
+    tipo_documento,
+    num_documento,
+    desc_tipo_movimiento,
+    desc_casa_oracion,
+    mes,
+    estado_periodo,
+    id_gestion,
+    gestion,
+    id_region,
+    id_lugar,
+    id_ot,
+    desc_orden,
+    id_concepto_ingas,
+    desc_ingas,
+    retenciones,
+    monto_doc,
+    monto_retencion,
+    id_movimiento_traspaso,
+    id_cuenta_bancaria,
+    desc_cuenta_bancaria)
+AS
+ SELECT mov.id_movimiento,
+    mov.estado_reg,
+    mov.tipo,
+    mov.id_casa_oracion,
+    mov.concepto,
+    mov.obs,
+    mov.fecha,
+    mov.id_estado_periodo,
+    mov.fecha_reg,
+    mov.id_usuario_reg,
+    mov.fecha_mod,
+    mov.id_usuario_mod,
+    usu1.cuenta AS usr_reg,
+    usu2.cuenta AS usr_mod,
+    tm1.id_tipo_movimiento,
+    md1.id_movimiento_det,
+    md1.monto,
+    mov.id_obrero,
+    o.nombre_completo1 AS desc_obrero,
+    mov.estado,
+    mov.tipo_documento,
+    mov.num_documento,
+    tm1.nombre AS desc_tipo_movimiento,
+    co.nombre AS desc_casa_oracion,
+    ep.mes,
+    ep.estado_periodo,
+    ges.id_gestion,
+    ges.gestion,
+    co.id_region,
+    co.id_lugar,
+    mov.id_ot,
+    ot.desc_orden,
+    md1.id_concepto_ingas,
+    cig.desc_ingas,
+    round(md1.monto_retencion, 2) AS retenciones,
+    md1.monto_doc,
+    md1.monto_retencion,
+    mov.id_movimiento_traspaso,
+    cb.id_cuenta_bancaria,
+    ((cb.nro_cuenta::text || ' ('::text) || cb.denominacion::text) || ')'::text AS desc_cuenta_bancaria
+   FROM ccb.tmovimiento mov
+     JOIN ccb.tcasa_oracion co ON co.id_casa_oracion = mov.id_casa_oracion
+     JOIN ccb.testado_periodo ep ON ep.id_estado_periodo = mov.id_estado_periodo
+     JOIN ccb.tgestion ges ON ges.id_gestion = ep.id_gestion
+     JOIN segu.tusuario usu1 ON usu1.id_usuario = mov.id_usuario_reg
+     JOIN segu.tusuario usu2 ON usu2.id_usuario = mov.id_usuario_mod
+     JOIN ccb.tmovimiento_det md1 ON md1.id_movimiento = mov.id_movimiento
+     JOIN ccb.ttipo_movimiento tm1 ON tm1.id_tipo_movimiento = md1.id_tipo_movimiento
+     LEFT JOIN ccb.vobrero o ON o.id_obrero = mov.id_obrero
+     LEFT JOIN conta.torden_trabajo ot ON ot.id_orden_trabajo = mov.id_ot
+     LEFT JOIN param.tconcepto_ingas cig ON cig.id_concepto_ingas = md1.id_concepto_ingas
+     LEFT JOIN tes.tcuenta_bancaria cb ON cb.id_cuenta_bancaria = mov.id_cuenta_bancaria
+  WHERE mov.tipo::text = 'egreso'::text;
+  
+  
+  
+CREATE OR REPLACE VIEW ccb.vcbte_det_deposito_haber(
+    id_estado_periodo,
+    id_tipo_movimiento,
+    desc_tipo_movimiento,
+    id_ot,
+    monto_doc,
+    monto,
+    monto_retencion)
+AS
+  SELECT m.id_estado_periodo,
+         m.id_tipo_movimiento,
+         m.desc_tipo_movimiento,
+         m.id_ot,
+         sum(m.monto_doc) AS monto_doc,
+         sum(m.monto) AS monto,
+         sum(m.monto_retencion) AS monto_retencion
+  FROM ccb.vmovimiento_egreso m
+  WHERE m.concepto::text = ANY (ARRAY [ 'contra_rendicion'::text ])
+  GROUP BY m.id_estado_periodo,
+           m.id_tipo_movimiento,
+           m.desc_tipo_movimiento,
+           m.id_ot;
+           
+           
+--------------- SQL ---------------
+
+CREATE OR REPLACE VIEW ccb.vcbte_det_deposito(
+    id_estado_periodo,
+    id_tipo_movimiento,
+    desc_tipo_movimiento,
+    id_ot,
+    obs,
+    tipo_documento,
+    monto,
+    monto_doc,
+    monto_retencion,
+    id_concepto_ingas,
+    id_plantilla,
+    glosa,
+    id_cuenta_bancaria,
+    desc_cuenta_bancaria)
+AS
+  SELECT m.id_estado_periodo,
+         m.id_tipo_movimiento,
+         m.desc_tipo_movimiento,
+         m.id_ot,
+         m.obs,
+         m.tipo_documento,
+         m.monto,
+         m.monto_doc,
+         m.monto_retencion,
+         m.id_concepto_ingas,
+         td.id_plantilla,
+         ((((('[Recibo - '::text || m.num_documento::text) || '] '::text) ||
+           ' '::text) || btrim(m.obs)) || '  --> Colecta de  '::text) ||
+           m.desc_tipo_movimiento::text AS glosa,
+         m.id_cuenta_bancaria,
+         m.desc_cuenta_bancaria
+  FROM ccb.vmovimiento_egreso_2 m
+       JOIN ccb.ttipo_documento_ccb td ON m.tipo_documento::text = td.codigo::
+         text
+  WHERE m.concepto::text = ANY (ARRAY [ 'contra_rendicion'::text ]);
+              
+ 
+ /********************************************F-DEP-RAC-ADMIN-0-12/08/2016*************************************/
+ 
+  
  
  

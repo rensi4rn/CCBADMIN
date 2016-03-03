@@ -418,6 +418,18 @@ Phx.vista.Obrero=Ext.extend(Phx.gridInterfaz,{
             	this.Cmp.id_casa_oracion.modificado = true;
             	this.Cmp.id_casa_oracion.enable();
             }, this);
+            
+            
+           this.Cmp.id_persona.on('select', function(combo, record, index){ 
+           	   console.log('record', record)
+            	this.Cmp.correo.setValue(record.data.correo);
+            	this.Cmp.celular1.setValue(record.data.celular1);
+            	this.Cmp.telefono1.setValue(record.data.telefono1);            	
+            }, this);  
+            
+          
+            
+            
     },	
 	
 	sortInfo:{

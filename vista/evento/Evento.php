@@ -98,6 +98,35 @@ Phx.vista.Evento=Ext.extend(Phx.gridInterfaz,{
 		},
 		{
 			config:{
+				name: 'nacional',
+				fieldLabel: 'Nacional',
+				qtip: 'los eventos nacionales tienen la opción de aparecer en reportes que no son de su región',
+				allowBlank: false,
+				anchor: '40%',
+				gwidth: 50,
+				maxLength:2,
+				emptyText:'si/no...',       			
+       			typeAhead: true,
+       		    triggerAction: 'all',
+       		    lazyRender:true,
+       		    mode: 'local',
+       		    valueField: 'inicio',       		    
+       		    store:['si','no']
+			},
+			type:'ComboBox',
+			id_grupo:1,
+			filters:{	
+	       		         type: 'list',
+	       				 pfiltro:'tipes.inicio',
+	       				 options: ['si','no'],	
+	       		 	},
+			grid:true,
+			form:true
+		},
+		
+		
+		{
+			config:{
 				name: 'estado_reg',
 				fieldLabel: 'Estado Reg.',
 				allowBlank: true,
@@ -188,7 +217,7 @@ Phx.vista.Evento=Ext.extend(Phx.gridInterfaz,{
 		{name:'fecha_mod', type: 'date', dateFormat:'Y-m-d H:i:s.u'},
 		{name:'id_usuario_mod', type: 'numeric'},
 		{name:'usr_reg', type: 'string'},
-		{name:'usr_mod', type: 'string'},'codigo','prioridad'
+		{name:'usr_mod', type: 'string'},'codigo','prioridad','nacional'
 		
 	],
 	sortInfo:{

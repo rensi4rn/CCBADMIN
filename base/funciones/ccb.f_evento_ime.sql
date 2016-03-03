@@ -58,7 +58,8 @@ BEGIN
 			fecha_mod,
 			id_usuario_mod,
             codigo,
-            prioridad
+            prioridad,
+            nacional
           	) values(
 			'activo',
 			v_parametros.nombre,
@@ -68,7 +69,8 @@ BEGIN
 			null,
 			null,
             lower(v_parametros.codigo),
-            v_parametros.prioridad
+            v_parametros.prioridad,
+            v_parametros.nacional
 							
 			)RETURNING id_evento into v_id_evento;
 			
@@ -93,12 +95,13 @@ BEGIN
 		begin
 			--Sentencia de la modificacion
 			update ccb.tevento set
-			nombre = v_parametros.nombre,
-			descripcion = v_parametros.descripcion,
-			fecha_mod = now(),
-			id_usuario_mod = p_id_usuario,
-            codigo = lower(v_parametros.codigo),
-            prioridad = v_parametros.prioridad
+                nombre = v_parametros.nombre,
+                descripcion = v_parametros.descripcion,
+                fecha_mod = now(),
+                id_usuario_mod = p_id_usuario,
+                codigo = lower(v_parametros.codigo),
+                prioridad = v_parametros.prioridad,
+                nacional = v_parametros.nacional
 			where id_evento=v_parametros.id_evento;
                
 			--Definicion de la respuesta

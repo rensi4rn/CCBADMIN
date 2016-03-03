@@ -163,6 +163,9 @@ class MODMovimiento extends MODbase{
 		$this->captura('monto_retencion','numeric');
 		$this->captura('id_movimiento_traspaso','integer');
 		
+		$this->captura('id_cuenta_bancaria','integer');
+		$this->captura('desc_cuenta_bancaria','text');
+		
 		
 		
 		
@@ -492,6 +495,8 @@ class MODMovimiento extends MODbase{
 		$this->setParametro('monto_doc','monto_doc','numeric');
 		$this->setParametro('monto_retencion','monto_retencion','numeric');
 		
+		$this->setParametro('id_cuenta_bancaria','id_cuenta_bancaria','int4');
+		
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();
@@ -527,6 +532,8 @@ class MODMovimiento extends MODbase{
 		$this->setParametro('id_concepto_ingas','id_concepto_ingas','int4');
 		$this->setParametro('monto_doc','monto_doc','numeric');
 		$this->setParametro('monto_retencion','monto_retencion','numeric');
+		$this->setParametro('id_cuenta_bancaria','id_cuenta_bancaria','int4');
+		
 		
 
 		//Ejecuta la instruccion

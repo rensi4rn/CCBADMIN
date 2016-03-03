@@ -32,6 +32,7 @@ class MODEvento extends MODbase{
 		$this->captura('usr_mod','varchar');
 		$this->captura('codigo','varchar');
 		$this->captura('prioridad','numeric');
+		$this->captura('nacional','varchar');
 		
 		//Ejecuta la instruccion
 		$this->armarConsulta();
@@ -53,6 +54,7 @@ class MODEvento extends MODbase{
 		$this->setParametro('descripcion','descripcion','text');
 		$this->setParametro('codigo','codigo','text');
 		$this->setParametro('prioridad','prioridad','numeric');
+		$this->setParametro('nacional','nacional','varchar');
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();
@@ -75,6 +77,7 @@ class MODEvento extends MODbase{
 		$this->setParametro('descripcion','descripcion','text');
 		$this->setParametro('codigo','codigo','text');
 		$this->setParametro('prioridad','prioridad','numeric');
+		$this->setParametro('nacional','nacional','varchar');
 		
 
 		//Ejecuta la instruccion

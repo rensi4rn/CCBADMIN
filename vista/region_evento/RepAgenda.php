@@ -135,7 +135,7 @@ Phx.vista.RepAgenda=Ext.extend(Phx.frmInterfaz,{
 				pageSize:50,
 				queryDelay:500,
 				listWidth:'280',
-				 enableMultiSelect: true,
+				enableMultiSelect: true,
 				width:210,
 				gwidth:220,
 				minChars:2,
@@ -251,27 +251,14 @@ Phx.vista.RepAgenda=Ext.extend(Phx.frmInterfaz,{
 			valorInicial: 'evento',
 			form:true 
 		},
-		{
-			config:{
-				name: 'comunicado',
-				fieldLabel: 'Comunicado',
-				qtip:'Texto del comunicado que se imprime al final de la agenda',
-				allowBlank: true,
-				anchor: '80%',
-				gwidth: 100,
-				maxLength:50000
-			},
-			type:'TextArea',
-			id_grupo:1,
-			form:true
-		},
+		
 		{
             config:{
                 name: 'tipo_imp',
                 fieldLabel: 'Tiene Anticipo Parcial',
                 allowBlank: false,
                 qtip:'comfigura el tipo de impresión,  (doble: imprime en doble columna, necesitara cortar la hoja), (simple: imprime continuo necesitara configurar la impresora para imprimir  dos hojas por página). En ambos casos el tamaño de la pagina es siempre CARTA',
-                anchor: '80%',
+               
                 emptyText:'Tipo Obligacion',
                 store:new Ext.data.ArrayStore({
                             fields: ['variable', 'valor'],
@@ -285,7 +272,7 @@ Phx.vista.RepAgenda=Ext.extend(Phx.frmInterfaz,{
                 triggerAction: 'all',
                 lazyRender: true,
                 mode: 'local',
-                wisth: 250
+               width:210,
             },
             type:'ComboBox',
             valorInicial:'doble',
@@ -298,7 +285,7 @@ Phx.vista.RepAgenda=Ext.extend(Phx.frmInterfaz,{
                 fieldLabel: 'Mostrar Reg',
                 allowBlank: false,
                 qtip: 'Mostrar el Código de Región en el reporte',
-                anchor: '80%',
+               
                 emptyText:'Tipo Obligacion',
                 store:new Ext.data.ArrayStore({
                             fields: ['variable', 'valor'],
@@ -312,12 +299,53 @@ Phx.vista.RepAgenda=Ext.extend(Phx.frmInterfaz,{
                 triggerAction: 'all',
                 lazyRender: true,
                 mode: 'local',
-                wisth: 250
+               width:210,
             },
             type:'ComboBox',
             valorInicial:'si',
             form:true
         },
+         {
+            config:{
+                name: 'nacional',
+                fieldLabel: 'Incluir Nacionales',
+                allowBlank: false,
+                qtip: 'Incluir eventos nacionales que no son de la region',
+               
+                emptyText:'Tipo Obligacion',
+                store:new Ext.data.ArrayStore({
+                            fields: ['variable', 'valor'],
+                            data : [  ['si','si'],
+                                      ['no','no']]
+                                    }),
+                valueField: 'variable',
+                value:'si',
+                displayField: 'valor',
+                forceSelection: true,
+                triggerAction: 'all',
+                lazyRender: true,
+                mode: 'local',
+               width:210,
+            },
+            type:'ComboBox',
+            valorInicial:'si',
+            form:true
+        },
+        
+        {
+			config:{
+				name: 'comunicado',
+				fieldLabel: 'Comunicado',
+				qtip:'Texto del comunicado que se imprime al final de la agenda',
+				allowBlank: true,
+				anchor:'80%',
+				gwidth: 100,
+				maxLength:50000
+			},
+			type:'TextArea',
+			id_grupo:1,
+			form:true
+		},
 		
 		  
 
