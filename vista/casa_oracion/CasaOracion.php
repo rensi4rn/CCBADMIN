@@ -349,12 +349,12 @@ Phx.vista.CasaOracion=Ext.extend(Phx.gridInterfaz,{
 		field: 'id_casa_oracion',
 		direction: 'ASC'
 	},
-	/*east:{
+	east:{
 			  url:'../../../sis_admin/vista/casa_oracion/mapaLocalizacion.php',
 			  title:'Ubicación', 
 			  width:'50%',
 			  cls:'mapaLocalizacion'
-		 },*/
+		 },
 	tabsouth:[
 	      {
 			  url:'../../../sis_admin/vista/culto/Culto.php',		  
