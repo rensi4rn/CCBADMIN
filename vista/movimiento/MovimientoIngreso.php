@@ -330,6 +330,7 @@ Phx.vista.MovimientoIngreso=Ext.extend(Phx.gridInterfaz,{
                     fieldLabel:'Concepto',
                     allowBlank: false,
                     emptyText:'Tipo...',
+                    forceSelection: true,
                     typeAhead: true,
                     triggerAction: 'all',
                     lazyRender: true,

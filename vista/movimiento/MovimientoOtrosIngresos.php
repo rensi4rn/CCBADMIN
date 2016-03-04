@@ -363,6 +363,7 @@ Phx.vista.MovimientoOtrosIngresos=Ext.extend(Phx.gridInterfaz,{
                     allowBlank:false,
                     emptyText:'Tipo...',
                     typeAhead: true,
+                    forceSelection: true,
                     triggerAction: 'all',
                     lazyRender:true,
                     displayField:'valor',

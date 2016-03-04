@@ -147,10 +147,10 @@ class ACTMovimiento extends ACTbase{
 		 if($this->objParam->getParametro('id_gestion')!=''){
                 $this->objParam->addFiltro("mov.id_gestion = ".$this->objParam->getParametro('id_gestion'));   
          }
-        
+         
 		
 		if($this->objParam->getParametro('tipo_concepto')=='egreso'){
-                $this->objParam->addFiltro("mov.concepto  in (''operacion'',''egreso_traspaso'',''contra_rendicion'')");   
+                $this->objParam->addFiltro("mov.concepto  in (''operacion'',''egreso_traspaso'',''contra_rendicion'',''egreso_inicial_por_rendir'')");   
         }
 		else{
 			    $this->objParam->addFiltro("mov.concepto  in (''rendicion'')");

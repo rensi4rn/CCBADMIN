@@ -104,7 +104,7 @@ Phx.vista.MovimientoEgreso=Ext.extend(Phx.gridInterfaz,{
         
         ] , 
     dataEgreso : [
-                ['operacion', 'Operacion '],
+                ['operacion', 'Operación '],
                 ['egreso_traspaso', 'Egreso por Traspaso'],
                 ['contra_rendicion', 'Contra rendición'],
                 ['egreso_inicial_por_rendir', 'Saldo por Rendir (año pasado)']
@@ -414,6 +414,7 @@ Phx.vista.MovimientoEgreso=Ext.extend(Phx.gridInterfaz,{
                     fieldLabel:'Concepto',
                     allowBlank:false,
                     emptyText:'Tipo...',
+                    forceSelection : true,
                     typeAhead: true,
                     triggerAction: 'all',
                     lazyRender:true,
