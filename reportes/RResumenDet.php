@@ -222,7 +222,7 @@ class RResumenDet extends  ReportePDF {
 	function imprimirLinea($val,$count,$fill){	
 		$conf_par_tablewidths=array(10,50,20,20,20,20,20,20,20,20,20,20);
         $conf_par_tablealigns=array('C','L','R','R','R','R','R','R','R','R','R','R');
-        $conf_par_tablenumbers=array(0,0,1,1,1,1,1,1,1,1,1,1);
+        $conf_par_tablenumbers=array(0,0,2,2,2,2,2,2,2,2,2,2);
 		$conf_tableborders=array('LR','LR','LR','LR','LR','LR','LR','LR','LR','LR','LR','LR');
 		
 		$this->tablewidths=$conf_par_tablewidths;
@@ -336,7 +336,7 @@ class RResumenDet extends  ReportePDF {
 			
 			$conf_par_tablewidths=array(10 + 50,20,20,20,20,20,20,20,20,20,20);
             $conf_par_tablealigns=array('R','R','R','R','R','R','R','R','R','R','R');
-            $conf_par_tablenumbers=array(0,1,1,1,1,1,1,1,1,1,1);		
+            $conf_par_tablenumbers=array(0,2,2,2,2,2,2,2,2,2,2);	
 	   	    $conf_par_tableborders=array('T','LRTB','LRTB','LRTB','LRTB','LRTB','LRTB','LRTB','LRTB','LRTB','LRTB');
 			//coloca el total de egresos
 			//coloca el total de la partida 
@@ -368,7 +368,7 @@ class RResumenDet extends  ReportePDF {
 	   
 	   	    $conf_par_tablewidths=array(10 + 50,20,20,20,20,20,20,20,20,20,20);
             $conf_par_tablealigns=array('R','R','R','R','R','R','R','R','R','R','R');
-            $conf_par_tablenumbers=array(0,1,1,1,1,1,1,1,1,1,1);
+            $conf_par_tablenumbers=array(0,2,2,2,2,2,2,2,2,2,2);
 		
 		
 	   	     $conf_par_tableborders=array('T','LRTB','LRTB','LRTB','LRTB','LRTB','LRTB','LRTB','LRTB','LRTB','LRTB');

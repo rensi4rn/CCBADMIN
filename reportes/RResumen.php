@@ -157,7 +157,7 @@ class RResumen extends  ReportePDF {
 	function imprimirLinea($val,$count,$fill){	
 		$conf_par_tablewidths=array(10,90,25,25,25,25);
         $conf_par_tablealigns=array('C','L','R','R','R','R');
-        $conf_par_tablenumbers=array(0,0,1,1,1,1);
+        $conf_par_tablenumbers=array(0,0,2,2,2,2);
 		$conf_tableborders=array('LR','LR','LR','LR','LR','LR');
 		
 		$this->tablewidths=$conf_par_tablewidths;
@@ -211,8 +211,8 @@ class RResumen extends  ReportePDF {
 		
 		$retorno['ingreso_total'] = $val['ingreso_traspasos'] + $val['ingreso_colectas'] + $val['ingreso_inicial'];
 		$retorno['saldo_adm'] =  $retorno['ingreso_total'] + $val['devolucion'] - $val['egreso_traspaso'] - $val['egreso_operacion'] - $val['egresos_contra_rendicion']- $val['egreso_inicial_por_rendir'];
-		$retorno['ingreso'] = $val['ingreso_colectas'] + $val['ingreso_traspasos'] - $val['egreso_traspaso'];
-		$retorno['egreso'] = $val['egreso_operacion'] + $val['egresos_contra_rendicion'] - $val['devolucion'];
+		$retorno['ingreso'] = $val['ingreso_colectas'] + $val['ingreso_traspasos'];
+		$retorno['egreso'] = $val['egreso_operacion'] + $val['egresos_contra_rendicion'] - $val['devolucion'] + $val['egreso_traspaso'];
 		$retorno['ingreso_inicial'] = $val['ingreso_inicial'] - $val['egreso_inicial_por_rendir'];
 		
 		
@@ -241,7 +241,7 @@ class RResumen extends  ReportePDF {
 	   	    //si noes inicio termina el cuardro anterior
 	   	    $conf_par_tablewidths=array(10 + 90,25,25,25,25);
             $conf_par_tablealigns=array('R','R','R','R','R');
-            $conf_par_tablenumbers=array(0,1,1,1,1);
+            $conf_par_tablenumbers=array(0,2,2,2,2);
 	   	    $conf_par_tableborders=array('T',LRTB,LRTB,LRTB,LRTB);
 			//coloca el total de egresos
 			//coloca el total de la partida 
@@ -268,7 +268,7 @@ class RResumen extends  ReportePDF {
 	   	    //si noes inicio termina el cuardro anterior
 	   	    $conf_par_tablewidths=array(10 + 90,25,25,25,25);
             $conf_par_tablealigns=array('R','R','R','R','R');
-            $conf_par_tablenumbers=array(0,1,1,1,1);
+            $conf_par_tablenumbers=array(0,2,2,2,2);
 	   	    $conf_par_tableborders=array('T',LRTB,LRTB,LRTB,LRTB);
 			//coloca el total de egresos
 			//coloca el total de la partida 
