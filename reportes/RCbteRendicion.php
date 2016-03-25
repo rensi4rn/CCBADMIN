@@ -146,7 +146,7 @@ class RCbteRendicion extends  ReportePDF {
         $this-> MultiRow($RowArray,false,1);
 		
 		$RowArray = array('colecta'  => 'Mantenimineto',
-                        'monto'  => $this->datos_saldos["v_saldo_adm_mantenimineto"]);
+                        'monto'  => $this->datos_saldos["v_saldo_adm_mantenimiento"]);
                          
         $this-> MultiRow($RowArray,false,1);
 		
@@ -327,7 +327,7 @@ class RCbteRendicion extends  ReportePDF {
         $this-> MultiRow($RowArray,false,1);
 		
 		$RowArray = array('colecta'  => 'Mantenimineto',
-                        'monto'  => $this->datos_saldos["v_saldo_act_mantenimineto"]);
+                        'monto'  => $this->datos_saldos["v_saldo_act_mantenimiento"]);
                          
         $this-> MultiRow($RowArray,false,1);
 		

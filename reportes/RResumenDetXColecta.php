@@ -213,7 +213,7 @@ class RResumenDetXColecta extends  ReportePDF {
 					$this->c8 = 0;
 					$this->c9 = 0;
 					$this->c10 = 0;
-					//$this->revisarfinPagina();
+					$this->revisarfinPagina();
 				}
 				
 				
@@ -237,7 +237,7 @@ class RResumenDetXColecta extends  ReportePDF {
 					$this->s8 = 0;
 					$this->s9 = 0;
 					$this->s10 = 0;
-					//$this->revisarfinPagina();
+					$this->revisarfinPagina();
 				}
 				
 				
@@ -341,7 +341,7 @@ class RResumenDetXColecta extends  ReportePDF {
          $this-> MultiRow($RowArray,$fill,1);
 		 $this->SetFont('','',9);
 		 
-		 //$this->generarCabecera();
+		 $this->generarCabecera();
 		
 	}
 	
@@ -534,6 +534,7 @@ class RResumenDetXColecta extends  ReportePDF {
 	                  );     
 	                     
 	        $this-> MultiRow($RowArray,false,1);
+			
 	
   }
 
@@ -545,7 +546,7 @@ class RResumenDetXColecta extends  ReportePDF {
 		$this->getNumLines($row['cell1data'], 80);
 		
 		if (($startY + 4 * 6) + $dimensions['bm'] > ($dimensions['hk'])) {
-		    	
+		    /*	
 			$k = 	($startY + 4 * 6) + $dimensions['bm'] - ($dimensions['hk']);
 			for($i=0;$i<=k;$i++){
 				
@@ -554,15 +555,14 @@ class RResumenDetXColecta extends  ReportePDF {
 				$this->ln();
 				$this->ln();
 				$this->ln();
-				$this->ln();
-				
-				 
-				 $this->generarCabecera();
+				$this->ln();  
 				
 				
-				   //$this->AddPage();
+				 //$this->AddPage();
 			    
-			}
+			} */
+			$this->AddPage();
+		    $this->generarCabecera();
 		    
 		} 
 		 
