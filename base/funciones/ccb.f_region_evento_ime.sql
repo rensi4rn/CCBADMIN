@@ -1,10 +1,10 @@
 --------------- SQL ---------------
 
 CREATE OR REPLACE FUNCTION ccb.f_region_evento_ime (
-  p_administrador integer,
+  p_administrador integer, 
   p_id_usuario integer,
   p_tabla varchar,
-  p_transaccion varchar
+  p_transaccion varchar 
 )
 RETURNS varchar AS
 $body$
@@ -406,15 +406,27 @@ BEGIN
               IF  v_id_gestion is null THEN              
                 raise exception 'La casa de oración no tienen una gestión abierta';
               END IF;
+              
+              
+              
            
-      --  raise exception '...%',v_id_gestion;
-            --desde la casa de oracion conseguimos la region
-           select 
-            co.id_region
-            into
-            v_id_region
-           from ccb.tcasa_oracion co 
-           where co.id_casa_oracion =  v_parametros.id_casa_oracion;
+            
+             --desde la casa de oracion conseguimos la region
+             select 
+                co.id_region
+              into
+               v_id_region
+             from ccb.tcasa_oracion co 
+             where co.id_casa_oracion =  v_parametros.id_casa_oracion;
+           
+           
+             IF not exists(select 1
+                     from  ccb.tusuario_permiso uper 
+                     where  uper.id_usuario_asignado = p_id_usuario  
+                     and (uper.id_region = v_id_region or  uper.id_casa_oracion = v_parametros.id_casa_oracion)) THEN
+                    
+                 raise exception 'El usuario no tiene permisos para insertar en esta regiòn'; 
+             END IF;
             
             --Sentencia de la insercion
         	insert into ccb.tregion_evento(
@@ -511,7 +523,7 @@ BEGIN
 	elsif(p_transaccion='CCB_RNSC_MOD')then
 
 		begin
-        
+       
               select 
                 ep.estado_periodo,
                 ep.id_gestion
@@ -537,9 +549,19 @@ BEGIN
             v_id_region
            from ccb.tcasa_oracion co 
            where co.id_casa_oracion =  v_parametros.id_casa_oracion;
+           
+           
+           IF not exists(select 1
+                     from  ccb.tusuario_permiso uper 
+                     where  uper.id_usuario_asignado = p_id_usuario  
+                     and (uper.id_region = v_id_region or  uper.id_casa_oracion = v_parametros.id_casa_oracion)) THEN
+                    
+               raise exception 'El usuario no tiene permisos para editar en esta regiòn'; 
+           END IF;
+            
               
                
-            
+             
               
               
 			--Sentencia de la modificacion
