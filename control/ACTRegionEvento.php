@@ -59,7 +59,7 @@ class ACTRegionEvento extends ACTbase{
 		$this->objParam->defecto('dir_ordenacion','DESC');
 
 		if($this->objParam->getParametro('id_region')!=''){
-			    	$this->objParam->addFiltro("eveid_region = ".$this->objParam->getParametro('id_region'));	
+			    	$this->objParam->addFiltro("eve.id_region = ".$this->objParam->getParametro('id_region'));	
 		}
 
         if($this->objParam->getParametro('id_gestion')!=''){
@@ -126,6 +126,7 @@ class ACTRegionEvento extends ACTbase{
 	}
 	
 	function listarCalendario(){
+		
 		$this->objParam->defecto('ordenacion','id_region_evento');
 		
 		$this->objParam->defecto('dir_ordenacion','asc');

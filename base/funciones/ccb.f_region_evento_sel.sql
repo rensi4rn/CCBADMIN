@@ -232,7 +232,14 @@ BEGIN
     	begin
     		
             v_inner = '';
-            IF p_administrador != 1  THEN
+            
+            IF  pxp.f_existe_parametro(p_tabla,'tipoconsulta')  THEN            
+               v_tipolist = v_parametros.tipoconsulta;
+            else
+               v_tipolist = 'comun';
+            END IF;
+            
+            IF p_administrador != 1  and v_tipolist != 'calendario' THEN
             
               v_inner = ' inner join ccb.tusuario_permiso uper on uper.id_usuario_asignado = '||p_id_usuario||'  and (uper.id_region = eve.id_region or  uper.id_casa_oracion = eve.id_casa_oracion) ';
             
@@ -320,6 +327,7 @@ BEGIN
      				
     	begin
     		
+      
             v_inner = '';
             v_lugares = '0';
             v_filtro_lugares = '0=0 ';

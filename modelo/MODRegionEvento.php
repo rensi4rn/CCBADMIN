@@ -184,6 +184,10 @@ class MODRegionEvento extends MODbase{
 		$this->procedimiento='ccb.f_region_evento_sel';
 		$this->transaccion='CCB_REGESC_SEL';
 		$this->tipo_procedimiento='SEL';//tipo de transaccion
+		
+		
+		
+		$this->setParametro('tipoconsulta','tipoconsulta','varchar');
 				
 		//Definicion de la lista del resultado del query
 		$this->captura('fecha_programada','date');
@@ -319,15 +323,19 @@ class MODRegionEvento extends MODbase{
         $this->captura('id_gestion','int4');
 		
 		
-				
 		
 		
-		
-		
-	//Ejecuta la instruccion
+	    //Ejecuta la instruccion
 		$this->armarConsulta();
 		$this->ejecutarConsulta();
+		
 		//echo $this->getConsulta();
+		//exit;
+		
+		//var_dump($this->respuesta);
+		//exit;
+		
+		//echo $this->respuesta;
 		//exit;
 		//Devuelve la respuesta
 		return $this->respuesta;
