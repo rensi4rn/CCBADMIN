@@ -231,19 +231,19 @@ BEGIN
      				
     	begin
     		
-            v_inner = '';
+             v_inner = '';
             
-            IF  pxp.f_existe_parametro(p_tabla,'tipoconsulta')  THEN            
+             IF  pxp.f_existe_parametro(p_tabla,'tipoconsulta')  THEN            
                v_tipolist = v_parametros.tipoconsulta;
-            else
+             else
                v_tipolist = 'comun';
-            END IF;
+             END IF;
             
-            IF p_administrador != 1  and v_tipolist != 'calendario' THEN
+             IF p_administrador != 1  and v_tipolist != 'calendario' THEN
             
               v_inner = ' inner join ccb.tusuario_permiso uper on uper.id_usuario_asignado = '||p_id_usuario||'  and (uper.id_region = eve.id_region or  uper.id_casa_oracion = eve.id_casa_oracion) ';
             
-            END IF;
+             END IF;
             
             
             --Sentencia de la consulta

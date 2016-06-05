@@ -6,7 +6,8 @@ CREATE OR REPLACE FUNCTION ccb.f_calculo_saldos_inicial (
   p_id_region integer,
   p_id_obrero integer,
   p_id_tipo_movimiento integer,
-  p_id_ot integer
+  p_id_ot integer,
+  p_tipo_saldo varchar = 'inicial'::character varying
 )
 RETURNS varchar AS
 $body$
@@ -84,16 +85,16 @@ BEGIN
     from ccb.testado_periodo ep
     where ep.id_estado_periodo = p_id_estado_periodo;
     
-    
-     v_fecha_ultimo_anterior =  v_fecha_ini - interval '1 day'; 
-     
+    IF p_tipo_saldo  = 'inicial' THEN
+     	v_fecha_ultimo_anterior =  v_fecha_ini - interval '1 day'; 
+    ELSE
+       v_fecha_ultimo_anterior = p_fecha;
+    END IF;
      
      -- determinar el ingreso por salo inicial  (v_ingreso_inicial)
      -- raise exception '-- % --', p_id_estado_periodo;
          
-      
-         
-     IF lower(trim(v_mes)) = 'enero' THEN
+     IF lower(trim(v_mes)) = 'enero' and   p_tipo_saldo  = 'inicial'  THEN
      
           ---------------------------------------------------
           --  USAMOS la fecha del periodo actual
@@ -225,7 +226,7 @@ BEGIN
         v_egreso_efectivo = v_egreso_operacion + v_egresos_rendidos;
         v_saldo_efectivo =  v_ingreso_total - v_egreso_efectivo - v_egreso_traspaso;
          -- determinar saldo administracion (v_saldo_adm =  v_ingreso_total  - v_egreso_traspaso - v_egreso_operacion - v_egresos_contra_rendicion)
-         v_saldo_adm =  v_ingreso_total + v_ingreso_devolucion  - v_egreso_traspaso - v_egreso_operacion - v_egresos_contra_rendicion - v_egreso_inicial_por_rendir;
+        v_saldo_adm =  v_ingreso_total + v_ingreso_devolucion  - v_egreso_traspaso - v_egreso_operacion - v_egresos_contra_rendicion - v_egreso_inicial_por_rendir;
            
         
         

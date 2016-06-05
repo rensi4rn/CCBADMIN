@@ -580,6 +580,34 @@ Phx.vista.MovimientoIngreso=Ext.extend(Phx.gridInterfaz,{
 			form:true 
 		},
 		{
+			config:{
+				name: 'monto_mantenimiento',
+				fieldLabel: 'Mantenimiento',
+				allowBlank: true,
+				anchor: '80%',
+				gwidth: 100,
+				minValue :0,
+				maxLength:1245186,
+				renderer:function (value, p, record){
+                            if(record.data.tipo_reg=='summary'){
+                                 return String.format('<b><font color="green">{0}</font></b>', record.data.total_mantenimiento);
+                            }
+                            else{
+                                return String.format('{0}', value);
+                            }
+                        
+                        }
+				
+			},
+			type:'NumberField',
+			bottom_filter: true,
+			filters:{pfiltro:'mov.monto_mantenimiento',type:'numeric'},
+			id_grupo:1,
+			grid:true,
+			egrid:true,
+			form:true
+		},
+		{
 			//configuracion del componente
 			config:{
 					labelSeparator:'',
@@ -635,34 +663,6 @@ Phx.vista.MovimientoIngreso=Ext.extend(Phx.gridInterfaz,{
 			},
 			type:'Field',
 			form:true 
-		},
-		{
-			config:{
-				name: 'monto_mantenimiento',
-				fieldLabel: 'Mantenimiento',
-				allowBlank: true,
-				anchor: '80%',
-				gwidth: 100,
-				minValue :0,
-				maxLength:1245186,
-				renderer:function (value, p, record){
-                            if(record.data.tipo_reg=='summary'){
-                                 return String.format('<b><font color="green">{0}</font></b>', record.data.total_mantenimiento);
-                            }
-                            else{
-                                return String.format('{0}', value);
-                            }
-                        
-                        }
-				
-			},
-			type:'NumberField',
-			bottom_filter: true,
-			filters:{pfiltro:'mov.monto_mantenimiento',type:'numeric'},
-			id_grupo:1,
-			grid:true,
-			egrid:true,
-			form:true
 		},
 		{
 			config:{

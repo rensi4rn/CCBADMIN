@@ -1102,6 +1102,49 @@ class MODMovimiento extends MODbase{
 		//Devuelve la respuesta
 		return $this->respuesta;
 	}
+
+    function reporteResumenSaldosMensual(){
+		//Definicion de variables para ejecucion del procedimiento
+		$this->procedimiento='ccb.f_movimiento_record_sel';
+		$this->transaccion='CCB_SALDOMEN_REP';
+		$this->tipo_procedimiento='SEL';//tipo de transaccion
+		$this->setCount(false);	
+		$this->setTipoRetorno('record');
+		
+		//Define los parametros para la funcion
+		$this->setParametro('fecha','fecha','date');
+		$this->setParametro('id_casa_oracions','id_casa_oracions','varchar');
+			
+		$this->captura('id_casa_oracion','INTEGER');
+        $this->captura('id_region','INTEGER');
+        $this->captura('nombre_region','varchar');
+        $this->captura('id_gestion','INTEGER');
+        $this->captura('gestion','varchar');
+        $this->captura('nombre_casa_oracion','VARCHAR');
+        $this->captura('saldo_inicial','numeric');
+        $this->captura('nombre_colecta','VARCHAR');
+        $this->captura('id_tipo_movimiento','INTEGER');
+        $this->captura('mes_1','numeric');
+        $this->captura('mes_2','numeric');
+        $this->captura('mes_3','numeric');
+        $this->captura('mes_4','numeric');
+        $this->captura('mes_5','numeric');
+        $this->captura('mes_6','numeric');
+        $this->captura('mes_7','numeric');
+        $this->captura('mes_8','numeric');
+        $this->captura('mes_9','numeric');
+        $this->captura('mes_10','numeric');
+        $this->captura('mes_11','numeric');
+        $this->captura('mes_12','numeric');
+		
+		
+		//Ejecuta la instruccion
+		$this->armarConsulta();
+		$this->ejecutarConsulta();
+
+		//Devuelve la respuesta
+		return $this->respuesta;
+	}
 	 
 	 
 	 

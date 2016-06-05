@@ -10,26 +10,18 @@ RETURNS SETOF record AS
 $body$
 DECLARE
 
-
 v_parametros  		record;
 v_nombre_funcion   	text;
 v_resp				varchar;
 v_registros  		record;
 v_id_gestion		integer;
 va_id_regiones     INTEGER[];
-
-
-
- 
+v_saldo_adm			numeric;
 
 BEGIN
 
-
-
     v_nombre_funcion = 'ccb.f_movimiento_record_sel';
-    
-    
-     v_parametros = pxp.f_get_record(p_tabla);
+    v_parametros = pxp.f_get_record(p_tabla);
     
     
     /*********************************    
@@ -429,6 +421,275 @@ BEGIN
         
         END LOOP;
 
+    /*********************************    
+ 	#TRANSACCION:  'CCB_SALDOMEN_REP'
+ 	#DESCRIPCION:	Consulta recursivamente el saldo mensual 
+ 	#AUTOR:		rac	
+ 	#FECHA:		16-03-2012 17:06:17
+	***********************************/
+
+	 ELSEIF(p_transaccion='CCB_SALDOMEN_REP')then
+     
+        -- obtenemos la gestion a partir  de la fecha
+       
+         
+        select 
+          g.id_gestion
+        into
+          v_id_gestion
+        from ccb.tgestion g  
+        where  v_parametros.fecha::date BETWEEN  ('01/01/'||g.gestion)::date and ('31/12/'||g.gestion)::date;
+            
+            
+        IF v_id_gestion is NULL THEN
+          raise exception 'No se encontro una gestión registrada para la fecha %',v_parametros.fecha; 
+        END IF;
+        
+        --crear tabla temporal
+        CREATE TEMPORARY TABLE resumen (
+                                id_casa_oracion INTEGER,
+                                id_region INTEGER,
+                                region  varchar,
+                                id_gestion INTEGER,
+                                gestion varchar,
+                                casa_oracion VARCHAR,
+                                saldo_inicial numeric,
+                                nombre_colecta VARCHAR,
+                                id_tipo_movimiento INTEGER,
+                                mes_1 numeric,
+                                mes_2 numeric,
+                                mes_3 numeric,
+                                mes_4 numeric,
+                                mes_5 numeric,
+                                mes_6 numeric,
+                                mes_7 numeric,
+                                mes_8 numeric,
+                                mes_9 numeric,
+                                mes_10 numeric,
+                                mes_11 numeric,
+                                mes_12 numeric ) ON COMMIT DROP;
+       
+    
+        FOR v_registros in (
+        					select 
+                             
+                              tm.nombre as nombre_colecta,
+                              tm.codigo as codigo_colecta,
+                              co.id_casa_oracion,
+                              co.nombre as nombre_casa_oracion,
+                              re.id_region,
+                              re.nombre as nombre_region,
+                              tm.nombre as nombre_colecta,
+                              tm.id_tipo_movimiento
+                             from ccb.tcasa_oracion co,
+                                    ccb.ttipo_movimiento tm,
+                                    ccb.tregion re
+                             where 
+                                   re.id_region = co.id_region 
+                                   and co.id_casa_oracion::varchar = ANY(string_to_array(v_parametros.id_casa_oracions, ',')) )LOOP
+        
+                        
+                          --  inserta casa de oracion en tabla temporal                          
+                          insert into resumen (
+                                                id_casa_oracion,
+                                                casa_oracion,
+                                                id_region,
+                                                region,
+                                                nombre_colecta,
+                                                id_tipo_movimiento
+                                              )
+                                              values
+                                              (
+                                                v_registros.id_casa_oracion,
+                                                v_registros.nombre_casa_oracion,
+                                                v_registros.id_region,
+                                                v_registros.nombre_region,
+                                                v_registros.nombre_colecta,
+                                                v_registros.id_tipo_movimiento
+                                              );
+      
+        END LOOP;
+        
+        FOR v_registros in (
+        					select 
+                              ep.mes,
+                              ep.num_mes,
+                              tm.nombre as nombre_colecta,
+                              tm.codigo as codigo_colecta,
+                              co.id_casa_oracion,
+                              co.nombre as nombre_casa_oracion,
+                              re.id_region,
+                              re.nombre as nombre_region,
+                              lu.id_lugar,
+                              lu.nombre as nombre_lugar,
+                              tm.id_tipo_movimiento,
+                              ep.id_estado_periodo,
+                              ep.fecha_ini
+                                                                                  
+                                                                              
+                       from ccb.tcasa_oracion co,
+                            ccb.ttipo_movimiento tm,
+                            ccb.tregion re,
+                            param.tlugar lu,
+                            ccb.testado_periodo ep
+                       where 
+                                   re.id_region = co.id_region  
+                                   and lu.id_lugar = co.id_lugar  
+                                   and ep.id_gestion = v_id_gestion
+                                   and ep.id_casa_oracion = co.id_casa_oracion
+                                   and co.id_casa_oracion::varchar = ANY(string_to_array(v_parametros.id_casa_oracions, ',')) )LOOP
+        
+                                      
+                   
+                         --si es enero caculmamos el saldo inicial
+                        IF v_registros.num_mes = 1 THEN 
+                               
+                               v_saldo_adm =  ccb.f_calculo_saldos_inicial(v_registros.id_estado_periodo, 
+                                                                      NULL, 
+                                                                      NULL, 
+                                                                      NULL, 
+                                                                      v_registros.id_tipo_movimiento, 
+                                                                      NULL);                 
+                                           
+                             
+                             
+                               update   resumen  r set 
+                                   saldo_inicial = v_saldo_adm
+                               where r.id_casa_oracion =  v_registros.id_casa_oracion and
+                                   r.id_tipo_movimiento  =  v_registros.id_tipo_movimiento;
+                         
+                          END IF;
+                         
+                         
+                          IF  v_registros.fecha_ini <= v_parametros.fecha  THEN
+                             
+                             v_saldo_adm =  ccb.f_calculo_saldos_inicial(v_registros.id_estado_periodo, 
+                                                                          NULL, 
+                                                                          NULL, 
+                                                                          NULL, 
+                                                                          v_registros.id_tipo_movimiento, 
+                                                                          NULL,
+                                                                          'final'); 
+                           ELSE
+                             v_saldo_adm = 0; 
+                           
+                           END IF;
+        
+                           IF v_registros.num_mes = 1 THEN 
+                           
+                               update   resumen  r set 
+                                   mes_1 = v_saldo_adm
+                               where r.id_casa_oracion =  v_registros.id_casa_oracion and
+                                   r.id_tipo_movimiento  =  v_registros.id_tipo_movimiento;
+                                   
+                           ELSIF v_registros.num_mes = 2 THEN
+                           
+                               update   resumen  r set 
+                                   mes_2 = v_saldo_adm
+                               where r.id_casa_oracion =  v_registros.id_casa_oracion and
+                                   r.id_tipo_movimiento  =  v_registros.id_tipo_movimiento; 
+                                   
+                           ELSIF v_registros.num_mes = 3 THEN 
+                           
+                               update   resumen  r set 
+                                   mes_3 = v_saldo_adm
+                               where r.id_casa_oracion =  v_registros.id_casa_oracion and
+                                   r.id_tipo_movimiento  =  v_registros.id_tipo_movimiento;
+                                   
+                           ELSIF v_registros.num_mes = 4 THEN
+                               
+                               update   resumen  r set 
+                                   mes_4 = v_saldo_adm
+                               where r.id_casa_oracion =  v_registros.id_casa_oracion and
+                                   r.id_tipo_movimiento  =  v_registros.id_tipo_movimiento;
+                          
+                          ELSIF v_registros.num_mes = 5 THEN
+                               
+                               update   resumen  r set 
+                                   mes_5 = v_saldo_adm
+                               where r.id_casa_oracion =  v_registros.id_casa_oracion and
+                                   r.id_tipo_movimiento  =  v_registros.id_tipo_movimiento;
+                           
+                           ELSIF v_registros.num_mes = 6 THEN 
+                              
+                               update   resumen  r set 
+                                   mes_6 = v_saldo_adm
+                               where r.id_casa_oracion =  v_registros.id_casa_oracion and
+                                   r.id_tipo_movimiento  =  v_registros.id_tipo_movimiento;
+                           
+                           ELSIF v_registros.num_mes = 7 THEN 
+                               update   resumen  r set 
+                                   mes_7 = v_saldo_adm
+                               where r.id_casa_oracion =  v_registros.id_casa_oracion and
+                                   r.id_tipo_movimiento  =  v_registros.id_tipo_movimiento;
+                           ELSIF v_registros.num_mes = 8 THEN
+                               
+                               update   resumen  r set 
+                                   mes_8 = v_saldo_adm
+                               where r.id_casa_oracion =  v_registros.id_casa_oracion and
+                                   r.id_tipo_movimiento  =  v_registros.id_tipo_movimiento;
+                           
+                           ELSIF v_registros.num_mes = 9 THEN
+                               
+                               update   resumen  r set 
+                                   mes_9 = v_saldo_adm
+                               where r.id_casa_oracion =  v_registros.id_casa_oracion and
+                                   r.id_tipo_movimiento  =  v_registros.id_tipo_movimiento;
+                           ELSIF v_registros.num_mes = 10 THEN 
+                               
+                               update   resumen  r set 
+                                   mes_10 = v_saldo_adm
+                               where r.id_casa_oracion =  v_registros.id_casa_oracion and
+                                   r.id_tipo_movimiento  =  v_registros.id_tipo_movimiento;
+                           ELSIF v_registros.num_mes = 11 THEN 
+                               
+                               update   resumen  r set 
+                                   mes_11 = v_saldo_adm
+                               where r.id_casa_oracion =  v_registros.id_casa_oracion and
+                                   r.id_tipo_movimiento  =  v_registros.id_tipo_movimiento;
+                           ELSIF v_registros.num_mes = 12 THEN
+                               
+                               update   resumen  r set 
+                                   mes_12 = v_saldo_adm
+                               where r.id_casa_oracion =  v_registros.id_casa_oracion and
+                                   r.id_tipo_movimiento  =  v_registros.id_tipo_movimiento;
+                         
+                           END IF;
+                  
+        END LOOP;
+
+        FOR v_registros in (SELECT id_casa_oracion,
+                                  id_region,
+                                  region as nombre_region,
+                                  id_gestion,
+                                  gestion,
+                                  casa_oracion as nombre_casa_oracion,
+                                  saldo_inicial,
+                                  nombre_colecta,
+                                  id_tipo_movimiento,
+                                  mes_1,
+                                  mes_2,
+                                  mes_3,
+                                  mes_4,
+                                  mes_5,
+                                  mes_6,
+                                  mes_7,
+                                  mes_8,
+                                  mes_9,
+                                  mes_10,
+                                  mes_11,
+                                  mes_12
+                              FROM resumen r
+                              order by 
+                                      id_region,
+                                      r.id_casa_oracion,
+                                       r.id_tipo_movimiento 
+                                  ) LOOP
+                    
+                    RETURN NEXT v_registros;
+         END LOOP;
+         
+         
      END IF;
 
 EXCEPTION
