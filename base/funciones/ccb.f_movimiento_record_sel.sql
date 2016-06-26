@@ -11,6 +11,7 @@ $body$
 DECLARE
 
 v_parametros  		record;
+v_aux_registros		record;
 v_nombre_funcion   	text;
 v_resp				varchar;
 v_registros  		record;
@@ -307,6 +308,9 @@ BEGIN
         IF v_id_gestion is NULL THEN
           raise exception 'No se encontro una gestión registrada para la fecha %',v_parametros.fecha; 
         END IF;
+        
+        
+       
 
         FOR v_registros in (
         					select 
@@ -334,7 +338,7 @@ BEGIN
                               ccb.f_determina_balance_periodo('ingreso_colectas',
                                                                                   ep.id_estado_periodo, 
                                                                                   NULL, --.id_lugar, 
-                                                                                  1, 
+                                                                                  co.id_casa_oracion, 
                                                                                   NULL, --.id_region, 
                                                                                   NULL, --id_obrero, 
                                                                                   tm.id_tipo_movimiento, --id_tipo_movimiento, 
@@ -344,7 +348,7 @@ BEGIN
                                 ccb.f_determina_balance_periodo('egreso_inicial_por_rendir',
                                                                                   ep.id_estado_periodo, 
                                                                                   NULL, --.id_lugar, 
-                                                                                  1, 
+                                                                                  co.id_casa_oracion, 
                                                                                   NULL, --.id_region, 
                                                                                   NULL, --id_obrero, 
                                                                                   tm.id_tipo_movimiento, --id_tipo_movimiento, 
@@ -354,7 +358,7 @@ BEGIN
                               ccb.f_determina_balance_periodo('ingreso_traspasos',
                                                                                   ep.id_estado_periodo, 
                                                                                   NULL, --.id_lugar, 
-                                                                                  1, 
+                                                                                  co.id_casa_oracion, 
                                                                                   NULL, --.id_region, 
                                                                                   NULL, --id_obrero, 
                                                                                   tm.id_tipo_movimiento, --id_tipo_movimiento, 
@@ -362,7 +366,7 @@ BEGIN
                               ccb.f_determina_balance_periodo('devolucion',
                                                                                   ep.id_estado_periodo, 
                                                                                   NULL, --.id_lugar, 
-                                                                                  1, 
+                                                                                  co.id_casa_oracion, 
                                                                                   NULL, --.id_region, 
                                                                                   NULL, --id_obrero, 
                                                                                   tm.id_tipo_movimiento, --id_tipo_movimiento, 
@@ -370,7 +374,7 @@ BEGIN
                               ccb.f_determina_balance_periodo('egreso_traspaso',
                                                                                   ep.id_estado_periodo, 
                                                                                   NULL, --.id_lugar, 
-                                                                                  1, 
+                                                                                  co.id_casa_oracion, 
                                                                                   NULL, --.id_region, 
                                                                                   NULL, --id_obrero, 
                                                                                   tm.id_tipo_movimiento, --id_tipo_movimiento, 
@@ -378,7 +382,7 @@ BEGIN
                               ccb.f_determina_balance_periodo('egreso_operacion',
                                                                                   ep.id_estado_periodo, 
                                                                                   NULL, --.id_lugar, 
-                                                                                  1, 
+                                                                                  co.id_casa_oracion, 
                                                                                   NULL, --.id_region, 
                                                                                   NULL, --id_obrero, 
                                                                                   tm.id_tipo_movimiento, --id_tipo_movimiento, 
@@ -386,7 +390,7 @@ BEGIN
                               ccb.f_determina_balance_periodo('egresos_contra_rendicion',
                                                                                   ep.id_estado_periodo, 
                                                                                   NULL, --.id_lugar, 
-                                                                                  1, 
+                                                                                  co.id_casa_oracion, 
                                                                                   NULL, --.id_region, 
                                                                                   NULL, --id_obrero, 
                                                                                   tm.id_tipo_movimiento, --id_tipo_movimiento, 
@@ -395,7 +399,7 @@ BEGIN
                              ccb.f_determina_balance_periodo('egresos_rendidos',
                                                                                   ep.id_estado_periodo, 
                                                                                   NULL, --.id_lugar, 
-                                                                                  1, 
+                                                                                  co.id_casa_oracion, 
                                                                                   NULL, --.id_region, 
                                                                                   NULL, --id_obrero, 
                                                                                   tm.id_tipo_movimiento, --id_tipo_movimiento, 
@@ -688,7 +692,67 @@ BEGIN
                     
                     RETURN NEXT v_registros;
          END LOOP;
-         
+        
+     /*********************************    
+ 	#TRANSACCION:  'CCB_MOVRESCOXOT_REP'
+ 	#DESCRIPCION:	consulta recursiva de colecta por mes segun orden de trabajo
+ 	#AUTOR:		rac	
+ 	#FECHA:		26-06-2016 17:06:17
+	***********************************/
+
+	 ELSEIF(p_transaccion='CCB_MOVRESCOXOT_REP')then
+     
+     
+      
+         select 
+                ep.estado_periodo,
+                ep.id_estado_periodo,
+                ep.fecha_ini,
+                ges.id_gestion,
+                ep.mes,
+                ges.gestion,
+                ep.fecha_fin
+              into
+                v_aux_registros
+              from ccb.testado_periodo ep 
+              inner join ccb.tgestion ges on ges.id_gestion = ep.id_gestion
+              where ep.id_casa_oracion = v_parametros.id_casa_oracion
+                   and  v_parametros.fecha::date BETWEEN  ep.fecha_ini::date and ep.fecha_fin::dATE;
+                   
+            IF v_aux_registros.id_estado_periodo is NULL THEN
+              raise exception 'No se encontro un periodo para la fecha indicada %',v_parametros.fecha; 
+            END IF;
+       
+     -- raise exception '% -- %', v_aux_registros.id_estado_periodo,v_parametros.id_casa_oracion ;
+      
+       -- listar las ordenes de trabajo por tipo de colecta
+       
+         FOR v_registros in (
+              select * 
+               from (
+                select
+                ot.id_orden_trabajo,
+                ot.desc_orden,
+                tm.id_tipo_movimiento,
+                tm.nombre as desc_tipo_movimiento,
+                ccb.f_determina_balance_periodo('ingreso_colectas',
+                                            v_aux_registros.id_estado_periodo, 
+                                            NULL, --.id_lugar, 
+                                            v_parametros.id_casa_oracion, 
+                                            NULL, --.id_region, 
+                                            NULL, --id_obrero, 
+                                            tm.id_tipo_movimiento, --id_tipo_movimiento, 
+                                            ot.id_orden_trabajo)  as importe    
+                from  conta.torden_trabajo ot,
+                      ccb.ttipo_movimiento tm
+                where ot.fecha_final is null or ot.fecha_final <= v_aux_registros.fecha_fin
+                order by id_orden_trabajo,id_tipo_movimiento) tab
+                where tab.importe > 0 )LOOP
+                      
+                      
+                       RETURN NEXT v_registros;
+        
+        END LOOP;
          
      END IF;
 

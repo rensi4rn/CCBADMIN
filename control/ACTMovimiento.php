@@ -434,7 +434,7 @@ class ACTMovimiento extends ACTbase{
 
 
 	 
-   function recuperarDatosCoelectas(){
+   function recuperarDatosColectas(){
     	
 		$this->objFunc = $this->create('MODMovimiento');
 		$cbteHeader = $this->objFunc->listarColectasMes($this->objParam);
@@ -449,10 +449,27 @@ class ACTMovimiento extends ACTbase{
 		
     }
 
+    function recuperarDatosColectasXOT(){
+    	
+		$this->objFunc = $this->create('MODMovimiento');
+		$cbteHeader = $this->objFunc->reporteColectaMensualXOT($this->objParam);
+		if($cbteHeader->getTipo() == 'EXITO'){
+				
+			return $cbteHeader;
+		}
+        else{
+		    $cbteHeader->imprimirRespuesta($cbteHeader->generarJson());
+			exit;
+		}              
+		
+    }
+
     function reporteColectas(){
 			
 		$nombreArchivo = uniqid(md5(session_id()).'Egresos') . '.pdf'; 
-		$dataSource = $this->recuperarDatosCoelectas();	
+		$dataSource = $this->recuperarDatosColectas();	
+		$dataSourceXOT = $this->recuperarDatosColectasXOT();	
+		
 		
 		
 		//parametros basicos
@@ -468,7 +485,7 @@ class ACTMovimiento extends ACTbase{
 		//Instancia la clase de pdf
 		
 		$reporte = new RColectas($this->objParam);
-		$reporte->datosHeader($dataSource->getDatos(),  $dataSource->extraData);
+		$reporte->datosHeader($dataSource->getDatos(),  $dataSource->extraData, $dataSourceXOT->getDatos());
 		//$this->objReporteFormato->renderDatos($this->res2->datos);
 		
 		$reporte->generarReporte();

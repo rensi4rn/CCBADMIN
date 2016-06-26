@@ -1145,6 +1145,33 @@ class MODMovimiento extends MODbase{
 		//Devuelve la respuesta
 		return $this->respuesta;
 	}
+
+   function reporteColectaMensualXOT(){
+		//Definicion de variables para ejecucion del procedimiento
+		$this->procedimiento='ccb.f_movimiento_record_sel';
+		$this->transaccion='CCB_MOVRESCOXOT_REP';
+		$this->tipo_procedimiento='SEL';//tipo de transaccion
+		$this->setCount(false);	
+		$this->setTipoRetorno('record');
+		
+		//Define los parametros para la funcion
+		$this->setParametro('fecha','fecha','date');
+		$this->setParametro('id_casa_oracion','id_casa_oracion','INTEGER');
+			
+		$this->captura('id_orden_trabajo','INTEGER');
+        $this->captura('desc_orden','varchar');
+        $this->captura('id_tipo_movimiento','INTEGER');
+        $this->captura('desc_tipo_movimiento','varchar');
+        $this->captura('importe','numeric'); 
+		
+		
+		//Ejecuta la instruccion
+		$this->armarConsulta();
+		$this->ejecutarConsulta();
+
+		//Devuelve la respuesta
+		return $this->respuesta;
+	}
 	 
 	 
 	 

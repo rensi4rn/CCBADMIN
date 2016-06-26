@@ -8,11 +8,13 @@ class RColectas extends  ReportePDF {
 	var $numeracion;
 	var $ancho_sin_totales;
 	var $cantidad_columnas_estaticas;
+	var $colectas_x_ot;
 	
-	function datosHeader ( $detalle, $totales) {
+	function datosHeader ( $detalle, $totales, $colectas_x_ot) {
 		$this->ancho_hoja = $this->getPageWidth()-PDF_MARGIN_LEFT-PDF_MARGIN_RIGHT-10;
 		$this->datos_detalle = $detalle;
 		$this->datos_titulo = $totales;
+		$this->colectas_x_ot = $colectas_x_ot;
 		$this->subtotal = 0;
 		
 		$this->subCon = 0;
@@ -107,8 +109,69 @@ class RColectas extends  ReportePDF {
 		$this->generarCabecera('Total Colectas del Mes',  $val['desc_obrero']);
 		$this->cerrarTotales();
 		
+		//generar detalle por OT si existe
+		
+		if (count($this->colectas_x_ot) > 0) {
+			$this->Ln(8);
+		    $this->generarDetalleXOT();
+		}
+		
+		
 		
 	} 
+
+    function generarDetalleXOT(){
+			
+			
+		$this->SetFont('','B',10);
+		$this->tablewidths=array(80+30+30);
+        $this->tablealigns=array('L');
+        $this->tablenumbers=array(0);
+        $this->tableborders=array('TBLR');
+        $this->tabletextcolor=array();
+		$RowArray = array('desc_orden'  => "Desglose de colectas ");
+		$this-> MultiRow($RowArray,false,1);
+		
+		
+		
+		$this->tablewidths=array(80,30,30);
+        $this->tablealigns=array('L','C','R');
+        $this->tablenumbers=array(0,0,0);
+        $this->tableborders=array('TBLR','TBLR','TBLR');
+        $this->tabletextcolor=array();
+		
+		$RowArray = array(
+            			'desc_orden'  => "Concepto",
+                        'desc_tipo_movimiento'  => "Colecta",
+                        'importe'  => "Importe");
+			                         
+		$this-> MultiRow($RowArray,false,1);
+		
+		
+		$this->SetFont('','',9);
+		$this->tablenumbers=array(0,0,2);
+		
+    	foreach ($this->colectas_x_ot as $val) {
+    		
+			if($val['importe']  > 0){
+				//definir subtitulo
+					
+					
+					
+					
+					$RowArray = array(
+			            			'desc_orden'  => $val['desc_orden'],
+			                        'desc_tipo_movimiento'  => $val['desc_tipo_movimiento'],
+			                        'importe'  => $val['importe']);
+			                         
+			        $this-> MultiRow($RowArray,false,1);
+		       }
+    	}
+		
+    	
+		
+		
+    }
     
     function sumarTotales(){
     	
