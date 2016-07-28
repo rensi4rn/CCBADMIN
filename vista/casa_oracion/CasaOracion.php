@@ -91,43 +91,10 @@ Phx.vista.CasaOracion=Ext.extend(Phx.gridInterfaz,{
 			grid:true,
 			form:true
 		},
-		
-		{
-			config:{
-				name: 'nombre',
-				fieldLabel: 'Nombre',
-				allowBlank: true,
-				anchor: '80%',
-				gwidth: 100,
-				maxLength:255
-			},
-			type:'TextField',
-			bottom_filter: true,
-			filters:{pfiltro:'caor.nombre',type:'string'},
-			id_grupo:1,
-			grid:true,
-			form:true
-		},
-		{
-			config:{
-				name: 'direccion',
-				fieldLabel: 'Direecón',
-				allowBlank: true,
-				anchor: '80%',
-				gwidth: 250,
-				maxLength:500
-			},
-			type:'TextArea',
-			bottom_filter: true,
-			filters:{pfiltro:'caor.direccion',type:'string'},
-			id_grupo:1,
-			grid:true,
-			form:true
-		},
 		{
 			config:{
 				name: 'id_lugar',
-				fieldLabel: 'Lugar',
+				fieldLabel: 'Municipio',
 				allowBlank: false,
 				emptyText:'Lugar...',
 				store:new Ext.data.JsonStore(
@@ -167,6 +134,39 @@ Phx.vista.CasaOracion=Ext.extend(Phx.gridInterfaz,{
 			grid:true,
 			form:true
 		},
+		
+		{
+			config:{
+				name: 'nombre',
+				fieldLabel: 'Barrio',
+				allowBlank: true,
+				anchor: '80%',
+				gwidth: 100,
+				maxLength:255
+			},
+			type:'TextField',
+			bottom_filter: true,
+			filters:{pfiltro:'caor.nombre',type:'string'},
+			id_grupo:1,
+			grid:true,
+			form:true
+		},
+		{
+			config:{
+				name: 'direccion',
+				fieldLabel: 'Dirección',
+				allowBlank: true,
+				anchor: '80%',
+				gwidth: 250,
+				maxLength:500
+			},
+			type:'TextArea',
+			bottom_filter: true,
+			filters:{pfiltro:'caor.direccion',type:'string'},
+			id_grupo:1,
+			grid:true,
+			form:true
+		},
 		{
 			config:{
 				name: 'fecha_apertura',
@@ -202,7 +202,7 @@ Phx.vista.CasaOracion=Ext.extend(Phx.gridInterfaz,{
 		{
 			config:{
 				name: 'latitud',
-				fieldLabel: 'LAtitud',
+				fieldLabel: 'Latitud',
 				allowBlank: true,
 				anchor: '80%',
 				gwidth: 100,

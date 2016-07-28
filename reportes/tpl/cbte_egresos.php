@@ -195,7 +195,7 @@
 	<table width="100%" style="width: 100%; text-align: center;" cellspacing="1" cellpadding="1" border="0.5">
 	  <tr>
 	  	<td  colspan="2" align="left"  width="70%"> <font size="11"><b>b)  EGRESOS </b></font></td>
-	  	<td align="right" width="30%"> <font size="11"><b><?php echo number_format($datos['v_egre_traspasos_construccion'], 2) ?>&nbsp;&nbsp;&nbsp;&nbsp;</b></font></td>
+	  	<td align="right" width="30%"> <font size="11"><b><?php echo number_format($datos['v_total_egre_traspasos'], 2) ?>&nbsp;&nbsp;&nbsp;&nbsp;</b></font></td>
 	  </tr>
 	  
 	  <tr>   

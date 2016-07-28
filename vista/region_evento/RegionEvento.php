@@ -39,8 +39,6 @@ Phx.vista.RegionEvento=Ext.extend(Phx.gridInterfaz,{
              }, this);  
             
             
-            
-	
 	},		
 	
 	
@@ -156,6 +154,21 @@ Phx.vista.RegionEvento=Ext.extend(Phx.gridInterfaz,{
 			grid:true,
 			form:true
 		},
+		
+		{
+	       		config:{
+	       			name:'desc_lugar',
+	       			fieldLabel:'Municipio'
+	       		},
+	       		type:'Field',
+	       		bottom_filter: true,
+	       		filters:{pfiltro:'lug.nombre',type:'string'},
+	       		grid:true,
+	       		form:false
+	     },
+		
+		
+
 		
 		{
 			config: {
@@ -491,7 +504,7 @@ Phx.vista.RegionEvento=Ext.extend(Phx.gridInterfaz,{
 		{name:'usr_reg', type: 'string'},
 		{name:'usr_mod', type: 'string'},'tipo_registro',
 		'hora','desc_gestion','desc_evento','desc_region','desc_casa_oracion',
-		'id_casa_oracion','id_obrero','desc_obrero','obs','obs2'
+		'id_casa_oracion','id_obrero','desc_obrero','obs','obs2','desc_lugar'
 	],
 	
 	sortInfo:{

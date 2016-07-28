@@ -17,6 +17,7 @@ class RAgenda extends  ReportePDF {
 	var $total_patrimonio;
 	var $comunicado;
 	var $tipo_imp;
+	var $show_reg;
 	
 	function datosHeader ( $detalle, $desde, $hasta, $comunicado) {
 		$this->ancho_hoja = $this->getPageWidth()-PDF_MARGIN_LEFT-PDF_MARGIN_RIGHT-10;
@@ -26,6 +27,7 @@ class RAgenda extends  ReportePDF {
 		$this->comunicado = $comunicado;
 		
 		$this->tipo_imp =  $this->objParam->getParametro('tipo_imp');
+		$this->show_reg =  $this->objParam->getParametro('show_reg');
 		$this->SetMargins(5, 22, 10);
 		
 		
@@ -157,11 +159,21 @@ class RAgenda extends  ReportePDF {
 		       $date = $this->getDia($val['num_dia']).' '.$val['fecha_programada'].'-'.$val['hora'];
 		       //$loc = $this->calText( '('.$val['obs_region'].') '.$val['desc_lugar'].', '.$val['desc_casa_oracion'],31);
 			   
-			   if(strtoupper(trim($val['desc_lugar'])) == strtoupper(trim($val['desc_casa_oracion']))){
-			   	 $loc ='('.$val['obs_region'].') '.$val['desc_casa_oracion'];
+			   if($this->show_reg == 'si'){
+				   if(strtoupper(trim($val['desc_lugar'])) == strtoupper(trim($val['desc_casa_oracion']))){
+				   	 $loc ='('.$val['obs_region'].') '.$val['desc_casa_oracion'];
+				   }
+				   else{			   	
+			          $loc ='('.$val['obs_region'].') '.$val['desc_lugar'].', '.$val['desc_casa_oracion'];
+				   }
 			   }
-			   else{			   	
-		          $loc ='('.$val['obs_region'].') '.$val['desc_lugar'].', '.$val['desc_casa_oracion'];
+			   else{
+			   	  if(strtoupper(trim($val['desc_lugar'])) == strtoupper(trim($val['desc_casa_oracion']))){
+				   	  $loc = $val['desc_casa_oracion'];
+				   }
+				   else{			   	
+			          $loc = $val['desc_lugar'].', '.$val['desc_casa_oracion'];
+				   }
 			   }
 			   
 			   $obre = $this->calText( $val['desc_obrero'],22);
@@ -330,7 +342,7 @@ class RAgenda extends  ReportePDF {
 			   $this->Cell(97,3.5,'Comunicados','',0,'C');
 			   $this->ln();
 			   
-			   	$this->SetFont('','',9);
+			   	$this->SetFont('','',10);
 				$conf_par_tablewidths=array(97,10,97);
 		        $conf_par_tablealigns=array('L','L','L');
 		        $conf_par_tablenumbers=array(0,0,0,0);
@@ -343,9 +355,11 @@ class RAgenda extends  ReportePDF {
 	            $this->tableborders=$conf_tableborders;
 	            $this->tabletextcolor=$conf_tabletextcolor;
 				
-			   	 $RowArray = array('obs'  =>  $this->comunicado,
+				$temp = str_replace("\\n", "\n", $this->comunicado); 
+				
+			   	 $RowArray = array('obs'  =>  $temp,
 								   'esp'  =>  '',
-								   'obs2'  => $this->comunicado); 
+								   'obs2'  => $temp); 
 			   	 $this-> MultiRow($RowArray,false,0);
 				 $this->cerrarDet();		
 		         $this->ln();

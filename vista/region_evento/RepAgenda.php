@@ -291,6 +291,33 @@ Phx.vista.RepAgenda=Ext.extend(Phx.frmInterfaz,{
             valorInicial:'doble',
             form:true
         },
+        
+        {
+            config:{
+                name: 'show_reg',
+                fieldLabel: 'Mostrar Reg',
+                allowBlank: false,
+                qtip: 'Mostrar el Código de Región en el reporte',
+                anchor: '80%',
+                emptyText:'Tipo Obligacion',
+                store:new Ext.data.ArrayStore({
+                            fields: ['variable', 'valor'],
+                            data : [  ['si','si'],
+                                      ['no','no']]
+                                    }),
+                valueField: 'variable',
+                value:'si',
+                displayField: 'valor',
+                forceSelection: true,
+                triggerAction: 'all',
+                lazyRender: true,
+                mode: 'local',
+                wisth: 250
+            },
+            type:'ComboBox',
+            valorInicial:'si',
+            form:true
+        },
 		
 		  
 
