@@ -274,6 +274,8 @@ class MODMovimiento extends MODbase{
 		$this->captura('id_ot','integer');
 		$this->captura('desc_orden','varchar');
 		$this->captura('desc_movimiento_traspaso','text');
+		$this->captura('id_movimiento_traspaso','integer');
+		
 		
 		
 		//Ejecuta la instruccion

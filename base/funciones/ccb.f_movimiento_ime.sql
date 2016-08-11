@@ -839,7 +839,8 @@ BEGIN
              estado = v_parametros.estado,
              tipo_documento = v_parametros.tipo_documento,
              num_documento = v_parametros.num_documento,
-             id_ot = v_parametros.id_ot
+             id_ot = v_parametros.id_ot,
+             id_movimiento_traspaso  = v_parametros.id_movimiento_traspaso
 			where id_movimiento=v_parametros.id_movimiento;
             
             
@@ -853,8 +854,10 @@ BEGIN
             IF v_parametros.concepto = 'ingreso_traspaso' THEN
             
                  -- modificamos el id del movieminto irigunal
-                IF v_registros.id_movimiento_traspaso != v_parametros.id_movimiento_traspaso THEN                  
-                   
+                IF v_registros.id_movimiento_traspaso = v_parametros.id_movimiento_traspaso THEN                  
+                
+                
+                ELSE   
                    --resetea el anterior
                    update ccb.tmovimiento set
                       id_movimiento_traspaso  = NULL --almacena el movimiento en el traspaso de egreso
@@ -864,10 +867,10 @@ BEGIN
                    update ccb.tmovimiento set
                      id_movimiento_traspaso  = v_parametros.id_movimiento --almacena el movimiento en el traspaso de egreso
                    where id_movimiento = v_parametros.id_movimiento_traspaso ;               
-                
+               
                 
                 END IF;
-              
+                 
             ELSE 
                 
                 IF v_registros.concepto = 'ingreso_traspaso' THEN                                     
@@ -879,8 +882,7 @@ BEGIN
                 
             END IF;
             
-             
-            
+         --raise exception '%', v_parametros.id_movimiento_traspaso;
             
             --Definicion de la respuesta
             v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Movimientos de otros ingresos  modificado'); 

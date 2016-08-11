@@ -435,7 +435,8 @@ BEGIN
                               mov.gestion,
                               mov.id_ot,
                               COALESCE(mov.desc_orden,'''') as desc_orden,
-                              desc_movimiento_traspaso
+                              desc_movimiento_traspaso,
+                              id_movimiento_traspaso
                             FROM 
                               ccb.votros_ingresos  mov
                           WHERE ';

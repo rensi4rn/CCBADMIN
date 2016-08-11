@@ -725,7 +725,7 @@ Phx.vista.MovimientoOtrosIngresos=Ext.extend(Phx.gridInterfaz,{
         'total_monto','tipo_reg','tipo_documento','num_documento',
         'id_obrero',
 	    'desc_obrero',
-	    'estado','desc_tipo_movimiento','id_ot','desc_orden','desc_movimiento_traspaso'
+	    'estado','desc_tipo_movimiento','id_ot','desc_orden','desc_movimiento_traspaso','id_movimiento_traspaso'
 		
 		
 	],
@@ -829,6 +829,11 @@ Phx.vista.MovimientoOtrosIngresos=Ext.extend(Phx.gridInterfaz,{
               
               if(this.Cmp.concepto.getValue() == 'ingreso_traspaso'){
 		         this.Cmp.tipo_documento.store.loadData(this.documentoTraspaso)
+		        this.Cmp.id_movimiento_traspaso.store.baseParams.tipo='egreso';
+	            this.Cmp.id_movimiento_traspaso.store.baseParams.id_region=this.id_region;
+	            this.Cmp.id_movimiento_traspaso.store.baseParams.tipo_concepto='egreso_traspaso';
+	            this.Cmp.id_movimiento_traspaso.store.baseParams.fecha=this.Cmp.fecha.getValue().dateFormat('d/m/Y');
+	            this.Cmp.id_movimiento_traspaso.modificado = true;
               } 
               
               if(this.Cmp.concepto.getValue() == 'devolucion'){
