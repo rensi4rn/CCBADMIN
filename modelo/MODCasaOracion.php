@@ -43,6 +43,8 @@ class MODCasaOracion extends MODbase{
 		$this->captura('latitud','varchar');
 		$this->captura('longitud','varchar');
 		$this->captura('zoom','varchar');
+		$this->captura('id_uo','int4');
+		$this->captura('desc_uo','varchar');
 		
 		
 		
@@ -72,6 +74,7 @@ class MODCasaOracion extends MODbase{
 		$this->setParametro('latitud','latitud','varchar');
 		$this->setParametro('longitud','longitud','varchar');
 		$this->setParametro('zoom','zoom','varchar');
+		$this->setParametro('id_uo','id_uo','int4');
 		
 		//Ejecuta la instruccion
 		$this->armarConsulta();
@@ -100,6 +103,7 @@ class MODCasaOracion extends MODbase{
 		$this->setParametro('latitud','latitud','varchar');
 		$this->setParametro('longitud','longitud','varchar');
 		$this->setParametro('zoom','zoom','varchar');
+		$this->setParametro('id_uo','id_uo','int4');
 		
 		//Ejecuta la instruccion
 		$this->armarConsulta();

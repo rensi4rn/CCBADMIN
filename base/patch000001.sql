@@ -883,5 +883,23 @@ IS 'si o no, esto permite en reportes ademas de listar lso de la region, la opci
 
 
 
+/***********************************I-SCP-RAC-CCB-2-18/10/2016****************************************/
+
+
+--------------- SQL ---------------
+
+ALTER TABLE ccb.tcasa_oracion
+  ADD COLUMN id_uo INTEGER;
+
+COMMENT ON COLUMN ccb.tcasa_oracion.id_uo
+IS 'indetifica la unidas organizacionales que componen centro de costo, se utiliza para filtros';
+
+
+
+/***********************************F-SCP-RAC-CCB-2-18/10/2016****************************************/
+
+
+
+
 
 

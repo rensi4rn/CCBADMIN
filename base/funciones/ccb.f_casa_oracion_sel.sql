@@ -113,13 +113,16 @@ BEGIN
                         lug.nombre as desc_lugar,
                         caor.latitud,
                         caor.longitud,
-                        caor.zoom
+                        caor.zoom,
+                        uo.id_uo,
+                        (uo.codigo||''-''||uo.nombre_unidad)::varchar as desc_uo
 						from ccb.tcasa_oracion caor
                         inner join ccb.tregion reg on reg.id_region = caor.id_region
                         inner join param.tlugar lug on lug.id_lugar = caor.id_lugar
 						inner join segu.tusuario usu1 on usu1.id_usuario = caor.id_usuario_reg
                         '|| v_inner ||'
 						left join segu.tusuario usu2 on usu2.id_usuario = caor.id_usuario_mod
+                        left join orga.tuo uo on uo.id_uo = caor.id_uo
 				        where  '||v_filtro_lugares;
 			
 			--Definicion de la respuesta
@@ -127,6 +130,7 @@ BEGIN
 			v_consulta:=v_consulta||' order by ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
 
 			--Devuelve la respuesta
+            raise notice '%',v_consulta;
 			return v_consulta;
 						
 		end;
@@ -187,7 +191,8 @@ BEGIN
 						inner join segu.tusuario usu1 on usu1.id_usuario = caor.id_usuario_reg
                         '|| v_inner ||'
 						left join segu.tusuario usu2 on usu2.id_usuario = caor.id_usuario_mod
-					    where '||v_filtro_lugares;
+					    left join orga.tuo uo on uo.id_uo = caor.id_uo
+                        where '||v_filtro_lugares;
 			
 			--Definicion de la respuesta		    
 			v_consulta:=v_consulta||v_parametros.filtro;

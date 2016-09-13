@@ -64,7 +64,8 @@ BEGIN
               id_usuario_mod,
               latitud,
               longitud,
-              zoom
+              zoom,
+              id_uo
           	) values(
               'activo',
               v_parametros.fecha_cierre,
@@ -80,7 +81,8 @@ BEGIN
               null,
               v_parametros.latitud,
               v_parametros.longitud,
-              v_parametros.zoom
+              v_parametros.zoom,
+              v_parametros.id_uo
 							
 			)RETURNING id_casa_oracion into v_id_casa_oracion;
 			
@@ -116,7 +118,8 @@ BEGIN
               id_usuario_mod = p_id_usuario,
               latitud =  v_parametros.latitud,
               longitud =  v_parametros.longitud,
-              zoom =   v_parametros.zoom
+              zoom =   v_parametros.zoom,
+              id_uo = v_parametros.id_uo
 			where id_casa_oracion=v_parametros.id_casa_oracion;
                
 			--Definicion de la respuesta

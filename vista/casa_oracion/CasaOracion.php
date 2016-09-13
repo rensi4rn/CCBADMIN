@@ -244,6 +244,28 @@ Phx.vista.CasaOracion=Ext.extend(Phx.gridInterfaz,{
 			grid:true,
 			form:true
 		},
+		
+		{
+   			config:{
+   				name:'id_uo',
+   				origen:'UO',
+   				fieldLabel:'Unidad',
+   				gdisplayField:'desc_uo',//mapea al store del grid
+   			    gwidth:200,
+   			    baseParams:{'estado_reg':'activo', 'presupuesta':'si'}, //la uo que son casa de oracion estaran marcadas con presupeusto = si
+      			renderer:function (value, p, record){return String.format('{0}', record.data['desc_uo']);}		},
+   			type:'ComboRec',
+   			id_grupo:0,
+   			filters:{	
+   				        pfiltro:'nombre_unidad',
+   						type:'string'
+   					},
+   		   
+   			grid:true,
+   			form:true
+   	    },
+		
+		
 		{
 			config:{
 				name: 'estado_reg',
@@ -342,7 +364,9 @@ Phx.vista.CasaOracion=Ext.extend(Phx.gridInterfaz,{
 		{name:'fecha_mod', type: 'date', dateFormat:'Y-m-d H:i:s.u'},
 		{name:'id_usuario_mod', type: 'numeric'},
 		{name:'usr_reg', type: 'string'},
-		{name:'usr_mod', type: 'string'},'desc_region','desc_lugar','latitud','longitud','zoom'
+		{name:'usr_mod', type: 'string'},
+		'desc_region','desc_lugar','latitud','longitud','zoom',
+		'id_uo','desc_uo'
 		
 	],
 	sortInfo:{
