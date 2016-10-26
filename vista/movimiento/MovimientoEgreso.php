@@ -74,29 +74,7 @@ Phx.vista.MovimientoEgreso=Ext.extend(Phx.gridInterfaz,{
          },this);
          
          
-         this.Cmp.concepto.on('select',function(cm,dat,num){
-         	this.Cmp.tipo_documento.reset();
-         	
-		    if(dat.data.variable == 'contra_rendicion'){
-		      this.Cmp.tipo_documento.store.loadData(this.documentoContraRendicion)
-		    }
-		    if(dat.data.variable == 'egreso_traspaso'){
-		        
-		        this.Cmp.tipo_documento.store.loadData(this.documentoTrapaso)
-		    }
-		    if(dat.data.variable == 'operacion'){
-		        
-		        this.Cmp.tipo_documento.store.loadData(this.documentoEgreso)
-		    }
-		    if(dat.data.variable == 'egreso_inicial_por_rendir'){
-		        
-		        this.Cmp.tipo_documento.store.loadData(this.documentoContraRendicion)
-		    }
-		    
-		    
-		  
-		    
-		},this);
+        
 		 this.iniciarEventos();
 	},
 	dataIngreso : [
@@ -987,11 +965,12 @@ Phx.vista.MovimientoEgreso=Ext.extend(Phx.gridInterfaz,{
         }
         else{
               Phx.vista.MovimientoEgreso.superclass.onButtonEdit.call(this);
+              var con = this.Cmp.concepto.getValue();
               
-              
-              if(this.Cmp.concepto.getValue() == 'operacion'){
+              if(con == 'operacion'){
 		   	  	this.mostrarComponente(this.Cmp.id_concepto_ingas)
 		   	  	this.Cmp.id_concepto_ingas.allowBlank = false;
+		   	  	this.Cmp.tipo_documento.store.loadData(this.documentoEgreso);
 		   	  }
 		   	  else{
 		   	  	 this.ocultarComponente(this.Cmp.id_concepto_ingas)
@@ -999,22 +978,24 @@ Phx.vista.MovimientoEgreso=Ext.extend(Phx.gridInterfaz,{
 		   	  	 this.Cmp.id_concepto_ingas.reset();
 		   	  }
 		   	  
-		   	var con = this.Cmp.concepto.getValue();
+		   	  if(con == 'contra_rendicion'){
+		   	  	this.mostrarComponente(this.Cmp.id_cuenta_bancaria);
+		   	  	this.Cmp.tipo_documento.store.loadData(this.documentoContraRendicion)
+		   	  	
+		   	  }
+		   	  else{
+		   	  	this.ocultarComponente(this.Cmp.id_cuenta_bancaria)	
+		   	  }
+		   	  
 		   	 
-		   	if(con == 'contra_rendicion'){
-		      this.Cmp.tipo_documento.store.loadData(this.documentoContraRendicion)
-		    }
-		    if(con == 'egreso_traspaso'){
-		        this.Cmp.tipo_documento.store.loadData(this.documentoTrapaso)
-		    }
-		    if(con == 'operacion'){
-		        this.Cmp.tipo_documento.store.loadData(this.documentoEgreso)
-		    }
-		    if(con == 'egreso_inicial_por_rendir'){
-		        this.Cmp.tipo_documento.store.loadData(this.documentoContraRendicion)
-		    }
+		     if(con == 'egreso_traspaso'){
+		         this.Cmp.tipo_documento.store.loadData(this.documentoTrapaso)
+		     }
+		     if(con == 'egreso_inicial_por_rendir'){
+		         this.Cmp.tipo_documento.store.loadData(this.documentoContraRendicion)
+		     }
 		    
-		    this.Cmp.monto_doc.enable();
+		      this.Cmp.monto_doc.enable();
 		    
 		    
          }
@@ -1213,6 +1194,27 @@ Phx.vista.MovimientoEgreso=Ext.extend(Phx.gridInterfaz,{
 		
 		this.Cmp.concepto.on('select', 
 		   function(cmb){
+		   	
+		   	
+		   	this.Cmp.tipo_documento.reset();
+         	
+		    if(dat.data.variable == 'contra_rendicion'){
+		      this.Cmp.tipo_documento.store.loadData(this.documentoContraRendicion)
+		    }
+		    if(dat.data.variable == 'egreso_traspaso'){
+		        
+		        this.Cmp.tipo_documento.store.loadData(this.documentoTrapaso)
+		    }
+		    if(dat.data.variable == 'operacion'){
+		        
+		        this.Cmp.tipo_documento.store.loadData(this.documentoEgreso)
+		    }
+		    if(dat.data.variable == 'egreso_inicial_por_rendir'){
+		        
+		        this.Cmp.tipo_documento.store.loadData(this.documentoContraRendicion)
+		    }
+		    
+		   	
 		   	console.log('valor ..', cmb.getValue())
 		   	  if(cmb.getValue() == 'operacion'){
 		   	  	this.mostrarComponente(this.Cmp.id_concepto_ingas)
@@ -1233,8 +1235,6 @@ Phx.vista.MovimientoEgreso=Ext.extend(Phx.gridInterfaz,{
 		   	  }
 		   	  
 		   	  this.resetCuentaBancaria();
-		   	  
-		   	  
 		   	  
 		   	  
 		   	
