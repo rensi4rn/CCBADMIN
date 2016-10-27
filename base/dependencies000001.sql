@@ -2443,3 +2443,76 @@ ALTER TABLE ccb.vmovimiento_ingreso
  
 /********************************************F-DEP-RAC-ADMIN-0-02/09/2017*************************************/
  
+ 
+ 
+ /********************************************I-DEP-RAC-ADMIN-0-08/09/2017*************************************/
+ 
+ 
+ CREATE OR REPLACE VIEW ccb.vmovimiento_egreso_2
+AS
+  SELECT mov.id_movimiento,
+         mov.estado_reg,
+         mov.tipo,
+         mov.id_casa_oracion,
+         mov.concepto,
+         mov.obs,
+         mov.fecha,
+         mov.id_estado_periodo,
+         mov.fecha_reg,
+         mov.id_usuario_reg,
+         mov.fecha_mod,
+         mov.id_usuario_mod,
+         usu1.cuenta AS usr_reg,
+         usu2.cuenta AS usr_mod,
+         tm1.id_tipo_movimiento,
+         md1.id_movimiento_det,
+         md1.monto,
+         mov.id_obrero,
+         o.nombre_completo1 AS desc_obrero,
+         mov.estado,
+         mov.tipo_documento,
+         mov.num_documento,
+         tm1.nombre AS desc_tipo_movimiento,
+         co.nombre AS desc_casa_oracion,
+         ep.mes,
+         ep.estado_periodo,
+         ges.id_gestion,
+         ges.gestion,
+         co.id_region,
+         co.id_lugar,
+         mov.id_ot,
+         ot.desc_orden,
+         md1.id_concepto_ingas,
+         cig.desc_ingas,
+         round(md1.monto_retencion, 2) AS retenciones,
+         md1.monto_doc,
+         md1.monto_retencion,
+         mov.id_movimiento_traspaso,
+         cb.id_cuenta_bancaria,
+         ((cb.nro_cuenta::text || ' ('::text) || cb.denominacion::text) || ')'::
+           text AS desc_cuenta_bancaria,
+         mov.nit,
+         mov.razon_social,
+         mov.nro_autorizacion,
+         mov.codigo_control  
+  FROM ccb.tmovimiento mov
+       JOIN ccb.tcasa_oracion co ON co.id_casa_oracion = mov.id_casa_oracion
+       JOIN ccb.testado_periodo ep ON ep.id_estado_periodo =
+         mov.id_estado_periodo
+       JOIN ccb.tgestion ges ON ges.id_gestion = ep.id_gestion
+       JOIN segu.tusuario usu1 ON usu1.id_usuario = mov.id_usuario_reg
+       JOIN segu.tusuario usu2 ON usu2.id_usuario = mov.id_usuario_mod
+       JOIN ccb.tmovimiento_det md1 ON md1.id_movimiento = mov.id_movimiento
+       JOIN ccb.ttipo_movimiento tm1 ON tm1.id_tipo_movimiento =
+         md1.id_tipo_movimiento
+       LEFT JOIN ccb.vobrero o ON o.id_obrero = mov.id_obrero
+       LEFT JOIN conta.torden_trabajo ot ON ot.id_orden_trabajo = mov.id_ot
+       LEFT JOIN param.tconcepto_ingas cig ON cig.id_concepto_ingas =
+         md1.id_concepto_ingas
+       LEFT JOIN tes.tcuenta_bancaria cb ON cb.id_cuenta_bancaria =
+         mov.id_cuenta_bancaria
+  WHERE mov.tipo::text = 'egreso'::text;
+
+
+ /********************************************F-DEP-RAC-ADMIN-0-08/09/2017*************************************/
+ 

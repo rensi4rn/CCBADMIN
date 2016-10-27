@@ -951,3 +951,34 @@ IS 'guardar el codigo siga';
 /***********************************F-SCP-RAC-CCB-2-02/09/2017****************************************/
 
 
+/***********************************I-SCP-RAC-CCB-2-08/09/2017****************************************/
+
+
+--------------- SQL ---------------
+
+ALTER TABLE ccb.tmovimiento
+  ADD COLUMN nit VARCHAR(100);
+--------------- SQL ---------------
+
+ALTER TABLE ccb.tmovimiento
+  ADD COLUMN razon_social VARCHAR;
+  
+  --------------- SQL ---------------
+
+ALTER TABLE ccb.tmovimiento
+  ADD COLUMN nro_autorizacion VARCHAR(200);  
+  
+--------------- SQL ---------------
+
+ALTER TABLE ccb.tmovimiento
+  ADD COLUMN codigo_control VARCHAR(200);
+  
+--------------- SQL ---------------
+
+ALTER TABLE ccb.tmovimiento
+  ADD COLUMN id_doc_compra_venta INTEGER;
+  
+    
+  
+/***********************************F-SCP-RAC-CCB-2-08/09/2017****************************************/
+ 

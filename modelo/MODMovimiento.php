@@ -167,8 +167,13 @@ class MODMovimiento extends MODbase{
 		$this->captura('desc_cuenta_bancaria','text');
 		
 		
+		$this->captura('nit','varchar');
+		$this->captura('razon_social','varchar');
+		$this->captura('nro_autorizacion','varchar');
+		$this->captura('codigo_control','varchar');
 		
 		
+		 
 		
 		//Ejecuta la instruccion
 		$this->armarConsulta();
@@ -476,26 +481,21 @@ class MODMovimiento extends MODbase{
 		$this->setParametro('obs','obs','text');
 		$this->setParametro('fecha','fecha','date');
 		$this->setParametro('id_estado_periodo','id_estado_periodo','int4');
-		
-		
 		$this->setParametro('monto','monto','numeric');
 		$this->setParametro('id_tipo_movimiento','id_tipo_movimiento','int4');
 		$this->setParametro('tipo_documento','tipo_documento','varchar');
 		$this->setParametro('num_documento','num_documento','varchar');
-		
-		
-		
 		$this->setParametro('id_obrero','id_obrero','int4');
 		$this->setParametro('estado','estado','varchar');
 		$this->setParametro('id_ot','id_ot','int4');
 		$this->setParametro('id_concepto_ingas','id_concepto_ingas','int4');
-		
-		
-		
 		$this->setParametro('monto_doc','monto_doc','numeric');
-		$this->setParametro('monto_retencion','monto_retencion','numeric');
-		
-		$this->setParametro('id_cuenta_bancaria','id_cuenta_bancaria','int4');
+		$this->setParametro('monto_retencion','monto_retencion','numeric');		
+		$this->setParametro('id_cuenta_bancaria','id_cuenta_bancaria','int4');		
+		$this->setParametro('nro_autorizacion','nro_autorizacion','varchar');
+		$this->setParametro('codigo_control','codigo_control','varchar');
+		$this->setParametro('nit','nit','varchar');
+		$this->setParametro('razon_social','razon_social','varchar');
 		
 
 		//Ejecuta la instruccion
@@ -533,6 +533,10 @@ class MODMovimiento extends MODbase{
 		$this->setParametro('monto_doc','monto_doc','numeric');
 		$this->setParametro('monto_retencion','monto_retencion','numeric');
 		$this->setParametro('id_cuenta_bancaria','id_cuenta_bancaria','int4');
+		$this->setParametro('nro_autorizacion','nro_autorizacion','varchar');
+		$this->setParametro('codigo_control','codigo_control','varchar');
+		$this->setParametro('nit','nit','varchar');
+		$this->setParametro('razon_social','razon_social','varchar');
 		
 		
 

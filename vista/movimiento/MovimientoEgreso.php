@@ -95,6 +95,7 @@ Phx.vista.MovimientoEgreso=Ext.extend(Phx.gridInterfaz,{
                 ['factura', 'Factura '],
                 ['recibo_bien', 'Recibo con retención de bienes'],
                 ['recibo_servicio', 'Recibo con retención de servicios'],
+                ['recibo_alquiler', 'Recibo con retención de alquileres'],
                 ['recibo_sin_retencion', 'Recibo sin retención']
       ],
 	documentoContraRendicion: [
@@ -158,8 +159,20 @@ Phx.vista.MovimientoEgreso=Ext.extend(Phx.gridInterfaz,{
 			   	
 			}
 			else{
-				 this.Cmp.monto.setValue(monto_doc);
-		   	     this.Cmp.monto_retencion.setValue(0);
+				
+				if(tipodoc == 'recibo_alquiler'){				
+				
+					var retencion = monto_doc*0.16;
+					retencion = Math.round(retencion * 100) / 100;
+					this.Cmp.monto_retencion.setValue(retencion);		   	
+				   	this.Cmp.monto.setValue(monto_doc - retencion);
+				   	
+				}
+				else{
+					this.Cmp.monto.setValue(monto_doc);
+		   	        this.Cmp.monto_retencion.setValue(0);
+				}
+				 
 			}
 		}
 		
@@ -644,6 +657,143 @@ Phx.vista.MovimientoEgreso=Ext.extend(Phx.gridInterfaz,{
 		},
 		
 		{
+                    config:{
+                        name: 'nro_autorizacion',
+                        fieldLabel: 'Autorización',
+                        allowBlank: false,
+                        emptyText:'autorización ...',
+                        store:new Ext.data.JsonStore(
+                            {
+                                url: '../../sis_contabilidad/control/DocCompraVenta/listarNroAutorizacion',
+                                id: 'nro_autorizacion',
+                                root:'datos',
+                                sortInfo:{
+                                    field:'nro_autorizacion',
+                                    direction:'ASC'
+                                },
+                                totalProperty:'total',
+                                fields: ['nro_autorizacion','nit','razon_social'],
+                                remoteSort: true
+                            }),
+                        valueField: 'nro_autorizacion',
+                        hiddenValue: 'nro_autorizacion',
+                        displayField: 'nro_autorizacion',
+                        queryParam: 'nro_autorizacion',
+                        listWidth:'280',
+                        forceSelection:false,
+                        autoSelect: false,
+                        hideTrigger:true,
+                        typeAhead: false,
+                        typeAheadDelay: 75,
+                        lazyRender:false,
+                        mode:'remote',
+                        pageSize:20,
+                        width: 200,
+                        boxMinWidth: 200,
+                        queryDelay:500,
+                        minChars:1,
+                        maskRe: /[0-9/-]+/i,
+                        regex: /[0-9/-]+/i
+                    },
+                    type:'ComboBox',
+                    id_grupo: 0,
+                    grid:true,
+			        form:true
+         },
+		
+		 {
+                    config:{
+                        name: 'nit',
+                        fieldLabel: 'NIT/CI',
+                        qtip: 'Número de indentificación del proveedor',
+                        allowBlank: false,
+                        emptyText:'nit ...',
+                        store:new Ext.data.JsonStore(
+                            {
+                                url: '../../sis_contabilidad/control/DocCompraVenta/listarNroNit',
+                                id: 'nit',
+                                root:'datos',
+                                sortInfo:{
+                                    field:'nit',
+                                    direction:'ASC'
+                                },
+                                totalProperty:'total',
+                                fields: ['nit','razon_social'],
+                                remoteSort: true
+                            }),
+                        valueField: 'nit',
+                        hiddenValue: 'nit',
+                        displayField: 'nit',
+                        gdisplayField:'nit',
+                        queryParam: 'nit',
+                        listWidth:'280',
+                        forceSelection:false,
+                        autoSelect: false,
+                        typeAhead: false,
+                        typeAheadDelay: 75,
+                        hideTrigger:true,
+                        triggerAction: 'query',
+                        lazyRender:false,
+                        mode:'remote',
+                        pageSize:20,
+                        queryDelay:500,
+                        anchor: '80%',
+                        minChars:1
+                    },
+                    type:'ComboBox',
+                    id_grupo: 0,
+                    grid:true,
+                    form: true
+        },
+        
+        {
+                    config:{
+                        name: 'razon_social',
+                        fieldLabel: 'Razón Social / Nombre',
+                        allowBlank: false,
+                        maskRe: /[A-Za-z0-9 &-. ñ Ñ]/,
+                        fieldStyle: 'text-transform:uppercase',
+                        listeners:{
+                            'change': function(field, newValue, oldValue){
+
+                                field.suspendEvents(true);
+                                field.setValue(newValue.toUpperCase());
+                                field.resumeEvents(true);
+                            }
+                        },
+                        anchor: '80%',
+                        maxLength:180
+                    },
+                    type:'TextField',
+                    id_grupo:0,
+                    grid:true,
+                    form:true
+        },
+
+		{
+                    config:{
+                        name: 'codigo_control',
+                        fieldLabel: 'Código de Control',
+                        allowBlank: true,
+                        anchor: '80%',
+                        gwidth: 100,
+                        enableKeyEvents: true,
+                        fieldStyle : 'text-transform: uppercase',
+                        maxLength:200,
+                        validator: function(v) {
+                            return /^0|^([A-Fa-f0-9]{2,2}\-)*[A-Fa-f0-9]{2,2}$/i.test(v)? true : 'Introducir texto de la forma xx-xx, donde x representa dígitos  hexadecimales  [0-9]ABCDEF.';
+                        },
+                        maskRe: /[0-9ABCDEF/-]+/i,
+                        regex: /[0-9ABCDEF/-]+/i
+                    },
+                    type:'TextField',
+                    id_grupo:1,
+                    grid:true,
+                    form:true
+        },
+		
+		
+		{
 			config:{
 				name: 'monto_doc',
 				fieldLabel: 'Monto',
@@ -907,7 +1057,8 @@ Phx.vista.MovimientoEgreso=Ext.extend(Phx.gridInterfaz,{
         'id_obrero',
 	    'desc_obrero','id_movimiento_traspaso',
 	    'estado',
-	    'desc_tipo_movimiento',
+	    'desc_tipo_movimiento','nro_autorizacion',
+	    'codigo_control','nit', 'razon_social',
 	    'id_ot','desc_orden','id_concepto_ingas','desc_ingas','monto_doc','monto_retencion'
 		
 		
@@ -922,10 +1073,7 @@ Phx.vista.MovimientoEgreso=Ext.extend(Phx.gridInterfaz,{
 			  this.onButtonNew();
 			}
 			
-			
-			
-			this.loadValoresIniciales();
-			
+			this.loadValoresIniciales();			
 			this.calcularSaldos();
 		}
 		else{
@@ -933,7 +1081,6 @@ Phx.vista.MovimientoEgreso=Ext.extend(Phx.gridInterfaz,{
 		}
 
 		this.reload();
-
 	},
 	
 	
@@ -994,10 +1141,33 @@ Phx.vista.MovimientoEgreso=Ext.extend(Phx.gridInterfaz,{
 		     if(con == 'egreso_inicial_por_rendir'){
 		         this.Cmp.tipo_documento.store.loadData(this.documentoContraRendicion)
 		     }
-		    
-		      this.Cmp.monto_doc.enable();
-		    
-		    
+		     
+		     var tipo_documento = this.Cmp.tipo_documento.getValue();
+		     if( tipo_documento == 'factura'){                	
+                	// ocultar  autorizacion
+                	this.mostrarComponente(this.Cmp.nro_autorizacion);
+                	this.mostrarComponente(this.Cmp.codigo_control);
+             }
+             else{
+                	this.ocultarComponente(this.Cmp.nro_autorizacion);
+                	this.ocultarComponente(this.Cmp.codigo_control);
+                	this.ocultarComponente(this.Cmp.codigo_control);
+             }
+             
+             
+             var valueNA = this.Cmp.nro_autorizacion.getValue();
+             
+             if (valueNA[3] == '4' || valueNA[3] == '8'|| valueNA[3] == '6'){
+                    this.mostrarComponente(this.Cmp.codigo_control);
+                    this.Cmp.codigo_control.allowBlank = false;
+             }
+             else{
+                    this.Cmp.codigo_control.allowBlank = true;
+                    this.ocultarComponente(this.Cmp.codigo_control);
+             };
+
+            
+            this.Cmp.monto_doc.enable();
          }
          this.resetPanel();
         
@@ -1266,10 +1436,61 @@ Phx.vista.MovimientoEgreso=Ext.extend(Phx.gridInterfaz,{
 		   function(cmb){		   	    
 		   	 this.calcularSaldos();
 		   	 this.resetCuentaBancaria();
-		   },this); 	     
+		   },this); 
 		   
+		   
+		  this.Cmp.codigo_control.on('keyup',function(cmp, e){
+                //inserta guiones en codigo de contorl
+                var value = cmp.getValue(), tmp='',tmp2='',sw = 0;
+                tmp = value.replace(/-/g, '');
+                for(var i = 0; i< tmp.length; i++){
+                    tmp2 = tmp2 + tmp[i];
+                    if( (i+1)%2 == 0 && i!= tmp.length-1){
+                        tmp2 = tmp2 + '-';
+                    }
+                }
+                cmp.setValue(tmp2.toUpperCase());
+            },this); 
+            
+            
+              	     
+		   this.Cmp.nro_autorizacion.on('change',function(fild, newValue, oldValue){
+                if (newValue[3] == '4' || newValue[3] == '8'|| newValue[3] == '6'){
+                    this.mostrarComponente(this.Cmp.codigo_control);
+                    this.Cmp.codigo_control.allowBlank = false;
+                }
+                else{
+                    this.Cmp.codigo_control.allowBlank = true;
+                    this.Cmp.codigo_control.setValue('0');
+                    this.ocultarComponente(this.Cmp.codigo_control);
+
+                };
+
+            },this);
+            
+           this.Cmp.tipo_documento.on('select',function(cmp){
+               
+                if( cmp.getValue() == 'factura'){                	
+                	// ocultar  autorizacion
+                	this.mostrarComponente(this.Cmp.nro_autorizacion);
+                	this.mostrarComponente(this.Cmp.codigo_control);
+                	
+                }else{
+                	this.ocultarComponente(this.Cmp.nro_autorizacion);
+                	this.ocultarComponente(this.Cmp.codigo_control);                	
+                	this.ocultarComponente(this.Cmp.codigo_control);
+                }
+                
+                this.Cmp.monto.setValue(0);                
+                this.Cmp.monto_retencion.setValue(0);
+                this.Cmp.monto_doc.setValue(0);
+
+            },this); 
+            
+            
+            
 	},
-    
+	
 	
 	
 	arrayDefaultColumHidden:['fecha_reg','fecha_mod','usr_reg','estado_reg'],
