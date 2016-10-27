@@ -2352,8 +2352,94 @@ AS
   WHERE m.concepto::text = ANY (ARRAY [ 'contra_rendicion'::text ]);
               
  
- /********************************************F-DEP-RAC-ADMIN-0-12/08/2016*************************************/
+/********************************************F-DEP-RAC-ADMIN-0-12/08/2016*************************************/
  
-  
+
+/********************************************I-DEP-RAC-ADMIN-0-02/09/2017*************************************/
  
+ 
+ --------------- SQL ---------------
+
+ -- object recreation
+DROP VIEW ccb.vmovimiento_ingreso;
+
+CREATE VIEW ccb.vmovimiento_ingreso
+AS
+  SELECT mov.id_movimiento,
+         mov.estado_reg,
+         mov.tipo,
+         mov.id_casa_oracion,
+         mov.concepto,
+         mov.obs,
+         mov.fecha,
+         mov.id_estado_periodo,
+         mov.fecha_reg,
+         mov.id_usuario_reg,
+         mov.fecha_mod,
+         mov.id_usuario_mod,
+         usu1.cuenta AS usr_reg,
+         usu2.cuenta AS usr_mod,
+         tm1.id_tipo_movimiento AS id_tipo_movimiento_mantenimiento,
+         md1.id_movimiento_det AS id_movimiento_det_mantenimiento,
+         md1.monto AS monto_mantenimiento,
+         tm2.id_tipo_movimiento AS id_tipo_movimiento_especial,
+         md2.id_movimiento_det AS id_movimiento_det_especial,
+         md2.monto AS monto_especial,
+         tm3.id_tipo_movimiento AS id_tipo_movimiento_piedad,
+         md3.id_movimiento_det AS id_movimiento_det_piedad,
+         md3.monto AS monto_piedad,
+         tm4.id_tipo_movimiento AS id_tipo_movimiento_construccion,
+         md4.id_movimiento_det AS id_movimiento_det_construccion,
+         md4.monto AS monto_construccion,
+         tm5.id_tipo_movimiento AS id_tipo_movimiento_viaje,
+         md5.id_movimiento_det AS id_movimiento_det_viaje,
+         md5.monto AS monto_viaje,
+         md1.monto + md2.monto + md3.monto + md4.monto + md5.monto AS monto_dia,
+         mov.id_obrero,
+         o.nombre_completo1 AS desc_obrero,
+         mov.estado,
+         co.nombre AS desc_casa_oracion,
+         ep.mes,
+         ep.estado_periodo,
+         ges.id_gestion,
+         ges.gestion,
+         mov.id_ot,
+         ot.desc_orden,
+         mov.id_tipo_movimiento_ot,
+         tmot.nombre AS nombre_tipo_mov_ot,
+         mov.migrado,
+         mov.fecha_migracion,
+         mov.codigo_siga
+  FROM ccb.tmovimiento mov
+       JOIN ccb.tcasa_oracion co ON co.id_casa_oracion = mov.id_casa_oracion
+       JOIN ccb.testado_periodo ep ON ep.id_estado_periodo =
+         mov.id_estado_periodo
+       JOIN ccb.tgestion ges ON ges.id_gestion = ep.id_gestion
+       JOIN segu.tusuario usu1 ON usu1.id_usuario = mov.id_usuario_reg
+       JOIN segu.tusuario usu2 ON usu2.id_usuario = mov.id_usuario_mod
+       JOIN ccb.tmovimiento_det md1 ON md1.id_movimiento = mov.id_movimiento
+       JOIN ccb.ttipo_movimiento tm1 ON tm1.id_tipo_movimiento =
+         md1.id_tipo_movimiento AND tm1.codigo::text = 'mantenimiento'::text
+       JOIN ccb.tmovimiento_det md2 ON md2.id_movimiento = mov.id_movimiento
+       JOIN ccb.ttipo_movimiento tm2 ON tm2.id_tipo_movimiento =
+         md2.id_tipo_movimiento AND tm2.codigo::text = 'especial'::text
+       JOIN ccb.tmovimiento_det md3 ON md3.id_movimiento = mov.id_movimiento
+       JOIN ccb.ttipo_movimiento tm3 ON tm3.id_tipo_movimiento =
+         md3.id_tipo_movimiento AND tm3.codigo::text = 'piedad'::text
+       JOIN ccb.tmovimiento_det md4 ON md4.id_movimiento = mov.id_movimiento
+       JOIN ccb.ttipo_movimiento tm4 ON tm4.id_tipo_movimiento =
+         md4.id_tipo_movimiento AND tm4.codigo::text = 'construccion'::text
+       JOIN ccb.tmovimiento_det md5 ON md5.id_movimiento = mov.id_movimiento
+       JOIN ccb.ttipo_movimiento tm5 ON tm5.id_tipo_movimiento =
+         md5.id_tipo_movimiento AND tm5.codigo::text = 'viaje'::text
+       LEFT JOIN ccb.vobrero o ON o.id_obrero = mov.id_obrero
+       LEFT JOIN conta.torden_trabajo ot ON ot.id_orden_trabajo = mov.id_ot
+       LEFT JOIN ccb.ttipo_movimiento tmot ON tmot.id_tipo_movimiento =
+         mov.id_tipo_movimiento_ot
+  WHERE mov.tipo::text = 'ingreso'::text;
+
+ALTER TABLE ccb.vmovimiento_ingreso
+  OWNER TO postgres;
+ 
+/********************************************F-DEP-RAC-ADMIN-0-02/09/2017*************************************/
  

@@ -6,7 +6,6 @@
 *@date 16-03-2013 00:22:36
 *@description Clase que envia los parametros requeridos a la Base de datos para la ejecucion de las funciones, y que recibe la respuesta del resultado de la ejecucion de las mismas
 */
-
 class MODMovimiento extends MODbase{
 	
 	function __construct(CTParametro $pParam){
@@ -103,6 +102,7 @@ class MODMovimiento extends MODbase{
 		$this->captura('desc_orden','varchar');
 		$this->captura('id_tipo_movimiento_ot','integer');
 		$this->captura('nombre_tipo_mov_ot','varchar');
+		$this->captura('migrado','varchar');
 		
 		
 				
@@ -1255,6 +1255,124 @@ class MODMovimiento extends MODbase{
 		$this->armarConsulta();
 		$this->ejecutarConsulta();
 
+		//Devuelve la respuesta
+		return $this->respuesta;
+	}
+   
+   function validarDatosSiga(){
+		//Definicion de variables para ejecucion del procedimiento
+		$this->procedimiento='ccb.f_movimiento_ime';
+		$this->transaccion='CCB_VALSIGA_MOD';
+		$this->tipo_procedimiento='IME';
+				
+		//Define los parametros para la funcion
+		
+		$this->setParametro('id_casa_oracion','id_casa_oracion','int4');
+		$this->setParametro('id_estado_periodo','id_estado_periodo','int4');
+		
+
+		//Ejecuta la instruccion
+		$this->armarConsulta();
+		$this->ejecutarConsulta();
+
+		//Devuelve la respuesta
+		return $this->respuesta;
+	}
+
+   function actualizarMovMigSiga($id_movimiento){
+   	
+		$this->resetParametros();
+		//Definicion de variables para ejecucion del procedimiento
+		$this->procedimiento='ccb.f_movimiento_ime';
+		$this->transaccion='CCB_ACTMOVMIG_MOD';
+		$this->tipo_procedimiento='IME';
+				
+		//Define los parametros para la funcion
+		
+		$this->arreglo['id_movimiento'] = $id_movimiento;
+		$this->setParametro('id_movimiento','id_movimiento','int4');
+		
+
+		//Ejecuta la instruccion
+		$this->armarConsulta();
+		$this->ejecutarConsulta();
+
+		//Devuelve la respuesta
+		return $this->respuesta;
+	}
+
+
+
+     function listarMovimientoIngresoMigracion(){
+		//Definicion de variables para ejecucion del procedimientp
+		$this->procedimiento='ccb.f_movimiento_sel';
+		$this->transaccion='CCB_MIGCOLSIGA_SEL';
+		$this->tipo_procedimiento='SEL';//tipo de transaccion
+		
+		$this->setCount(false);
+		
+		$this->setParametro('id_casa_oracion','id_casa_oracion','int4');
+		$this->setParametro('id_estado_periodo','id_estado_periodo','int4');		
+		//Definicion de la lista del resultado del query
+		$this->captura('id_movimiento','int4');
+		$this->captura('estado_reg','varchar');
+		$this->captura('tipo','varchar');
+		$this->captura('id_casa_oracion','int4');
+		$this->captura('concepto','varchar');
+		$this->captura('obs','text');
+		$this->captura('fecha','date');
+		$this->captura('id_estado_periodo','int4');
+		$this->captura('fecha_reg','timestamp');
+		$this->captura('id_usuario_reg','int4');
+		$this->captura('fecha_mod','timestamp');
+		$this->captura('id_usuario_mod','int4');
+		$this->captura('usr_reg','varchar');
+		$this->captura('usr_mod','varchar');		
+		$this->captura('id_tipo_movimiento_mantenimiento','int4');
+		$this->captura('id_movimiento_det_mantenimiento','int4');
+		$this->captura('monto_mantenimiento','numeric');		
+		$this->captura('id_tipo_movimiento_especial','int4');
+		$this->captura('id_movimiento_det_especial','int4');
+		$this->captura('monto_especial','numeric');		
+		$this->captura('id_tipo_movimiento_piedad','int4');
+		$this->captura('id_movimiento_det_piedad','int4');
+		$this->captura('monto_piedad','numeric');		
+		$this->captura('id_tipo_movimiento_construccion','int4');
+		$this->captura('id_movimiento_det_construccion','int4');
+		$this->captura('monto_construccion','numeric');		
+		$this->captura('id_tipo_movimiento_viaje','int4');
+		$this->captura('id_movimiento_det_viaje','int4');
+		$this->captura('monto_viaje','numeric');
+		$this->captura('monto_dia','numeric');
+		
+		$this->captura('id_obrero','int4');
+		$this->captura('desc_obrero','text');
+		$this->captura('estado','varchar');
+		
+		$this->captura('desc_casa_oracion','varchar');
+		$this->captura('mes','varchar');
+		$this->captura('estado_periodo','varchar');
+		$this->captura('id_gestion','int4');
+		$this->captura('gestion','varchar');
+		$this->captura('id_ot','integer');
+		$this->captura('desc_orden','varchar');
+		$this->captura('id_tipo_movimiento_ot','integer');
+		$this->captura('nombre_tipo_mov_ot','varchar');
+		
+		$this->captura('migrado','varchar');
+		$this->captura('fecha_migracion','timestamp');
+		$this->captura('codigo_siga_periodo','varchar');
+		$this->captura('codigo_siga_colecta','varchar');
+		$this->captura('codigo_siga_casa','varchar');
+		$this->captura('codigo_siga_region','varchar');
+		
+		
+				
+
+		//Ejecuta la instruccion
+		$this->armarConsulta();
+		$this->ejecutarConsulta();
+		
 		//Devuelve la respuesta
 		return $this->respuesta;
 	}

@@ -901,5 +901,53 @@ IS 'indetifica la unidas organizacionales que componen centro de costo, se utili
 
 
 
+/***********************************I-SCP-RAC-CCB-2-02/09/2017****************************************/
+
+
+--------------- SQL ---------------
+
+ALTER TABLE ccb.tcasa_oracion
+  ADD COLUMN codigo_siga VARCHAR;
+
+COMMENT ON COLUMN ccb.tcasa_oracion.codigo_siga
+IS 'referencia al codigo llave de la casa de oracion en el sistema siga';
+
+
+
+--------------- SQL ---------------
+
+ALTER TABLE ccb.tregion
+  ADD COLUMN codigo_siga VARCHAR;
+
+COMMENT ON COLUMN ccb.tregion.codigo_siga
+IS 'codigo siga id para la region';
+
+
+
+--------------- SQL ---------------
+
+ALTER TABLE ccb.tmovimiento
+  ADD COLUMN migrado VARCHAR(3) DEFAULT 'no' NOT NULL;
+
+COMMENT ON COLUMN ccb.tmovimiento.migrado
+IS 'identifica si fue migrado o no al sistema SIGA';
+
+
+--------------- SQL ---------------
+
+ALTER TABLE ccb.tmovimiento
+  ADD COLUMN fecha_migracion TIMESTAMP WITHOUT TIME ZONE;
+  
+  
+  --------------- SQL ---------------
+
+ALTER TABLE ccb.tmovimiento
+  ADD COLUMN codigo_siga VARCHAR;
+
+COMMENT ON COLUMN ccb.tmovimiento.codigo_siga
+IS 'guardar el codigo siga';
+
+
+/***********************************F-SCP-RAC-CCB-2-02/09/2017****************************************/
 
 

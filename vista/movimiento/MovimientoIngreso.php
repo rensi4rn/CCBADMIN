@@ -25,6 +25,17 @@ Phx.vista.MovimientoIngreso=Ext.extend(Phx.gridInterfaz,{
 		this.init();
 		//this.load({params:{start:0, limit:0}})
 		
+		
+		this.addButton('btnMigrar', {
+				text : 'Migrar SIGA',
+				iconCls : 'balert',
+				disabled : false,
+				handler : this.migrarValidaSIGA,
+				tooltip : 'Migrar las coelctas pendientes al sistema SIGA'
+		});
+		
+		
+		
 		this.cmbTipo.on('select',function(cm,dat,num){
 		    if(dat.data.field1=='ingreso'){
 		      this.getComponente('concepto').store.loadData(this.dataIngreso)
@@ -349,7 +360,19 @@ Phx.vista.MovimientoIngreso=Ext.extend(Phx.gridInterfaz,{
                         dato = (dato==''&&value=='ingreso_traspaso')?'Ingreso por Traspaso':dato;
                         dato = (dato==''&&value=='operacion')?'Operacion':dato;
                         dato = (dato==''&&value=='egreso_traspaso')?'Egreso por Traspaso':dato;
-                        return String.format('{0}', dato);
+                        if(record.data.migrado == 'si'){
+                        	 return String.format('<font color="green">{0}</font>', dato);
+                        }
+                        else{
+                        	if(value == 'colecta_adultos'|| value == 'colecta_jovenes'){
+                        		 return String.format('<font color="red">{0}</font>', dato);
+                        	}
+                        	else{
+                        		return String.format('{0}', dato);
+                        	}
+                        	 
+                        }
+                       
                     },
             
                     store:new Ext.data.ArrayStore({
@@ -913,7 +936,7 @@ Phx.vista.MovimientoIngreso=Ext.extend(Phx.gridInterfaz,{
         'total_mantenimiento','total_construccion','total_viaje','total_especial','total_dia','total_piedad',
         'id_obrero',
 	    'desc_obrero',
-	    'estado','id_ot','desc_orden','nombre_tipo_mov_ot','id_tipo_movimiento_ot'
+	    'estado','id_ot','desc_orden','nombre_tipo_mov_ot','id_tipo_movimiento_ot','migrado'
 		
 		
 	],
@@ -953,8 +976,79 @@ Phx.vista.MovimientoIngreso=Ext.extend(Phx.gridInterfaz,{
                 ['egreso_traspaso', 'Egreso por Traspaso']
         
         ],
+        
+       
     
-    
+     migrarValidaSIGA: function() {
+     	
+     	
+			 if(this.validarFiltros()){
+			 	
+					  	if(confirm("Esta seguro de migrar las colectas pendientes al sistema SIGA")){
+					 	 if(confirm("¿Esta realmente seguro?")){
+						 	
+						    Phx.CP.loadingShow();
+							Ext.Ajax.request({
+								url : '../../sis_admin/control/Movimiento/validarDatosSiga',
+								params : {
+									id_gestion : this.cmbGestion.getValue(),
+									tipo: this.cmbTipo.getValue(),
+									id_casa_oracion: this.cmbCasaOracion.getValue(),
+									id_estado_periodo: this.cmbEstadoPeriodo.getValue()
+								},
+								success : function(resp) {
+									Phx.CP.loadingHide();
+									var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
+									this.migrarSIGA(reg.ROOT.datos);
+									
+								},
+								failure : this.conexionFailure,
+								timeout : this.timeout,
+								scope : this
+							});
+						}
+					 }
+			 }
+			 else{
+			 	alert('primero seleccione los los filtros');
+			 }
+			 
+			    
+	},
+	
+	migrarSIGA: function(resp){
+		
+		
+		
+			 
+			    Phx.CP.loadingShow();
+				Ext.Ajax.request({
+					url : '../../sis_admin/control/Movimiento/migrarDatosSiga',
+					params : {
+						id_gestion : this.cmbGestion.getValue(),
+						tipo: this.cmbTipo.getValue(),
+						id_casa_oracion: this.cmbCasaOracion.getValue(),
+						id_estado_periodo: this.cmbEstadoPeriodo.getValue(),
+						codigo_siga_co: resp.codigo_siga_co,
+						codigo_siga_periodo: resp.codigo_siga_periodo,
+						codigo_siga_region: resp.codigo_siga_region
+				
+					},
+					success : function(resp) {
+						Phx.CP.loadingHide();
+						var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
+						
+						this.reload();
+						alert(reg.ROOT.detalle.mensaje);
+						
+						
+					},
+					failure : this.conexionFailure,
+					timeout : this.timeout,
+					scope : this
+				});
+			
+	},
 	
 	sortInfo:{
 		field: 'id_movimiento',

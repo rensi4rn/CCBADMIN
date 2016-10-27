@@ -18,10 +18,9 @@ require_once(dirname(__FILE__).'/../reportes/RResumen.php');
 require_once(dirname(__FILE__).'/../reportes/RResumenDet.php');
 require_once(dirname(__FILE__).'/../reportes/RResumenDetXColecta.php');
 require_once(dirname(__FILE__).'/../reportes/RResumenXColecta.php');
-
 require_once(dirname(__FILE__).'/../reportes/RResumenCODet.php');
-
 require_once(dirname(__FILE__).'/../reportes/RResumenSaldosMensual.php');
+require_once(dirname(__FILE__).'/../../lib/rest/ClientSiga.php');
 
 
 
@@ -892,6 +891,220 @@ function recuperarDatosResumenCO(){
 		
 	}
 
+    function validarDatosSiga(){
+		$this->objFunc=$this->create('MODMovimiento');	
+		$this->res=$this->objFunc->validarDatosSiga($this->objParam);
+		$this->res->imprimirRespuesta($this->res->generarJson());
+	}
+	
+	
+	private function recuperarDatosMigracion(){
+		$dataSource = new DataSource();	
+		$this->objFunc = $this->create('MODMovimiento');
+		$cbteHeader = $this->objFunc->listarMovimientoIngresoMigracion($this->objParam);
+		if($cbteHeader->getTipo() == 'EXITO'){
+			return $cbteHeader->getDatos();
+		}
+        else{
+		    $cbteHeader->imprimirRespuesta($cbteHeader->generarJson());
+		}  
+	}
+	
+	private function actualizarMovMigSiga($id_movimiento){
+		
+		$this->objFunc = $this->create('MODMovimiento');
+		$cbteHeader = $this->objFunc->actualizarMovMigSiga($id_movimiento);
+		if($cbteHeader->getTipo() == 'EXITO'){
+			return $cbteHeader->getDatos();
+		}
+        else{
+		    $cbteHeader->imprimirRespuesta($cbteHeader->generarJson());
+		}
+	} 
+	
+	
+	function migrarDatosSiga(){
+			
+		
+		//listar datos a migrar	
+		$datos = $this->recuperarDatosMigracion();
+		$this->ClienteSiga = ClienteSiga::connect($_SESSION['_DIRECCION_SIGA'], '');
+		
+		//////////////////////
+		//hacer login
+		////////////////////
+		
+		$respuesta =  $this->ClienteSiga->doGet('index.aspx',
+			    array(
+			        "f_login"=>"S", 
+			        "f_usuario"=>$_SESSION['_USER_LOGIN_SIGA'], 
+			        "f_senha"=>$_SESSION['_SENHA_SIGA']  
+			
+			    ));
+		
+		
+		
+		if (strpos($respuesta, '/SIS/SIS99908.aspx') !== false) {
+			   	
+				//////////////////////////////////////////////////////////
+			   //definir casa se oracion y periodo de trabajo en SIGA
+		      /////////////////////////////////////////////////////////////
+			    $this->ClienteSiga->clearHeader();
+			    $this->ClienteSiga->addHeader('Accept:  */*');
+				$this->ClienteSiga->addHeader('Connection: keep-alive');
+				$this->ClienteSiga->addHeader('Host:	'.$_SESSION['_DIRECCION_SIGA']);
+				$this->ClienteSiga->addHeader('Referer: https://siga.congregacao.org.br/SIS/SIS99908.aspx?f_inicio=S');
+				$this->ClienteSiga->addHeader('X-Requested-With:	XMLHttpRequest');
+				$this->ClienteSiga->addHeader('User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:46.0) Gecko/20100101 Firefox/46.0');
+			  
+			    $respuesta =  $this->ClienteSiga->doPost('SIS/SIS99906.aspx', 
+				    array(
+				        "gravar"=>"S", 
+				        "f_usuario"=>$_SESSION['_USUARIO_SIGA'], 
+				        "f_empresa"=>$this->objParam->getParametro('codigo_siga_region'),  
+				        "f_estabelecimento"=>$this->objParam->getParametro('codigo_siga_co'),  //casa de oracion
+				        "f_competencia"=>$this->objParam->getParametro('codigo_siga_periodo'), //mes de trabajo 
+				        "__jqSubmit__"=>"S"
+				
+				    ),'multipart');
+					
+				///////////////////////////////////	
+				//recorrer datos  que seran migrados
+				//////////////////////////////////////
+				foreach($datos as $key=>$val){
+					//insertar colecta en SIGA	
+					//var_dump($val);
+					//exit;
+									
+					$respuesta =$this->insertarColectaSiga($val);	
+					
+					if (strpos($respuesta, 'Informaciones+guardadas') == false) {
+						throw new Exception("Error insertar colecta... ".$respuesta);
+						exit;
+					}
+					
+					//actulizar datos migrados	
+					$this->actualizarMovMigSiga($val['id_movimiento']);		
+				
+				}
+				
+				
+				//////////////////////////////////////////
+				//Consular colectas registradas en SIGA
+				/////////////////////////////////////////
+				
+				
+				
+				header("HTTP/1.1 200 ok");	
+				echo '{"ROOT":{"error":false,"detalle":{"mensaje":"La transacci\u00f3n se ha ejecutado con \u00e9xito","mensaje_tec":"La transacci\u00f3n se ha ejecutado con \u00e9xito"}}}';
+				exit;
+				
+		    
+		}
+		else{
+			throw new Exception("Error al hacer login. ");
+			
+		}
+		
+	}
+
+	
+
+    private function insertarColectaSiga( $val){
+     		
+     	$this->ClienteSiga->clearHeader();
+		$this->ClienteSiga->addHeader('Accept:  */*');
+		$this->ClienteSiga->addHeader('Connection: keep-alive');
+		$this->ClienteSiga->addHeader('Host:	'.$_SESSION['_DIRECCION_SIGA']);
+		$this->ClienteSiga->addHeader('Referer: https://siga.congregacao.org.br/TES/TES00402.aspx');
+		$this->ClienteSiga->addHeader('X-Requested-With:	XMLHttpRequest');
+		$this->ClienteSiga->addHeader('User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:46.0) Gecko/20100101 Firefox/46.0');
+		
+		
+		
+		$boundary = md5(time());
+		
+		
+		//number_format($val['importe_debe'], 2, '.', ',')
+		if($val["concepto"] == 'colecta_jovenes'){
+			$f_tipoculto = 2;
+		}
+		else{
+			$f_tipoculto = 1;
+		}
+		
+		if($val['desc_orden'] ==''){
+			$f_valor_3667 = $val['monto_especial'];
+			$f_valor_7  = 0;    // brasil
+			$f_valor_8  = 0;     //musica
+			$f_valor_5  = 0;     //reuniones
+		}
+		else{
+			
+			if($val['desc_orden'] =='Colecta Nacional para calamidades'){
+				$f_valor_3667 = 0;
+				$f_valor_7  = 0;    // brasil
+				$f_valor_8  = $val['monto_especial'];     //musica
+				$f_valor_5  = 0;     //reuniones
+			}
+			else{
+				if($val['desc_orden'] =='Reuniones'){
+					$f_valor_3667 = 0;
+					$f_valor_7  = 0;    // brasil
+					$f_valor_8  = 0;     //musica
+					$f_valor_5  = $val['monto_especial'];     //reuniones
+				}	
+				else{
+					if($val['desc_orden'] =='Musica'){
+						$f_valor_3667 = 0;
+						$f_valor_7  = $val['monto_especial'];    // brasil
+						$f_valor_8  = 0;     //musica
+						$f_valor_5  = 0;     //reuniones
+					}
+					else{
+						$f_valor_3667 = $val['monto_especial'];
+						$f_valor_7  = 0;    // brasil
+						$f_valor_8  = 0;     //musica
+						$f_valor_5  = 0; 
+					}
+				}
+			}
+		}
+		
+		  
+		$this->ClienteSiga->clearRetval();
+		$this->ClienteSiga->addParamMultipart($boundary,"f_codigo",""); 
+		$this->ClienteSiga->addParamMultipart($boundary,"tarefa",""); 
+		$this->ClienteSiga->addParamMultipart($boundary,"gravar","S");  
+		$this->ClienteSiga->addParamMultipart($boundary,"f_data",date_format(new DateTime($val["fecha"]), 'd/m/Y'));  
+		$this->ClienteSiga->addParamMultipart($boundary,"f_tipoculto",$f_tipoculto);   
+		$this->ClienteSiga->addParamMultipart($boundary,"f_valortotal",number_format($val['monto_dia'], 2,",",""));   //casa de oracion
+		$this->ClienteSiga->addParamMultipart($boundary,"f_tipos",1); //mes de trabajo
+		$this->ClienteSiga->addParamMultipart($boundary,"f_valor_1",number_format($val['monto_construccion'], 2,",",""));  //construccion
+		$this->ClienteSiga->addParamMultipart($boundary,"f_tipos",2);
+		$this->ClienteSiga->addParamMultipart($boundary,"f_valor_2",number_format($val['monto_piedad'], 2,",",""));  //piedad
+		$this->ClienteSiga->addParamMultipart($boundary,"f_tipos",3); 
+		$this->ClienteSiga->addParamMultipart($boundary,"f_valor_3",number_format($val['monto_viaje'], 2,",",""));   //viage
+		$this->ClienteSiga->addParamMultipart($boundary,"f_tipos",4); 
+		$this->ClienteSiga->addParamMultipart($boundary,"f_valor_4",number_format($val['monto_mantenimiento'], 2,",",""));   //mantenimiento
+		$this->ClienteSiga->addParamMultipart($boundary,"f_tipos",5); 
+		$this->ClienteSiga->addParamMultipart($boundary,"f_valor_5",number_format($f_valor_5, 2,",","")); //reuniones
+		$this->ClienteSiga->addParamMultipart($boundary,"f_tipos",8); 
+		$this->ClienteSiga->addParamMultipart($boundary,"f_valor_8",number_format($f_valor_8, 2,",","")); //musica
+		$this->ClienteSiga->addParamMultipart($boundary,"f_tipos",7); 
+		$this->ClienteSiga->addParamMultipart($boundary,"f_valor_7",number_format($f_valor_7, 2,",",""));  //brasil
+		$this->ClienteSiga->addParamMultipart($boundary,"f_tipos",3667); 
+		$this->ClienteSiga->addParamMultipart($boundary,"f_valor_3667",number_format($f_valor_3667, 2,",","")); //especial
+		$this->ClienteSiga->addParamMultipart($boundary,"f_restante",number_format(0.00, 2,",","")); 
+		$this->ClienteSiga->addParamMultipart($boundary,"f_comando","F"); 
+		$this->ClienteSiga->addParamMultipart($boundary,"__initPage__","S"); 
+		$this->ClienteSiga->addParamMultipart($boundary,"__jqSubmit__","S"); 
+		
+		  
+		
+		return  $this->ClienteSiga->doPostMultipart('TES/TES00402.aspx', $boundary);
+		 
+     }
 	
 		
 	
