@@ -6,7 +6,6 @@
 *@date 16-03-2013 00:22:36
 *@description Archivo con la interfaz de usuario que permite la ejecucion de todas las funcionalidades del sistema
 */
-
 header("content-type: text/javascript; charset=UTF-8");
 ?>
 <script>
@@ -1385,7 +1384,7 @@ Phx.vista.MovimientoEgreso=Ext.extend(Phx.gridInterfaz,{
 		    }
 		    
 		   	
-		   	console.log('valor ..', cmb.getValue())
+		  
 		   	  if(cmb.getValue() == 'operacion'){
 		   	  	this.mostrarComponente(this.Cmp.id_concepto_ingas)
 		   	  	this.Cmp.id_concepto_ingas.allowBlank = false;
@@ -1467,6 +1466,42 @@ Phx.vista.MovimientoEgreso=Ext.extend(Phx.gridInterfaz,{
                 };
 
             },this);
+            
+            this.Cmp.nro_autorizacion.on('select', function(cmb,rec,i){
+                this.Cmp.nit.setValue(rec.data.nit);
+                this.Cmp.razon_social.setValue(rec.data.razon_social);
+            } ,this);
+            
+             this.Cmp.nro_autorizacion.on('change', function(cmb,newval,oldval){
+                var rec = cmb.getStore().getById(newval)
+                if(!rec){
+                    //si el combo no tiene resultado
+                    if(cmb.lastQuery){
+                        //y se tiene una consulta anterior( cuando editemos no abra cnsulta anterior)
+                        this.Cmp.nit.reset();
+                        this.Cmp.razon_social.reset();
+                    }
+                }
+
+            } ,this);
+            
+            this.Cmp.nit.on('select', function(cmb,rec,i){
+                this.Cmp.razon_social.setValue(rec.data.razon_social);
+            } ,this);
+            
+             this.Cmp.nit.on('change', function(cmb,newval,oldval){
+                var rec = cmb.getStore().getById(newval);
+                if(!rec){
+                    //si el combo no tiene resultado
+                    if(cmb.lastQuery){
+                        //y se tiene una consulta anterior( cuando editemos no abra cnsulta anterior)
+                        this.Cmp.razon_social.reset();
+                    }
+                }
+
+            } ,this);
+            
+            
             
            this.Cmp.tipo_documento.on('select',function(cmp){
                

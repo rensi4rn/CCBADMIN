@@ -971,6 +971,10 @@ BEGIN
 			delete from ccb.tmovimiento
             where id_movimiento=v_parametros.id_movimiento;
             
+            --RAC 28/10/2017
+            --si tiene  documento en libro de compras se elimina ....
+            delete from conta.tdoc_compra_venta dcv
+            where dcv.tabla_origen = 'ccb.tmovimiento' and dcv.id_origen = v_parametros.id_movimiento;
             
                
             --Definicion de la respuesta
