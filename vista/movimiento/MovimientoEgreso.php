@@ -32,18 +32,16 @@ Phx.vista.MovimientoEgreso=Ext.extend(Phx.gridInterfaz,{
 		
 		this.cmbTipo.on('select',function(cm,dat,num){
 		    if(dat.data.field1=='ingreso'){
-		      this.getComponente('concepto').store.loadData(this.dataIngreso)
+		       this.getComponente('concepto').store.loadData(this.dataIngreso)
 		    }
 		    else{
-		        
-		        this.getComponente('concepto').store.loadData(this.dataEgreso)
+		       this.getComponente('concepto').store.loadData(this.dataEgreso)
 		    }
 		    
 		   if(this.validarFiltros()){
 		          this.capturaFiltros();
 		   }
 		},this);
-		
 		
 		
 		this.cmbCasaOracion.on('select',function(cm,dat,num){
@@ -592,7 +590,7 @@ Phx.vista.MovimientoEgreso=Ext.extend(Phx.gridInterfaz,{
 				name: 'obs',
 				qtip: 'observaciones de la transacción , por EJM. que estamos  comprando ',
 				fieldLabel: 'obs',
-				allowBlank: true,
+				allowBlank: false,
 				anchor: '80%',
 				gwidth: 230,
 				maxLength:500
@@ -955,6 +953,8 @@ Phx.vista.MovimientoEgreso=Ext.extend(Phx.gridInterfaz,{
               this.Cmp.monto_doc.disable();
          }
          
+         this.resetPanel();
+         
         
     },
     onButtonEdit:function(){
@@ -1133,7 +1133,7 @@ Phx.vista.MovimientoEgreso=Ext.extend(Phx.gridInterfaz,{
         }
      },
      
-     resetPanel(){
+     resetPanel:function(){
      	this.panelResumen.update("");
      	
      },
@@ -1193,7 +1193,7 @@ Phx.vista.MovimientoEgreso=Ext.extend(Phx.gridInterfaz,{
 		//Eventos
 		
 		this.Cmp.concepto.on('select', 
-		   function(cmb){
+		   function(cmb, dat){
 		   	
 		   	
 		   	this.Cmp.tipo_documento.reset();
