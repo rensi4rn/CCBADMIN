@@ -129,7 +129,7 @@ Phx.vista.RegionEvento=Ext.extend(Phx.gridInterfaz,{
 					fields: ['id_region','nombre'],
 					// turn on remote sorting
 					remoteSort: true,
-					baseParams:{par_filtro:'nombre'}
+					baseParams:{par_filtro:'regi.nombre'}
 				}),
 				valueField: 'id_region',
 				displayField: 'nombre',
