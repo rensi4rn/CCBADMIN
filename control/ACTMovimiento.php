@@ -216,10 +216,10 @@ class ACTMovimiento extends ACTbase{
 		 if($this->objParam->getParametro('id_gestion')!=''){
                 $this->objParam->addFiltro("mov.id_gestion = ".$this->objParam->getParametro('id_gestion'));   
          }
-		 
+		 /*
 		 if($this->objParam->getParametro('id_region')!=''){
                 $this->objParam->addFiltro("mov.id_region = ".$this->objParam->getParametro('id_region'));   
-         }
+         }*/
 		 
 		 if($this->objParam->getParametro('fecha')!=''){
                 $this->objParam->addFiltro("''".$this->objParam->getParametro('fecha')."''::Date BETWEEN mov.fecha_ini::Date and mov.fecha_fin::Date");   
