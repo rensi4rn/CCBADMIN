@@ -123,6 +123,32 @@ Phx.vista.Evento=Ext.extend(Phx.gridInterfaz,{
 			grid:true,
 			form:true
 		},
+		{
+			config:{
+				name: 'color',
+				fieldLabel: 'Color',
+				qtip: 'Color apra reportes',
+				allowBlank: false,
+				anchor: '40%',
+				gwidth: 50,				
+				emptyText:'si/no...',       			
+       			typeAhead: true,
+       		    triggerAction: 'all',
+       		    lazyRender:true,
+       		    mode: 'local',
+       		    valueField: 'inicio',       		    
+       		    store:['defecto','rojo','azul','verde']
+			},
+			type:'ComboBox',
+			id_grupo:1,
+			filters:{	
+	       		         type: 'list',
+	       				 pfiltro:'tipes.inicio',
+	       				 options: ['defecto','rojo','azul','verde'],	
+	       		 	},
+			grid:true,
+			form:true
+		},
 		
 		
 		{
@@ -217,7 +243,7 @@ Phx.vista.Evento=Ext.extend(Phx.gridInterfaz,{
 		{name:'fecha_mod', type: 'date', dateFormat:'Y-m-d H:i:s.u'},
 		{name:'id_usuario_mod', type: 'numeric'},
 		{name:'usr_reg', type: 'string'},
-		{name:'usr_mod', type: 'string'},'codigo','prioridad','nacional'
+		{name:'usr_mod', type: 'string'},'codigo','prioridad','nacional','color'
 		
 	],
 	sortInfo:{

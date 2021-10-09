@@ -484,7 +484,7 @@ Phx.vista.RegionEvento=Ext.extend(Phx.gridInterfaz,{
 		}
 	],
 	
-	title:'Eventos por Región',
+	title:'Eventos',
 	ActSave:'../../sis_admin/control/RegionEvento/insertarRegionEvento',
 	ActDel:'../../sis_admin/control/RegionEvento/eliminarRegionEvento',
 	ActList:'../../sis_admin/control/RegionEvento/listarRegionEvento',

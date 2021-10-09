@@ -44,6 +44,9 @@ class MODObrero extends MODbase{
 		$this->captura('telefono2','varchar');
 		$this->captura('celular1','varchar');
 		$this->captura('correo','varchar');
+		$this->captura('desc_lugar','varchar');
+		
+		
 		
 		
 		//Ejecuta la instruccion
@@ -225,6 +228,7 @@ class MODObrero extends MODbase{
 		
 		//Ejecuta la instruccion
 		$this->armarConsulta();
+		//echo $this->getConsulta();exit;
 		$this->ejecutarConsulta();
 		
 		//Devuelve la respuesta

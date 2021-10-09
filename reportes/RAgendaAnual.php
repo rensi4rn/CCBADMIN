@@ -125,6 +125,22 @@ class RAgendaAnual extends  ReportePDF {
 		 
 	}
 	
+	function setColorDesc($color){
+          if ($color == 'azul') {
+			  $this->SetTextColor(0, 0, 255);			 
+		  }
+		  elseif ($color == 'rojo') {
+			  $this->SetTextColor(255, 0, 0);
+		  }
+		   elseif ($color == 'verde') {
+			   $this->SetTextColor(0, 255, 0);
+		  }
+		  else{
+		   	 $this->SetTextColor(0, 0, 0, 100);
+		  }
+	}
+	
+		
 	function setCuerpoCasaOracionDet($val){
 		
 		        $conf_par_tablewidths=array(60,20,20,20,20,20,20,20);
@@ -162,9 +178,16 @@ class RAgendaAnual extends  ReportePDF {
 					 }
 				 }
 				 
+				 if ($val['lugar'] == $val['casa_oracion']){
+				 	 $nombre = $val['casa_oracion'];
+				 }
+				 else{				 	
+					 $nombre = $val['lugar'] .'-'.$val['casa_oracion'];
+				 }
+				
 				 
 			   
-			    $RowArray = array('casa_oracion'  =>  $val['casa_oracion'],
+			    $RowArray = array('casa_oracion'  =>  $nombre,
 								   'Domingo'  =>  $dias['Domingo'],
 								   'Lunes'  =>  $dias['Lunes'],
 								   'Martes'  =>  $dias['Martes'],
@@ -236,6 +259,22 @@ class RAgendaAnual extends  ReportePDF {
 			   $this->ln();
 	}
 	
+	function setColorAgendaDet($color){
+          if ($color == 'azul') {
+			  $this->tabletextcolor=array(array(0,0,255),array(0,0,255),array(0,0,255),array(0,0,255));		 
+		  }
+		  elseif ($color == 'rojo') {
+			  $this->SetTextColor(255, 0, 0);
+			  $this->tabletextcolor=array(array(255,0,0),array(255,0,0),array(255,0,0),array(255,0,0));
+		  }
+		   elseif ($color == 'verde') {
+			  $this->tabletextcolor=array(array(0,255,0),array(0,255,0),array(0,255,0),array(0,255,0));
+		  }
+		  else{
+		   	 $this->tabletextcolor=array();
+		  }
+	}
+	
 	
 	
 	function setCuerpoAgendaDet($val){
@@ -244,23 +283,28 @@ class RAgendaAnual extends  ReportePDF {
 		        $conf_par_tablealigns=array('C','C','C','L');
 		        $conf_par_tablenumbers=array(0,0,0,0);
 		        $conf_tableborders=array('LTR','LTR','LTR','LTR');
-		        $conf_tabletextcolor=array();
+		        
 				$this->tablewidths=$conf_par_tablewidths;
 	            $this->tablealigns=$conf_par_tablealigns;
 	            $this->tablenumbers=$conf_par_tablenumbers;
 	            $this->tableborders=$conf_tableborders;
-	            $this->tabletextcolor=$conf_tabletextcolor;
+				
+				$this->setColorAgendaDet($val['color']);
+				
+				
 		        
 				$evento = $val['desc_evento'];
 			    if ($val['desc_evento'] != ''){
-			    	$evento = $val['desc_evento'].' en  '.$val['desc_casa_oracion'].'  ('.$val['desc_region'].')';
+			    	$evento = $val['desc_evento'].' en  '.$val['desc_lugar'].' -  '.$val['desc_casa_oracion'].'';
 			    }
 			   
 			    $RowArray = array('num_dia'  =>  $val['num_dia'],
 								   'dia'  =>   $this->getDia2($val['dia_sem']),
 								   'hora'  =>  $val['hora'],
 								   'servicio'  =>  $evento);
-								    
+								   
+								   
+				 $conf_tabletextcolor=array();				    
 			   	 $this-> MultiRow($RowArray,false,0);
 				
 			   
@@ -275,7 +319,7 @@ class RAgendaAnual extends  ReportePDF {
 		$this->AddPage();
 		
 		//configuracion de la tabla
-		$this->SetFont('','',9);
+		$this->SetFont('','',8);
 		$sw_titulo = 1;
 		$anterior = '';
 		
@@ -331,7 +375,14 @@ class RAgendaAnual extends  ReportePDF {
 		        
 				$evento = $val['desc_evento'];
 			    if ($val['casa_oracion'] != ''){
-			    	$comun = $val['casa_oracion'].' en  '.$val['region'];
+			    	
+					if ($val['desc_lugar'] != ''){
+						$comun = $val['desc_lugar'].' -  '.$val['casa_oracion'];
+					}
+					else{
+						$comun = $val['region'].'  -  '.$val['casa_oracion'];
+					}
+			    	
 			    }
 				
 				$tel = '';
@@ -394,8 +445,8 @@ class RAgendaAnual extends  ReportePDF {
 			   $this->Cell(30,3.5,'FECHA','LTR',0,'C');
 			   $this->Cell(25,3.5,'HORA','LTR',0,'C');
 			   $this->Cell(70,3.5,'LOCALIDAD','LTR',0,'C');
-			   $this->Cell(25,3.5,'HMNOS','LTR',0,'C');
-			   $this->Cell(25,3.5,'HMNAS','LTR',0,'C');
+			   $this->Cell(25,3.5,'HNOS','LTR',0,'C');
+			   $this->Cell(25,3.5,'HNAS','LTR',0,'C');
 			   $this->Cell(25,3.5,'TOTAL','LTR',0,'C');
 			   $this->ln();
 			   

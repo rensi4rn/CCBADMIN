@@ -71,7 +71,8 @@ BEGIN
                         per.telefono1,
                         per.telefono2,
                         per.celular1,
-                        per.correo
+                        per.correo,
+                        lug.nombre AS desc_lugar
                         from ccb.tobrero obr
                         inner join ccb.ttipo_ministerio tipmi on tipmi.id_tipo_ministerio = obr.id_tipo_ministerio
                         inner join ccb.tregion reg on reg.id_region = obr.id_region
@@ -79,6 +80,7 @@ BEGIN
 						inner join segu.tusuario usu1 on usu1.id_usuario = obr.id_usuario_reg
 						left join segu.tusuario usu2 on usu2.id_usuario = obr.id_usuario_mod
                         left join ccb.tcasa_oracion co on co.id_casa_oracion =  obr.id_casa_oracion
+                        left join param.tlugar lug ON lug.id_lugar = co.id_lugar
 				        where  ';
 			
 			--Definicion de la respuesta

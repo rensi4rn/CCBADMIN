@@ -12,7 +12,7 @@ header("content-type: text/javascript; charset=UTF-8");
 Phx.vista.RegionEventoDet = {
     require: '../../../sis_admin/vista/region_evento/RegionEvento.php',
     requireclase: 'Phx.vista.RegionEvento',
-    title: 'Detalle de Eventos',
+    title: 'Detalle',
     nombreVista: 'RegionEventoDet',
     
     constructor: function(config) {

@@ -87,12 +87,10 @@ class MODMovimiento extends MODbase{
 		$this->captura('id_tipo_movimiento_viaje','int4');
 		$this->captura('id_movimiento_det_viaje','int4');
 		$this->captura('monto_viaje','numeric');
-		$this->captura('monto_dia','numeric');
-		
+		$this->captura('monto_dia','numeric');		
 		$this->captura('id_obrero','int4');
 		$this->captura('desc_obrero','text');
-		$this->captura('estado','varchar');
-		
+		$this->captura('estado','varchar');		
 		$this->captura('desc_casa_oracion','varchar');
 		$this->captura('mes','varchar');
 		$this->captura('estado_periodo','varchar');
@@ -103,6 +101,7 @@ class MODMovimiento extends MODbase{
 		$this->captura('id_tipo_movimiento_ot','integer');
 		$this->captura('nombre_tipo_mov_ot','varchar');
 		$this->captura('migrado','varchar');
+		$this->captura('desc_region','varchar');
 		
 		
 				

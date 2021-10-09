@@ -268,9 +268,13 @@ class ACTRegionEvento extends ACTbase{
 			$reporte->setDatosAgenda($dataSource);
 			$reporte->generarAgendaAnual();
 			
-			$dataSource = $this->recuperarDatosAgendaTelefonica();
-			$reporte->setDatosAgendaTelefonica($dataSource);
-			$reporte->generarAgendaTelefonica();
+			if($this->objParam->getParametro('desde') == 'show_agenda'){
+				$dataSource = $this->recuperarDatosAgendaTelefonica();
+			    $reporte->setDatosAgendaTelefonica($dataSource);
+			    $reporte->generarAgendaTelefonica();
+			}
+			
+			
 			
 			
 			$reporte->AddPage();

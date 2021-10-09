@@ -59,7 +59,8 @@ BEGIN
                           usu2.cuenta as usr_mod	,
                           even.codigo,
                           even.prioridad,
-                          even.nacional
+                          even.nacional,
+                          even.color
 						from ccb.tevento even
 						inner join segu.tusuario usu1 on usu1.id_usuario = even.id_usuario_reg
 						left join segu.tusuario usu2 on usu2.id_usuario = even.id_usuario_mod

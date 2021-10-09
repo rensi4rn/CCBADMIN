@@ -544,7 +544,8 @@ BEGIN
                           (extract(dow from  rege.fecha_programada))::varchar as num_dia,
                           reg.obs as obs_region,
                           COALESCE(rege.obs,'''') as obs,
-                          rege.obs2
+                          rege.obs2,
+                          eve.color
                           from ccb.tregion_evento rege
                           inner join ccb.tgestion ges on ges.id_gestion = rege.id_gestion
                           inner join ccb.tregion reg on reg.id_region = rege.id_region
@@ -643,9 +644,10 @@ BEGIN
                                  re.id_evento,
                                  re.id_region,
                                  re.id_casa_oracion,
-                                 d.dia::Date
+                                 d.dia::Date,
+                                 re.color
                           FROM ccb.vdias d
-                               LEFT JOIN ccb.vregion_evento re 
+                               LEFT JOIN ccb.vregion_evento_color re 
                                
                                ON re.fecha_programada = d.dia and '||v_filtro||' 0=0 
                            WHERE  (dia  BETWEEN  '''||v_parametros.desde::varchar||'''::date and '''||v_parametros.hasta::varchar||'''::date) 

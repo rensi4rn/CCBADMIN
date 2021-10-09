@@ -9,31 +9,18 @@
 header("content-type: text/javascript; charset=UTF-8");
 ?>
 <script>
-Phx.vista.MovimientoIngreso=Ext.extend(Phx.gridInterfaz,{
+Phx.vista.MovimientoIngresoGeneral=Ext.extend(Phx.gridInterfaz,{
 
 	constructor: function(config){
 	   
 		this.maestro=config.maestro;
-		this.initButtons=[this.cmbTipo,this.cmbCasaOracion,this.cmbGestion,this.cmbEstadoPeriodo];
+		this.initButtons=[this.cmbTipo,this.cmbGestion];
     	//llama al constructor de la clase padre
-		Phx.vista.MovimientoIngreso.superclass.constructor.call(this,config);
-		
-		this.getComponente('concepto').store.loadData(this.dataIngreso);
-		this.cmbEstadoPeriodo.disable();
-		this.cmbGestion.disable();
+		Phx.vista.MovimientoIngresoGeneral.superclass.constructor.call(this,config);
+		//this.cmbGestion.disable();
 	
 		this.init();
 		//this.load({params:{start:0, limit:0}})
-		
-		
-		this.addButton('btnMigrar', {
-				text : 'Migrar SIGA',
-				iconCls : 'balert',
-				disabled : false,
-				handler : this.migrarValidaSIGA,
-				tooltip : 'Migrar las coelctas pendientes al sistema SIGA'
-		});
-		
 		
 		
 		this.cmbTipo.on('select',function(cm,dat,num){
@@ -41,50 +28,22 @@ Phx.vista.MovimientoIngreso=Ext.extend(Phx.gridInterfaz,{
 		      this.getComponente('concepto').store.loadData(this.dataIngreso)
 		    }
 		    else{
-		        
 		        this.getComponente('concepto').store.loadData(this.dataEgreso)
 		    }
 		    
 		   if(this.validarFiltros()){
 		          this.capturaFiltros();
 		   }
-		    
-		    
-		    
 		},this);
-		
-		this.cmbCasaOracion.on('select',function(cm,dat,num){
-		    this.cmbGestion.enable();
-		    this.cmbEstadoPeriodo.reset();
-		    this.store.removeAll();
-		    this.cmbEstadoPeriodo.store.baseParams.id_casa_oracion=cm.getValue();
-		    this.cmbEstadoPeriodo.modificado=true;
-		    
-		},this);
-		
 		
 		this.cmbGestion.on('select',function(cm,dat,num){
-		   this.cmbEstadoPeriodo.reset();
-		   this.store.removeAll();
-		   this.cmbEstadoPeriodo.store.baseParams.id_gestion=cm.getValue();
-		   this.cmbEstadoPeriodo.store.baseParams.id_casa_oracion=this.cmbCasaOracion.getValue();
-		   this.cmbEstadoPeriodo.modificado=true;
-		   this.cmbEstadoPeriodo.enable() 
+		   this.capturaFiltros();		   
 		},this);
-		
-		this.cmbEstadoPeriodo.on('select',function(cm,dat,num){
-           this.capturaFiltros();
-           this.fecha_min = dat.data.fecha_ini;
-           this.fecha_max = dat.data.fecha_fin;
-           this.getComponente('fecha').setMinValue(this.fecha_min);
-           this.getComponente('fecha').setMaxValue(this.fecha_max);
-         },this);
-         
-         this.iniciarEventos();
+        this.iniciarEventos();
 		
 	},
 	validarFiltros:function(){
-	    if(this.cmbEstadoPeriodo.isValid()&& this.cmbCasaOracion.isValid()&& this.cmbGestion.isValid() && this.cmbTipo.isValid() ){
+	    if( this.cmbGestion.isValid() && this.cmbTipo.isValid() ){
 	        return true;
 	    }
 	    else{
@@ -95,11 +54,9 @@ Phx.vista.MovimientoIngreso=Ext.extend(Phx.gridInterfaz,{
 	
 	 capturaFiltros:function(combo, record, index){
 	    this.store.baseParams.tipo=this.cmbTipo.getValue();
-	    this.store.baseParams.id_casa_oracion=this.cmbCasaOracion.getValue();
-        this.store.baseParams.id_estado_periodo=this.cmbEstadoPeriodo.getValue();
+        this.store.baseParams.id_gestion=this.cmbGestion.getValue();
         this.store.load({params:{start:0, limit:this.tam_pag}}); 
             
-        
     },
     onButtonAct:function(){
         if(!this.validarFiltros()){
@@ -107,81 +64,12 @@ Phx.vista.MovimientoIngreso=Ext.extend(Phx.gridInterfaz,{
          }
         else{
             this.store.baseParams.tipo=this.cmbTipo.getValue();
-            this.store.baseParams.id_casa_oracion=this.cmbCasaOracion.getValue();
-            this.store.baseParams.id_estado_periodo=this.cmbEstadoPeriodo.getValue();
-            Phx.vista.MovimientoIngreso.superclass.onButtonAct.call(this);
+            this.store.baseParams.id_gestion=this.cmbGestion.getValue();
+            Phx.vista.MovimientoIngresoGeneral.superclass.onButtonAct.call(this);
         }
     },
     
-    iniciarEventos:function(){
-		
-		//Eventos
-		
-		this.Cmp.id_ot.on('change', 
-		   function(cmb){
-		   	  if(cmb.getValue()){
-		   	  	this.mostrarComponente(this.Cmp.id_tipo_movimiento_ot)
-		   	  	this.Cmp.id_tipo_movimiento_ot.allowBlank = false;
-		   	  }
-		   	  else{
-		   	  	this.ocultarComponente(this.Cmp.id_tipo_movimiento_ot)
-		   	  	this.Cmp.id_tipo_movimiento_ot.allowBlank = true;
-		   	  	this.Cmp.id_tipo_movimiento_ot.reset();
-		   	  }
-		   	
-		   },this);	
-		
-		
-		
-	},
-    
-    onButtonNew:function(){
-        
-        
-         if(!this.validarFiltros()){
-             alert('Especifique los filtros antes');
-        }
-         else{
-              Phx.vista.MovimientoIngreso.superclass.onButtonNew.call(this);
-              this.getComponente('fecha').setMinValue(this.fecha_min);
-              this.getComponente('fecha').setMaxValue(this.fecha_max);
-              this.ocultarComponente(this.Cmp.id_tipo_movimiento_ot)
-         }
-        
-    },
-    onButtonEdit:function(){
-        
-       
-         if(!this.validarFiltros()){
-             alert('Especifique los filtros antes');
-        }
-         else{
-              Phx.vista.MovimientoIngreso.superclass.onButtonEdit.call(this);
-              if(this.Cmp.id_ot.getValue()){
-		   	  	this.mostrarComponente(this.Cmp.id_tipo_movimiento_ot)
-		   	  	this.Cmp.id_tipo_movimiento_ot.allowBlank = false;
-		   	  }
-		   	  else{
-		   	  	 this.ocultarComponente(this.Cmp.id_tipo_movimiento_ot)
-		   	  	 this.Cmp.id_tipo_movimiento_ot.allowBlank = true;
-		   	  	 this.Cmp.id_tipo_movimiento_ot.reset();
-		   	  }
-		   	
-		   
-         }
-        
-    },
-    
-     loadValoresIniciales:function()
-    {
-        Phx.vista.MovimientoIngreso.superclass.loadValoresIniciales.call(this);
-        this.getComponente('tipo').setValue(this.cmbTipo.getValue());
-        this.getComponente('id_casa_oracion').setValue(this.cmbCasaOracion.getValue());  
-        this.getComponente('id_estado_periodo').setValue(this.cmbEstadoPeriodo.getValue());   
-        
-    },
-    
-    
+ 
 	cmbTipo: new Ext.form.ComboBox({
                     name: 'tipo',
                     fieldLabel: 'Tipo',
@@ -199,41 +87,7 @@ Phx.vista.MovimientoIngreso=Ext.extend(Phx.gridInterfaz,{
                     disabled: true,
                 }),
                 
-	cmbCasaOracion:new Ext.form.ComboBox({
-                fieldLabel: 'Casa de Oración',
-                allowBlank: false,
-                forceSelection : true,
-                emptyText:'Casa...',
-                store:new Ext.data.JsonStore(
-                {
-                    url: '../../sis_admin/control/CasaOracion/listarCasaOracion',
-                    id: 'id_casa_oracion',
-                    root: 'datos',
-                    sortInfo:{
-                        field: 'nombre',
-                        direction: 'ASC'
-                    },
-                    totalProperty: 'total',
-                    fields: ['id_casa_oracion','codigo','nombre','desc_lugar','desc_region'],
-                    // turn on remote sorting
-                    remoteSort: true,     
-                    baseParams:{par_filtro:'caor.nombre#reg.nombre#reg.nombre'}
-                
-               
-                }),
-                valueField: 'id_casa_oracion',
-                displayField: 'nombre',
-                hiddenName: 'id_casa_oracion',
-                tpl:'<tpl for="."><div class="x-combo-list-item"><p>{nombre}</p><p>{desc_lugar} - {desc_region}</p> </div></tpl>',
-				triggerAction: 'all',
-                mode:'remote',
-                pageSize:50,
-                queryDelay:500,
-                listWidth:'280',
-                width:210,
-                minChars:2
-                }),
-                
+	
      cmbGestion:new Ext.form.ComboBox({
                 fieldLabel: 'Gestion',
                 allowBlank: false,
@@ -265,36 +119,7 @@ Phx.vista.MovimientoIngreso=Ext.extend(Phx.gridInterfaz,{
                 width:80
             }),
             
-     cmbEstadoPeriodo:new Ext.form.ComboBox({
-                fieldLabel: 'Periodo',
-                allowBlank: false,
-                forceSelection : true,
-                emptyText:'Periodo...',
-                store:new Ext.data.JsonStore(
-                {
-                    url: '../../sis_admin/control/EstadoPeriodo/listarEstadoPeriodo',
-                    id: 'id_estado_periodo',
-                    root: 'datos',
-                    sortInfo:{
-                        field: 'num_mes',
-                        direction: 'ASC'
-                    },
-                    totalProperty: 'total',
-                    fields: ['id_estado_periodo','id_gestion','mes','num_mes','fecha_ini','fecha_fin'],
-                    // turn on remote sorting
-                    remoteSort: true,
-                    baseParams:{par_filtro:'mes'}
-                }),
-                valueField: 'id_estado_periodo',
-                triggerAction: 'all',
-                displayField: 'mes',
-                hiddenName: 'id_estado_periodo',
-                mode:'remote',
-                pageSize:50,
-                queryDelay:500,
-                listWidth:'280',
-                width:80
-            }),      
+        
 			
 	Atributos:[
 		{
@@ -305,7 +130,7 @@ Phx.vista.MovimientoIngreso=Ext.extend(Phx.gridInterfaz,{
 					name: 'id_movimiento'
 			},
 			type:'Field',
-			form:true 
+			form:false 
 		},
 		{
 			config:{
@@ -314,7 +139,7 @@ Phx.vista.MovimientoIngreso=Ext.extend(Phx.gridInterfaz,{
 				fieldLabel: 'tipo'
 			},
 			type:'Field',
-			form:true
+			form:false
 		},
 		{
 			config:{
@@ -323,7 +148,7 @@ Phx.vista.MovimientoIngreso=Ext.extend(Phx.gridInterfaz,{
 				fieldLabel: 'id_casa_oracion'
 			},
 			type:'Field',
-			form:true
+			form:false
 		},
         {
             config:{
@@ -333,8 +158,58 @@ Phx.vista.MovimientoIngreso=Ext.extend(Phx.gridInterfaz,{
                 allowBlank: false
             },
             type:'Field',
-            form:true
+            form:false
         },
+         {
+			config:{
+				name: 'mes',
+				fieldLabel: 'Mes',
+				allowBlank: false,
+				anchor: '80%',
+				gwidth: 80,
+				maxLength:500
+			},
+			type:'TextArea',
+			filters:{pfiltro:'mov.mes',type:'string'},
+			bottom_filter: true,
+			id_grupo:0,
+			grid:true,
+			form:false
+		},
+        {
+			config:{
+				name: 'desc_region',
+				fieldLabel: 'Region',
+				allowBlank: false,
+				anchor: '80%',
+				gwidth: 120,
+				maxLength:500
+			},
+			type:'TextArea',
+			filters:{pfiltro:'mov.desc_region',type:'string'},
+			bottom_filter: true,
+			id_grupo:0,
+			grid:true,
+			form:false
+		},
+		{
+			config:{
+				name: 'desc_casa_oracion',
+				fieldLabel: 'Casa',
+				allowBlank: false,
+				anchor: '80%',
+				gwidth: 230,
+				maxLength:500
+			},
+			type:'TextArea',
+			filters:{pfiltro:'mov.desc_casa_oracion',type:'string'},
+			bottom_filter: true,
+			id_grupo:0,
+			grid:true,
+			form:false
+		},
+        
+        
         {
                 config:{
                     name:'concepto',
@@ -387,7 +262,7 @@ Phx.vista.MovimientoIngreso=Ext.extend(Phx.gridInterfaz,{
                          pfiltro:'mov.concepto' 
                     },
                 grid:true,
-                form:true
+                form:false
         },
         {
             config:{
@@ -481,7 +356,7 @@ Phx.vista.MovimientoIngreso=Ext.extend(Phx.gridInterfaz,{
 				allowBlank: true,
 				anchor: '80%',
 				gwidth: 100,
-				//minValue :0,
+				minValue :0,
 				maxLength:1245186,
 				renderer:function (value, p, record){
                             if(record.data.tipo_reg=='summary'){
@@ -527,7 +402,7 @@ Phx.vista.MovimientoIngreso=Ext.extend(Phx.gridInterfaz,{
 				allowBlank: true,
 				anchor: '80%',
 				gwidth: 100,
-		//		minValue :0,
+				minValue :0,
 				maxLength:1245186,
 				renderer:function (value, p, record){
                             if(record.data.tipo_reg=='summary'){
@@ -573,7 +448,7 @@ Phx.vista.MovimientoIngreso=Ext.extend(Phx.gridInterfaz,{
 				allowBlank: true,
 				anchor: '80%',
 				gwidth: 100,
-		//		minValue :0,
+				minValue :0,
 				maxLength:1245186,
 				renderer:function (value, p, record){
                             if(record.data.tipo_reg=='summary'){
@@ -609,7 +484,7 @@ Phx.vista.MovimientoIngreso=Ext.extend(Phx.gridInterfaz,{
 				allowBlank: true,
 				anchor: '80%',
 				gwidth: 100,
-		//		minValue :0,
+				minValue :0,
 				maxLength:1245186,
 				renderer:function (value, p, record){
                             if(record.data.tipo_reg=='summary'){
@@ -647,7 +522,7 @@ Phx.vista.MovimientoIngreso=Ext.extend(Phx.gridInterfaz,{
 				allowBlank: true,
 				anchor: '80%',
 				gwidth: 100,
-		//		minValue :0,
+				minValue :0,
 				maxLength:1245186,
 				renderer:function (value, p, record){
                             if(record.data.tipo_reg=='summary'){
@@ -694,7 +569,7 @@ Phx.vista.MovimientoIngreso=Ext.extend(Phx.gridInterfaz,{
 				allowBlank: true,
 				anchor: '80%',
 				gwidth: 100,
-		//		minValue :0,
+				minValue :0,
 				maxLength:1245186,
 				renderer:function (value, p, record){
                             if(record.data.tipo_reg=='summary'){
@@ -935,130 +810,27 @@ Phx.vista.MovimientoIngreso=Ext.extend(Phx.gridInterfaz,{
         'monto_viaje', 'monto_dia','tipo_reg',
         'total_mantenimiento','total_construccion','total_viaje','total_especial','total_dia','total_piedad',
         'id_obrero',
-	    'desc_obrero',
+	    'desc_obrero','desc_casa_oracion','desc_region','mes',
 	    'estado','id_ot','desc_orden','nombre_tipo_mov_ot','id_tipo_movimiento_ot','migrado'
 		
 		
 	],
 	
-	preparaMenu:function(n){
-          var data = this.getSelectedData();
-          var tb =this.tbar;
-          Phx.vista.MovimientoIngreso.superclass.preparaMenu.call(this,n);
-          console.log('data....' ,data)
-          if(data.tipo_reg  == 'summary'){
-                this.getBoton('del').disable();
-                this.getBoton('edit').disable();
-          }
-          
-         return tb 
-     }, 
-     
-    
-     
-    
-	
-	
 	arrayDefaultColumHidden:['fecha_reg','fecha_mod','usr_reg','estado_reg'],
 
-	dataIngreso : [
-                ['colecta_adultos', 'Colecta de Adultos'],
-                ['colecta_jovenes', 'Colecta de Jovenes'],
-                //['reunion_juventud', 'Reunión de Juventud'],
-                //['colecta_especial', 'Colecta Especial'],
-                ['saldo_inicial', 'Saldo Inicial'],
-                //['ingreso_traspaso', 'Ingreso por Traspaso'],
-                //['devolucion', 'Devolución de Saldo']
-        
-        ] ,
-    dataEgreso : [
-                ['operacion', 'Operacion '],
-                ['egreso_traspaso', 'Egreso por Traspaso']
-        
-        ],
-        
-       
-    
-     migrarValidaSIGA: function() {
-     	
-     	
-			 if(this.validarFiltros()){
-			 	
-					  	if(confirm("Esta seguro de migrar las colectas pendientes al sistema SIGA")){
-					 	 if(confirm("¿Esta realmente seguro?")){
-						 	
-						    Phx.CP.loadingShow();
-							Ext.Ajax.request({
-								url : '../../sis_admin/control/Movimiento/validarDatosSiga',
-								params : {
-									id_gestion : this.cmbGestion.getValue(),
-									tipo: this.cmbTipo.getValue(),
-									id_casa_oracion: this.cmbCasaOracion.getValue(),
-									id_estado_periodo: this.cmbEstadoPeriodo.getValue()
-								},
-								success : function(resp) {
-									Phx.CP.loadingHide();
-									var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
-									this.migrarSIGA(reg.ROOT.datos);
-									
-								},
-								failure : this.conexionFailure,
-								timeout : this.timeout,
-								scope : this
-							});
-						}
-					 }
-			 }
-			 else{
-			 	alert('primero seleccione los los filtros');
-			 }
-			 
-			    
-	},
-	
-	migrarSIGA: function(resp){
-		
-		
-		
-			 
-			    Phx.CP.loadingShow();
-				Ext.Ajax.request({
-					url : '../../sis_admin/control/Movimiento/migrarDatosSiga',
-					params : {
-						id_gestion : this.cmbGestion.getValue(),
-						tipo: this.cmbTipo.getValue(),
-						id_casa_oracion: this.cmbCasaOracion.getValue(),
-						id_estado_periodo: this.cmbEstadoPeriodo.getValue(),
-						codigo_siga_co: resp.codigo_siga_co,
-						codigo_siga_periodo: resp.codigo_siga_periodo,
-						codigo_siga_region: resp.codigo_siga_region
-				
-					},
-					success : function(resp) {
-						Phx.CP.loadingHide();
-						var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
-						
-						this.reload();
-						alert(reg.ROOT.detalle.mensaje);
-						
-						
-					},
-					failure : this.conexionFailure,
-					timeout : this.timeout,
-					scope : this
-				});
-			
-	},
 	
 	sortInfo:{
-		field: 'id_movimiento',
+		field: 'fecha',
 		direction: 'ASC'
 	},
 	fheight:500,
     fwidth: 400,
-	bdel:true,
-	bsave:true
+	bdel:false,
+	bnew:false,
+	bedit:false,
+	bsave:false
 	}
 )
 </script>
-			
+		
+		

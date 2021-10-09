@@ -189,7 +189,33 @@ Phx.vista.RepAgendaAnual=Ext.extend(Phx.frmInterfaz,{
 			id_grupo:1,
 			grid:true,
 			form:true 
-		}
+		},        
+        {
+            config:{
+                name: 'show_agenda',
+                fieldLabel: 'Agenda Telefónica',
+                allowBlank: false,
+                qtip: 'Mostrar Agenda Telefónica',
+               
+                emptyText:'Tipo Obligacion',
+                store:new Ext.data.ArrayStore({
+                            fields: ['variable', 'valor'],
+                            data : [  ['si','si'],
+                                      ['no','no']]
+                                    }),
+                valueField: 'variable',
+                value:'si',
+                displayField: 'valor',
+                forceSelection: true,
+                triggerAction: 'all',
+                lazyRender: true,
+                mode: 'local',
+               width:210,
+            },
+            type:'ComboBox',
+            valorInicial:'si',
+            form:true
+        }
 		
 		
 		  

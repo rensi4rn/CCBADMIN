@@ -166,7 +166,8 @@ BEGIN
                             COALESCE(mov.desc_orden,'''') as desc_orden,
                             mov.id_tipo_movimiento_ot,
                             COALESCE(mov.nombre_tipo_mov_ot,'''') as nombre_tipo_mov_ot,
-                            mov.migrado
+                            mov.migrado,
+                            mov.desc_region
                           FROM 
                             ccb.vmovimiento_ingreso mov
                           WHERE ';

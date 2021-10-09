@@ -981,4 +981,22 @@ ALTER TABLE ccb.tmovimiento
     
   
 /***********************************F-SCP-RAC-CCB-2-08/09/2017****************************************/
+
+
+  
+/***********************************I-SCP-RAC-CCB-2-28/01/2018****************************************/
+
+
+
+--------------- SQL ---------------
+
+ALTER TABLE ccb.tevento
+  ADD COLUMN color VARCHAR(20) DEFAULT 'defecto' NOT NULL;
+
+COMMENT ON COLUMN ccb.tevento.color
+IS 'colores posibles apra reportes';
+ 
+/***********************************F-SCP-RAC-CCB-2-28/01/2018****************************************/
+
+ 
  

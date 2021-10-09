@@ -127,15 +127,33 @@ class RAgenda extends  ReportePDF {
 	}
 	
 	
+	function setColorDesc($color){
+          if ($color == 'azul') {
+			  $this->SetTextColor(0, 0, 255);			 
+		  }
+		  elseif ($color == 'rojo') {
+			  $this->SetTextColor(255, 0, 0);
+		  }
+		   elseif ($color == 'verde') {
+			   $this->SetTextColor(0, 255, 0);
+		  }
+		  else{
+		   	 $this->SetTextColor(0, 0, 0, 100);
+		  }
+	}
 	
-	function setCabeceraDet($desc_evento){
+	
+	function setCabeceraDet($desc_evento, $color){
 		       $this->SetFont('','B',9);
+			   $this->setColorDesc($color);	  
+			   
 		       $this->Cell(97,3.5,$desc_evento,'',0,'C');
 			   
 			   if($this->tipo_imp == 'doble'){
 			   		$this->Cell(8,3.5,'','',0,'C');
 			   		$this->Cell(97,3.5,$desc_evento,'',0,'C');
 			   }
+			    $this->setColorDesc('defecto');	
 			   
 			   $this->ln();
 			   
@@ -290,7 +308,7 @@ class RAgenda extends  ReportePDF {
 					$this->cerrarDet();
 				}
 			   $this->revisarfinPagina();
-			   $this->setCabeceraDet($val['desc_evento']);
+			   $this->setCabeceraDet($val['desc_evento'], $val['color']);
 			}
 			
 			$this->setCuerpoDet($val);	

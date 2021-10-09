@@ -90,7 +90,7 @@ class RResumen extends  ReportePDF {
                         'egreso' => 'Egresos',
                         'final' => 'Saldo Final');
                          
-        $this-> MultiRow($RowArray,false,1);
+        $this-> MultiRow3($RowArray,false,1);
     }
 	
 	function generarCuerpo($detalle){
@@ -177,7 +177,7 @@ class RResumen extends  ReportePDF {
                         'egreso' => $val2['egreso'],
                         'final' => $val2['saldo_adm']);
                          
-        $this-> MultiRow($RowArray,$fill,1);
+        $this-> MultiRow3($RowArray,$fill,1);
 			
 	}
 	
@@ -200,7 +200,7 @@ class RResumen extends  ReportePDF {
             			'nro'  => $count,
                         'casa' => $titulo);
                          
-        $this-> MultiRow($RowArray,$fill,1);
+        $this-> MultiRow3($RowArray,$fill,1);
 		
 	}
 	
@@ -258,7 +258,7 @@ class RResumen extends  ReportePDF {
 	                    's4' => $this->s4
 	                  );     
 	                     
-	        $this-> MultiRow($RowArray,false,1);
+	        $this-> MultiRow3($RowArray,false,1);
 	
   }
   
@@ -285,7 +285,7 @@ class RResumen extends  ReportePDF {
 	                    't4' => $this->t4
 	                  );     
 	                     
-	        $this-> MultiRow($RowArray,false,1);
+	        $this-> MultiRow3($RowArray,false,1);
 	
   }
 

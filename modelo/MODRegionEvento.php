@@ -385,8 +385,8 @@ class MODRegionEvento extends MODbase{
 		$this->captura('num_dia','varchar');
 		$this->captura('obs_region','varchar');
 		$this->captura('obs','varchar');
-		$this->captura('obs2','varchar');
-		
+		$this->captura('obs2','varchar');		
+		$this->captura('color','varchar');
 		
 		
 		//Ejecuta la instruccion
@@ -429,6 +429,8 @@ class MODRegionEvento extends MODbase{
           $this->captura('id_region','int4');
           $this->captura('id_casa_oracion','int4');
           $this->captura('dia','DATE');
+		  $this->captura('color','varchar');
+		  
 		
 		
 		

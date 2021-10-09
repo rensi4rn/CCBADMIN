@@ -59,7 +59,8 @@ BEGIN
 			id_usuario_mod,
             codigo,
             prioridad,
-            nacional
+            nacional,
+            color
           	) values(
 			'activo',
 			v_parametros.nombre,
@@ -70,7 +71,8 @@ BEGIN
 			null,
             lower(v_parametros.codigo),
             v_parametros.prioridad,
-            v_parametros.nacional
+            v_parametros.nacional,
+            v_parametros.color
 							
 			)RETURNING id_evento into v_id_evento;
 			
@@ -101,7 +103,8 @@ BEGIN
                 id_usuario_mod = p_id_usuario,
                 codigo = lower(v_parametros.codigo),
                 prioridad = v_parametros.prioridad,
-                nacional = v_parametros.nacional
+                nacional = v_parametros.nacional,
+                color =  v_parametros.color
 			where id_evento=v_parametros.id_evento;
                
 			--Definicion de la respuesta

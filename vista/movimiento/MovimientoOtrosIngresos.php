@@ -786,12 +786,17 @@ Phx.vista.MovimientoOtrosIngresos=Ext.extend(Phx.gridInterfaz,{
 	            this.Cmp.id_movimiento_traspaso.store.baseParams.fecha=this.Cmp.fecha.getValue().dateFormat('d/m/Y');
 	            this.Cmp.id_movimiento_traspaso.modificado = true;
 	            this.mostrarComponente(this.Cmp.id_movimiento_traspaso);
-	            this.Cmp.tipo_documento.store.loadData(this.documentoTraspaso);	           
-	            
-		    }
+	            this.Cmp.tipo_documento.store.loadData(this.documentoTraspaso);
+                this.Cmp.monto.setReadOnly(true);
+                this.Cmp.num_documento.setReadOnly(true);
+
+
+            }
 		    else{
 		    	this.ocultarComponente(this.Cmp.id_movimiento_traspaso);
-		    	this.Cmp.tipo_documento.store.loadData(this.OtrosIngresos)
+		    	this.Cmp.tipo_documento.store.loadData(this.OtrosIngresos);
+                this.Cmp.monto.setReadOnly(false);
+                this.Cmp.num_documento.setReadOnly(false);
 		    }
 		},this);
 		

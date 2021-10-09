@@ -42,7 +42,7 @@ class RResumenEveCon extends  ReportePDF {
 			$this->Cell(0,5,"BAUTISMOS",0,1,'C');	
 		}
 		else {
-			$this->Cell(0,5,"Santas Cenas",0,1,'C');	
+			$this->Cell(0,5,"SANTAS CENAS",0,1,'C');	
 		}
 		$this->Ln(1);
 		
@@ -77,7 +77,8 @@ class RResumenEveCon extends  ReportePDF {
     	
 		
 		//armca caecera de la tabla
-		$conf_par_tablewidths=array(10,90,25,25,25,25);
+		
+		$conf_par_tablewidths=array(10,90+25,25,25,25);
         $conf_par_tablealigns=array('C','C','C','C','C','C');
         $conf_par_tablenumbers=array(0,0,0,0,0,0);
         $conf_tableborders=array();
@@ -161,10 +162,10 @@ class RResumenEveCon extends  ReportePDF {
 	}	
 	
 	function imprimirLinea($val,$count,$fill){	
-		$conf_par_tablewidths=array(10,90+25,25,25,25);
-        $conf_par_tablealigns=array('C','L','R','R','R','R');
-        $conf_par_tablenumbers=array(0,0,0,0,0,0);
-		$conf_tableborders=array('LR','LR','LR','LR','LR','LR');
+		$conf_par_tablewidths=array(10,115,25,25,25);
+        $conf_par_tablealigns=array('C','L','R','R','R');
+        $conf_par_tablenumbers=array(0,0,0,0,0);
+		$conf_tableborders=array('LR','LR','LR','LR','LR');
 		
 		$this->tablewidths=$conf_par_tablewidths;
         $this->tablealigns=$conf_par_tablealigns;
@@ -172,18 +173,18 @@ class RResumenEveCon extends  ReportePDF {
         $this->tableborders=$conf_tableborders;
         $this->tabletextcolor=$conf_tabletextcolor;
 		
-		$val2 = $this->caclularMontos($val);
+		$val2 = $this->caclularMontos($val);		
 		
-		
-		$casa = "\t\t\t\t\t\t".$val['nombre_co'];
+		$casa = "\t\t\t".$val['nombre_co'];
 		$total = $val['cantidad_hermano'] + $val['cantidad_hermana'];
 		$RowArray = array('nro'  => $count,
-                          'casa' => $casa,
+                          'casa' => $val['nombre_co'],
                           's2' => (int)$val['cantidad_hermano'],
                           's3' => (int)$val['cantidad_hermana'],
                           's4' => (int)$total);
-                         
-        $this-> MultiRow($RowArray,$fill,1);
+		
+						  
+        $this-> MultiRow3($RowArray,$fill,1);
 			
 	}
 	

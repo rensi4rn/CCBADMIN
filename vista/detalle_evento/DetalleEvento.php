@@ -193,7 +193,7 @@ Phx.vista.DetalleEvento=Ext.extend(Phx.gridInterfaz,{
 		}
 	],
 	
-	title:'Detalle Evento',
+	title:'Detalle',
 	ActSave:'../../sis_admin/control/DetalleEvento/insertarDetalleEvento',
 	ActDel:'../../sis_admin/control/DetalleEvento/eliminarDetalleEvento',
 	ActList:'../../sis_admin/control/DetalleEvento/listarDetalleEvento',
